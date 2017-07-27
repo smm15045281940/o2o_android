@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!--自定义进度对话框北京颜色-->
+    <color name="dialog_cprogress_background">#3C3F41</color>
+    <!--自定义ListView头布局文字颜色-->
+    <color name="tv_head_clistview">#00B3CA</color>
+</resources>

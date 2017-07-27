@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/x10"
+    android:paddingTop="@dimen/x10">
+
+    <TextView
+        android:id="@+id/tv_head_clistview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="下拉可以刷新"
+        android:textColor="@color/tv_head_clistview"
+        android:textSize="@dimen/x12" />
+
+    <ImageView
+        android:id="@+id/iv_head_clistview"
+        android:layout_width="@dimen/x20"
+        android:layout_height="@dimen/x20"
+        android:layout_marginRight="@dimen/x10"
+        android:layout_toLeftOf="@+id/tv_head_clistview"
+        android:src="@mipmap/ic_launcher" />
+
+</RelativeLayout>
