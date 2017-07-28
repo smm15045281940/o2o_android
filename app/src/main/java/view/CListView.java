@@ -13,26 +13,29 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import intface.OnRefreshListener;
+import config.TextConfig;
+import listener.OnRefreshListener;
 
 /**
- * Created by Administrator on 2017/7/27.
+ * 创建日期：2017/7/28 on 13:43
+ * 作者:孙明明
+ * 描述:自定义ListView
  */
 
 public class CListView extends ListView implements AbsListView.OnScrollListener {
 
-    private View headView, footView;//头、尾布局
-    private ImageView headIv, footIv;//头、尾布局图片
-    private TextView headTv;//头布局文字
-    private int headViewHeight, footViewHeight;//头、尾布局高度
-    private ObjectAnimator headAnim, footAnim;//头、尾布局图片动画
+    private View headView, footView;
+    private ImageView headIv, footIv;
+    private TextView headTv, footTv;
+    private int headViewHeight, footViewHeight;
+    private ObjectAnimator headAnim, footAnim;
 
-    private int firstVisibleItemPosition, downY;//显示的第一个item的索引、按下时Y轴的偏移量
+    private int firstVisibleItemPosition, downY;
     private final int DOWN_PULL_REFRESH = 0;
     private final int RELEASE_REFRESH = 1;
     private final int REFRESHING = 2;
     private int currentState;
-    private boolean isScrolltoBottom,isLoadingMore;
+    private boolean isScrolltoBottom, isLoadingMore;
 
     private OnRefreshListener mOnRefreshListener;
 
@@ -53,6 +56,7 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
         headView = View.inflate(getContext(), R.layout.head_clistview, null);
         headIv = (ImageView) headView.findViewById(R.id.iv_head_clistview);
         headTv = (TextView) headView.findViewById(R.id.tv_head_clistview);
+        headTv.setText(TextConfig.pull);
         headView.measure(0, 0);
         headViewHeight = headView.getMeasuredHeight();
         headView.setPadding(0, -headViewHeight, 0, 0);
@@ -62,6 +66,8 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
     private void initFootView() {
         footView = View.inflate(getContext(), R.layout.foot_clistview, null);
         footIv = (ImageView) footView.findViewById(R.id.iv_foot_clistview);
+        footTv = (TextView) footView.findViewById(R.id.tv_foot_clistview);
+        footTv.setText(TextConfig.loading);
         footView.measure(0, 0);
         footViewHeight = footView.getMeasuredHeight();
         footView.setPadding(0, -footViewHeight, 0, 0);
@@ -79,17 +85,17 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
         footAnim.setInterpolator(new LinearInterpolator());
     }
 
-    public void hideHeadView(){
+    public void hideHeadView() {
         headAnim.cancel();
-        headView.setPadding(0,-headViewHeight,0,0);
-        headTv.setText("下拉可以刷新");
+        headView.setPadding(0, -headViewHeight, 0, 0);
+        headTv.setText(TextConfig.pull);
         headIv.setImageResource(R.mipmap.ic_launcher);
         currentState = DOWN_PULL_REFRESH;
     }
 
-    public void hideFootView(){
+    public void hideFootView() {
         footAnim.cancel();
-        footView.setPadding(0,-footViewHeight,0,0);
+        footView.setPadding(0, -footViewHeight, 0, 0);
         footIv.setImageResource(R.mipmap.ic_launcher);
         isLoadingMore = false;
     }
@@ -110,7 +116,7 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
                 break;
             case MotionEvent.ACTION_MOVE:
                 int moveY = (int) ev.getY();
-                int diff = (moveY - downY) / 2;//间距
+                int diff = (moveY - downY) / 2;
                 int paddingTop = -headViewHeight + diff;
                 if (firstVisibleItemPosition == 0 && -headViewHeight < paddingTop) {
                     if (paddingTop > 0 && currentState == DOWN_PULL_REFRESH) {
@@ -128,12 +134,14 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
                     headView.setPadding(0, 0, 0, 0);
                     currentState = REFRESHING;
                     refreshHeaderView();
-                    if(mOnRefreshListener !=null){
+                    if (mOnRefreshListener != null) {
                         mOnRefreshListener.onDownPullRefresh();
                     }
                 } else if (currentState == DOWN_PULL_REFRESH) {
                     headView.setPadding(0, -headViewHeight, 0, 0);
                 }
+                break;
+            default:
                 break;
         }
         return super.onTouchEvent(ev);
@@ -142,30 +150,32 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
     private void refreshHeaderView() {
         switch (currentState) {
             case DOWN_PULL_REFRESH:
-                headTv.setText("下拉可以刷新");
+                headTv.setText(TextConfig.pull);
                 break;
             case RELEASE_REFRESH:
-                headTv.setText("松开即可刷新");
+                headTv.setText(TextConfig.release);
                 break;
             case REFRESHING:
-                headTv.setText("正在刷新");
+                headTv.setText(TextConfig.refreshing);
                 headAnim.start();
+                break;
+            default:
                 break;
         }
     }
 
-    public void setOnRefreshListener(OnRefreshListener listener){
+    public void setOnRefreshListener(OnRefreshListener listener) {
         mOnRefreshListener = listener;
     }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if(scrollState == OnScrollListener.SCROLL_STATE_IDLE || scrollState == OnScrollListener.SCROLL_STATE_FLING){
-            if(isScrolltoBottom && !isLoadingMore){
+        if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING) {
+            if (isScrolltoBottom && !isLoadingMore) {
                 isLoadingMore = true;
-                footView.setPadding(0,0,0,0);
+                footView.setPadding(0, 0, 0, 0);
                 this.setSelection(this.getCount());
-                if(mOnRefreshListener != null){
+                if (mOnRefreshListener != null) {
                     footAnim.start();
                     mOnRefreshListener.onLoadingMore();
                 }
@@ -176,9 +186,9 @@ public class CListView extends ListView implements AbsListView.OnScrollListener 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         firstVisibleItemPosition = firstVisibleItem;
-        if(getLastVisiblePosition() == (totalItemCount - 1)){
+        if (getLastVisiblePosition() == (totalItemCount - 1)) {
             isScrolltoBottom = true;
-        }else{
+        } else {
             isScrolltoBottom = false;
         }
     }

@@ -1,56 +1,40 @@
 package activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.gjzg.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import intface.OnRefreshListener;
-import view.CListView;
-import view.CProgressDialog;
+import adapter.MainFragPageAdapter;
+import fragment.DiscountInfoFragment;
+import fragment.FirstPageFragment;
+import fragment.MineFragment;
+import fragment.WorkManageFragment;
+import view.CFragment;
 
-public class MainActivity extends AppCompatActivity implements OnRefreshListener {
+/**
+ * 创建日期：2017/7/28 on 13:50
+ * 作者:孙明明
+ * 描述:主页
+ */
+
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, RadioGroup.OnCheckedChangeListener {
 
     private View rootView;
-    private CProgressDialog cProgressDialog;
-    private CListView cListView;
-    private List<String> dataList;
-    private ArrayAdapter<String> adapter;
+    private ViewPager mainVp;
+    private RadioGroup mainRg;
 
-    private final int FIRST = 0, REFRESH = 1, LOAD = 2;
-    private int STATE_LOAD;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg != null) {
-                switch (msg.what) {
-                    case 1:
-                        switch (STATE_LOAD){
-                            case FIRST:
-                                cProgressDialog.cDismiss();
-                                break;
-                            case REFRESH:
-                                
-                                break;
-                            case LOAD:
-                                break;
-                        }
-                        adapter.notifyDataSetChanged();
-                        break;
-                }
-            }
-        }
-    };
+    private List<CFragment> cFragmentList;
+    private MainFragPageAdapter mainFragPageAdapter;
+    private int curPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,53 +46,53 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         initData();
         setData();
         setListener();
-        loadData();
     }
 
     private void initView() {
-        initRootView();
-        initDialogView();
-    }
-
-    private void initRootView() {
-        cListView = (CListView) rootView.findViewById(R.id.clv);
-    }
-
-    private void initDialogView() {
-        cProgressDialog = new CProgressDialog(this, R.style.dialog_cprogress);
+        mainVp = (ViewPager) rootView.findViewById(R.id.vp_main);
+        mainRg = (RadioGroup) rootView.findViewById(R.id.rg_main);
+        ((RadioButton) mainRg.getChildAt(curPosition)).setChecked(true);
     }
 
     private void initData() {
-        dataList = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
-        STATE_LOAD = FIRST;
+        FirstPageFragment firstPageFragment = new FirstPageFragment();
+        WorkManageFragment workManageFragment = new WorkManageFragment();
+        DiscountInfoFragment discountInfoFragment = new DiscountInfoFragment();
+        MineFragment mineFragment = new MineFragment();
+        cFragmentList = new ArrayList<>();
+        cFragmentList.add(firstPageFragment);
+        cFragmentList.add(workManageFragment);
+        cFragmentList.add(discountInfoFragment);
+        cFragmentList.add(mineFragment);
+        mainFragPageAdapter = new MainFragPageAdapter(getSupportFragmentManager(), this, cFragmentList);
     }
 
     private void setData() {
-        cListView.setAdapter(adapter);
+        mainVp.setAdapter(mainFragPageAdapter);
     }
 
     private void setListener() {
-        cListView.setOnRefreshListener(this);
-    }
-
-    private void loadData() {
-        cProgressDialog.cShow();
-        for (int i = 0; i < 20; i++) {
-            dataList.add(i + "");
-        }
-        handler.sendEmptyMessageDelayed(1, 2000);
+        mainRg.setOnCheckedChangeListener(this);
+        mainVp.addOnPageChangeListener(this);
     }
 
     @Override
-    public void onDownPullRefresh() {
-        STATE_LOAD = REFRESH;
-        loadData();
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
     }
 
     @Override
-    public void onLoadingMore() {
-        STATE_LOAD = LOAD;
-        loadData();
+    public void onPageSelected(int position) {
+        ((RadioButton) mainRg.getChildAt(position)).setChecked(true);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        mainVp.setCurrentItem(checkedId - 1, false);
     }
 }

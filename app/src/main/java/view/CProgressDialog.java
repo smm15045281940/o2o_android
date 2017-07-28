@@ -4,20 +4,20 @@ import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
 import com.gjzg.R;
 
 /**
- * Created by Administrator on 2017/7/27.
+ * 创建日期：2017/7/28 on 13:39
+ * 作者:孙明明
+ * 描述:自定义ProgressDialog
  */
-//自定义进度对话框
+
 public class CProgressDialog extends Dialog {
 
     private View dialogView;
-    private WindowManager.LayoutParams lp;
     private Context mContext;
     private ImageView imageIv;
     private ObjectAnimator animator;
@@ -36,19 +36,18 @@ public class CProgressDialog extends Dialog {
         animator.setDuration(500);
         animator.setRepeatCount(-1);
         this.setContentView(dialogView);
-        lp = this.getWindow().getAttributes();
-        lp.dimAmount = 0f;
-        this.getWindow().setAttributes(lp);
         this.setCanceledOnTouchOutside(false);
     }
 
-    public void cShow() {
-        this.show();
+    @Override
+    public void show() {
+        super.show();
         animator.start();
     }
 
-    public void cDismiss() {
+    @Override
+    public void dismiss() {
+        super.dismiss();
         animator.cancel();
-        this.dismiss();
     }
 }
