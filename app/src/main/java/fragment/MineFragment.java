@@ -24,7 +24,15 @@ public class MineFragment extends CFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_mine, null);
+        initView();
         return rootView;
     }
 
+    private void initView() {
+        initRootView();
+    }
+
+    private void initRootView() {
+        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
 }

@@ -4,10 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="首页" />
+        android:layout_height="@dimen/x40"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/ll_first_page"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
 
 </LinearLayout>
