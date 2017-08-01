@@ -1,23 +1,21 @@
 package fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import activity.CityActivity;
 import activity.JobActivity;
+import activity.MessageActivity;
 import utils.Utils;
-import view.CFragment;
 
 /**
  * 创建日期：2017/7/28 on 13:52
@@ -25,25 +23,19 @@ import view.CFragment;
  * 描述:首页
  */
 
-public class FirstPageFragment extends CFragment {
+public class FirstPageFragment extends Fragment implements View.OnClickListener {
 
     private View rootView;
-    private LinearLayout linearLayout;
-
-    private List<String> list = new ArrayList<>();
+    private RelativeLayout cityRl, msgRl;
+    private ImageView findWorkerIv, findJobIv, sendJobIv;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_first_page, null);
         initView();
+        setListener();
         return rootView;
-    }
-
-    @Override
-    protected void onFragmentFirstVisible() {
-        super.onFragmentFirstVisible();
-        loadData();
     }
 
     private void initView() {
@@ -52,41 +44,43 @@ public class FirstPageFragment extends CFragment {
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout = (LinearLayout) rootView.findViewById(R.id.ll_first_page);
+        cityRl = (RelativeLayout) rootView.findViewById(R.id.rl_first_page_city);
+        msgRl = (RelativeLayout) rootView.findViewById(R.id.rl_first_page_msg);
+        findWorkerIv = (ImageView) rootView.findViewById(R.id.iv_first_page_find_workder);
+        findJobIv = (ImageView) rootView.findViewById(R.id.iv_first_page_find_job);
+        sendJobIv = (ImageView) rootView.findViewById(R.id.iv_first_page_send_job);
     }
 
-    private void loadData() {
-        for (int i = 0; i < 3; i++) {
-            list.add("imageUrl:" + i);
-        }
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        lp.weight = 1.0f;
-        lp.setMargins(10, 10, 10, 10);
-        for (int i = 0; i < list.size(); i++) {
-            ImageView iv = new ImageView(getActivity());
-            iv.setLayoutParams(lp);
-            iv.setScaleType(ImageView.ScaleType.FIT_XY);
-            iv.setImageResource(R.mipmap.ic_launcher);
-            iv.setBackgroundColor(Color.GREEN);
-            linearLayout.addView(iv);
-            final int finalI = i;
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switch (finalI){
-                        case 0:
-                            Intent intent = new Intent(getActivity(), JobActivity.class);
-                            startActivity(intent);
-                            break;
-                        case 1:
-                            Utils.log(getActivity(),"找工作");
-                            break;
-                        case 2:
-                            Utils.log(getActivity(),"发布工作");
-                            break;
-                    }
-                }
-            });
+    private void setListener() {
+        cityRl.setOnClickListener(this);
+        msgRl.setOnClickListener(this);
+        findWorkerIv.setOnClickListener(this);
+        findJobIv.setOnClickListener(this);
+        sendJobIv.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_first_page_city:
+                Intent cityIntent = new Intent(getActivity(), CityActivity.class);
+                startActivity(cityIntent);
+                break;
+            case R.id.rl_first_page_msg:
+                Intent msgIntent = new Intent(getActivity(), MessageActivity.class);
+                startActivity(msgIntent);
+                break;
+            case R.id.iv_first_page_find_workder:
+                Intent findWorkerIntent = new Intent(getActivity(), JobActivity.class);
+                startActivity(findWorkerIntent);
+                break;
+            case R.id.iv_first_page_find_job:
+                Utils.toast(getActivity(), "找工作");
+                break;
+            case R.id.iv_first_page_send_job:
+                Utils.toast(getActivity(), "发布工作");
+                break;
         }
     }
 }

@@ -1,32 +1,27 @@
 package activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.gjzg.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fragment.DiscountInfoFragment;
+import config.ColorConfig;
+import fragment.DiscountFragment;
 import fragment.FirstPageFragment;
 import fragment.MineFragment;
 import fragment.WorkManageFragment;
-import utils.Utils;
-import view.CFragment;
 
 /**
  * 创建日期：2017/7/28 on 13:50
@@ -34,12 +29,14 @@ import view.CFragment;
  * 描述:主页
  */
 
-public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private View rootView;
-    private RadioGroup mainRg;
+    private RelativeLayout firstPageRl, workerManageRl, discountRl, mineRl;
+    private ImageView firstPageIv, workerManageIv, discountIv, mineIv;
+    private TextView firstPageTv, workerManageTv, discountTv, mineTv;
 
-    private List<CFragment> cFragmentList;
+    private List<Fragment> cFragmentList;
     private FragmentManager fragmentManager;
     private int curIndex;
 
@@ -55,14 +52,24 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     }
 
     private void initView() {
-        mainRg = (RadioGroup) rootView.findViewById(R.id.rg_main);
-        ((RadioButton) mainRg.getChildAt(curIndex)).setChecked(true);
+        firstPageRl = (RelativeLayout) rootView.findViewById(R.id.rl_main_first_page);
+        workerManageRl = (RelativeLayout) rootView.findViewById(R.id.rl_main_worker_manage);
+        discountRl = (RelativeLayout) rootView.findViewById(R.id.rl_main_discount);
+        mineRl = (RelativeLayout) rootView.findViewById(R.id.rl_main_mine);
+        firstPageIv = (ImageView) rootView.findViewById(R.id.iv_main_first_page);
+        workerManageIv = (ImageView) rootView.findViewById(R.id.iv_main_worker_manage);
+        discountIv = (ImageView) rootView.findViewById(R.id.iv_main_discount);
+        mineIv = (ImageView) rootView.findViewById(R.id.iv_main_mine);
+        firstPageTv = (TextView) rootView.findViewById(R.id.tv_main_first_page);
+        workerManageTv = (TextView) rootView.findViewById(R.id.tv_main_worker_manage);
+        discountTv = (TextView) rootView.findViewById(R.id.tv_main_discount);
+        mineTv = (TextView) rootView.findViewById(R.id.tv_main_mine);
     }
 
     private void initData() {
         FirstPageFragment firstPageFragment = new FirstPageFragment();
         WorkManageFragment workManageFragment = new WorkManageFragment();
-        DiscountInfoFragment discountInfoFragment = new DiscountInfoFragment();
+        DiscountFragment discountInfoFragment = new DiscountFragment();
         MineFragment mineFragment = new MineFragment();
         cFragmentList = new ArrayList<>();
         cFragmentList.add(firstPageFragment);
@@ -76,21 +83,74 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     }
 
     private void setListener() {
-        mainRg.setOnCheckedChangeListener(this);
+        firstPageRl.setOnClickListener(this);
+        workerManageRl.setOnClickListener(this);
+        discountRl.setOnClickListener(this);
+        mineRl.setOnClickListener(this);
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        int b = checkedId;
-        if (b == 2) {
-            request();
-        } else {
-            changeFragment(checkedId - 1);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_main_first_page:
+                changeFragment(0);
+                break;
+            case R.id.rl_main_worker_manage:
+                changeFragment(1);
+                break;
+            case R.id.rl_main_discount:
+                changeFragment(2);
+                break;
+            case R.id.rl_main_mine:
+                changeFragment(3);
+                break;
         }
     }
 
     private void changeFragment(int tarIndex) {
         if (tarIndex != curIndex) {
+            switch (tarIndex) {
+                case 0:
+                    firstPageIv.setImageResource(R.mipmap.first_page_choosed);
+                    workerManageIv.setImageResource(R.mipmap.work_manage_default);
+                    discountIv.setImageResource(R.mipmap.discount_default);
+                    mineIv.setImageResource(R.mipmap.mine_default);
+                    firstPageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_CHOOSED));
+                    workerManageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    discountTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    mineTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    break;
+                case 1:
+                    firstPageIv.setImageResource(R.mipmap.first_page_default);
+                    workerManageIv.setImageResource(R.mipmap.work_manage_choosed);
+                    discountIv.setImageResource(R.mipmap.discount_default);
+                    mineIv.setImageResource(R.mipmap.mine_default);
+                    firstPageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    workerManageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_CHOOSED));
+                    discountTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    mineTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    break;
+                case 2:
+                    firstPageIv.setImageResource(R.mipmap.first_page_default);
+                    workerManageIv.setImageResource(R.mipmap.work_manage_default);
+                    discountIv.setImageResource(R.mipmap.discount_choosed);
+                    mineIv.setImageResource(R.mipmap.mine_default);
+                    firstPageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    workerManageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    discountTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_CHOOSED));
+                    mineTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    break;
+                case 3:
+                    firstPageIv.setImageResource(R.mipmap.first_page_default);
+                    workerManageIv.setImageResource(R.mipmap.work_manage_default);
+                    discountIv.setImageResource(R.mipmap.discount_default);
+                    mineIv.setImageResource(R.mipmap.mine_choosed);
+                    firstPageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    workerManageTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    discountTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_DEFAULT));
+                    mineTv.setTextColor(Color.parseColor(ColorConfig.TV_MAIN_CHOOSED));
+                    break;
+            }
             Fragment curFragment = cFragmentList.get(curIndex);
             Fragment tarFragment = cFragmentList.get(tarIndex);
             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -102,33 +162,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             }
             curIndex = tarIndex;
             transaction.commit();
-        }
-    }
-
-    private void request() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int p = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-            if (p != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            } else {
-                changeFragment(1);
-            }
-        } else {
-            changeFragment(1);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    changeFragment(1);
-                } else {
-                    Utils.toast(this, "没有定位权限");
-                }
-                break;
         }
     }
 }

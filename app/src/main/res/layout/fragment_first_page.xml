@@ -2,18 +2,114 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/x40"
-        android:orientation="horizontal" />
+    <RelativeLayout style="@style/rl_top_bar">
 
-    <LinearLayout
-        android:id="@+id/ll_first_page"
+        <RelativeLayout
+            android:id="@+id/rl_first_page_city"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_press_or_not"
+            android:clickable="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="哈尔滨"
+                    android:textColor="@color/tv_main_default"
+                    android:textSize="@dimen/x15" />
+
+                <ImageView
+                    android:layout_width="@dimen/x10"
+                    android:layout_height="@dimen/x10"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/arrow_b" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            style="@style/tv_top_title"
+            android:text="钢建众工" />
+
+        <RelativeLayout
+            android:id="@+id/rl_first_page_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_press_or_not">
+
+            <ImageView
+                android:layout_width="@dimen/x20"
+                android:layout_height="@dimen/x20"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:scaleType="fitXY"
+                android:src="@mipmap/message" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" />
+        android:layout_height="@dimen/x1"
+        android:background="@color/side" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_first_page_find_workder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y80"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:layout_marginTop="@dimen/x10"
+                android:scaleType="fitXY"
+                android:src="@mipmap/find_worker" />
+
+            <ImageView
+                android:id="@+id/iv_first_page_find_job"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y80"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:layout_marginTop="@dimen/x10"
+                android:scaleType="fitXY"
+                android:src="@mipmap/find_job" />
+
+            <ImageView
+                android:id="@+id/iv_first_page_send_job"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y80"
+                android:layout_marginLeft="@dimen/x10"
+                android:layout_marginRight="@dimen/x10"
+                android:layout_marginTop="@dimen/x10"
+                android:scaleType="fitXY"
+                android:src="@mipmap/send_job" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

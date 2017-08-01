@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/background">
 
-    <ImageView
-        android:id="@+id/iv_item_job_image"
-        android:layout_width="@dimen/x60"
-        android:layout_height="@dimen/x50"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/x10"
-        android:scaleType="fitXY"
-        android:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/tv_item_job_name"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/iv_item_job_image"
-        android:ellipsize="end"
-        android:singleLine="true" />
+        android:layout_marginTop="@dimen/x10"
+        android:background="@drawable/selector_item_job">
+
+        <ImageView
+            android:id="@+id/iv_item_job_image"
+            android:layout_width="@dimen/x60"
+            android:layout_height="@dimen/x50"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/x10"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_item_job_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_item_job_image"
+            android:ellipsize="end"
+            android:singleLine="true" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

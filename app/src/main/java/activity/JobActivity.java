@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 
 import com.gjzg.R;
 
@@ -21,7 +21,7 @@ import view.CListView;
 public class JobActivity extends AppCompatActivity implements View.OnClickListener, OnRefreshListener, AdapterView.OnItemClickListener {
 
     private View rootView;
-    private LinearLayout backLl;
+    private ImageView returnIv;
     private CListView cListView;
 
     private List<Job> jobList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initRootView() {
-        backLl = (LinearLayout) rootView.findViewById(R.id.ll_job_back);
+        returnIv = (ImageView) rootView.findViewById(R.id.iv_job_return);
         cListView = (CListView) rootView.findViewById(R.id.clv_job);
     }
 
@@ -58,7 +58,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setListener() {
-        backLl.setOnClickListener(this);
+        returnIv.setOnClickListener(this);
         cListView.setOnRefreshListener(this);
         cListView.setOnItemClickListener(this);
     }
@@ -75,7 +75,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_job_back:
+            case R.id.iv_job_return:
                 finish();
                 break;
         }
