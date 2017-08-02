@@ -16,7 +16,7 @@ import bean.Job;
 /**
  * 创建日期：2017/7/31 on 13:46
  * 作者:孙明明
- * 描述:
+ * 描述:工种适配器
  */
 
 public class JobAdapter extends BaseAdapter {

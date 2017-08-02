@@ -34,7 +34,11 @@
         <activity android:name="activity.JobActivity" />
         <activity android:name="activity.WorkerActivity" />
         <activity android:name="activity.MessageActivity" />
-        <activity android:name="activity.CityActivity"></activity>
+        <activity android:name="activity.CityActivity" />
+        <activity android:name="activity.TalkActivity" />
+        <activity android:name="activity.WorkerManageActivity" />
+        <activity android:name="activity.EmployerManageActivity" />
+        <activity android:name="activity.PersonManageActivity"></activity>
     </application>
 
 </manifest>

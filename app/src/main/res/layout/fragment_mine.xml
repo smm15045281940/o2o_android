@@ -52,7 +52,7 @@
                             android:layout_height="@dimen/x30"
                             android:layout_gravity="center_horizontal"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/collect_default" />
+                            android:src="@mipmap/collect_blue" />
 
                         <TextView
                             android:layout_width="wrap_content"

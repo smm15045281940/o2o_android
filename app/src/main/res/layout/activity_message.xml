@@ -10,15 +10,21 @@
 
     <RelativeLayout style="@style/rl_top_bar">
 
-        <ImageView
-            android:id="@+id/iv_message_return"
-            style="@style/iv_return" />
+        <RelativeLayout
+            android:id="@+id/rl_message_return"
+            style="@style/rl_return">
+
+            <ImageView style="@style/iv_return" />
+
+        </RelativeLayout>
 
         <TextView
             style="@style/tv_top_title"
             android:text="我的消息" />
 
     </RelativeLayout>
+
+    <View style="@style/v_split" />
 
     <LinearLayout
         android:layout_width="match_parent"

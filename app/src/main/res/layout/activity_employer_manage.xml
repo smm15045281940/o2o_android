@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_job"
+    android:id="@+id/activity_employer_manage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context="activity.JobActivity">
+    tools:context="activity.EmployerManageActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 
         <RelativeLayout
-            android:id="@+id/rl_job_return"
+            android:id="@+id/rl_employer_manage_return"
             style="@style/rl_return">
 
             <ImageView style="@style/iv_return" />
@@ -20,16 +20,10 @@
 
         <TextView
             style="@style/tv_top_title"
-            android:text="选择工种" />
+            android:text="雇主工作管理" />
 
     </RelativeLayout>
 
     <View style="@style/v_split" />
-
-    <view.CListView
-        android:id="@+id/clv_job"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null" />
 
 </LinearLayout>

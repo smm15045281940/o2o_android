@@ -24,4 +24,6 @@
 
     </RelativeLayout>
 
+    <View style="@style/v_split" />
+
 </LinearLayout>

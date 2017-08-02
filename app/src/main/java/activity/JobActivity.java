@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
@@ -21,7 +21,7 @@ import view.CListView;
 public class JobActivity extends AppCompatActivity implements View.OnClickListener, OnRefreshListener, AdapterView.OnItemClickListener {
 
     private View rootView;
-    private ImageView returnIv;
+    private RelativeLayout returnRl;
     private CListView cListView;
 
     private List<Job> jobList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initRootView() {
-        returnIv = (ImageView) rootView.findViewById(R.id.iv_job_return);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_job_return);
         cListView = (CListView) rootView.findViewById(R.id.clv_job);
     }
 
@@ -58,7 +58,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setListener() {
-        returnIv.setOnClickListener(this);
+        returnRl.setOnClickListener(this);
         cListView.setOnRefreshListener(this);
         cListView.setOnItemClickListener(this);
     }
@@ -66,7 +66,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     private void loadData() {
         for (int i = 0; i < 10; i++) {
             Job j = new Job();
-            j.setName("工种：" + i);
+            j.setName("水泥工" + i);
             jobList.add(j);
         }
         jobAdapter.notifyDataSetChanged();
@@ -75,7 +75,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_job_return:
+            case R.id.rl_job_return:
                 finish();
                 break;
         }
@@ -94,7 +94,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, WorkerActivity.class);
-        intent.putExtra("job", jobList.get(position - 1).getName());
+        intent.putExtra("job",jobList.get(position - 1));
         startActivity(intent);
     }
 }

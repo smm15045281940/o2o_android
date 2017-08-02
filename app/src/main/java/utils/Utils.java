@@ -19,4 +19,5 @@ public class Utils {
     public static void log(Context c, String s) {
         Log.e(c.getClass().getSimpleName(), s);
     }
+
 }

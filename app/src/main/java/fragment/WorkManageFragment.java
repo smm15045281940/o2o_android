@@ -1,5 +1,6 @@
 package fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,9 @@ import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
+import activity.EmployerManageActivity;
+import activity.PersonManageActivity;
+import activity.WorkerManageActivity;
 import utils.Utils;
 
 /**
@@ -63,13 +67,16 @@ public class WorkManageFragment extends Fragment implements View.OnClickListener
                 Utils.toast(getActivity(), "发布工作");
                 break;
             case R.id.rl_work_manage_worker:
-                Utils.toast(getActivity(), "工人工作管理");
+                Intent workerManageIntent = new Intent(getActivity(), WorkerManageActivity.class);
+                startActivity(workerManageIntent);
                 break;
             case R.id.rl_work_manage_employer:
-                Utils.toast(getActivity(), "雇主工作管理");
+                Intent employerManageIntent = new Intent(getActivity(), EmployerManageActivity.class);
+                startActivity(employerManageIntent);
                 break;
             case R.id.rl_work_manage_person:
-                Utils.toast(getActivity(), "个人信息管理");
+                Intent personManageIntent = new Intent(getActivity(), PersonManageActivity.class);
+                startActivity(personManageIntent);
                 break;
         }
     }
