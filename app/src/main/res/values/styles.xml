@@ -11,9 +11,10 @@
     <style name="rl_main">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/selector_press_or_not</item>
         <item name="android:clickable">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
     <!--主页底部按钮LinearLayout样式-->
     <style name="ll_main">
@@ -21,13 +22,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:layout_marginTop">@dimen/x5</item>
-        <item name="android:layout_marginBottom">@dimen/x5</item>
+        <item name="android:layout_marginTop">@dimen/y2</item>
+        <item name="android:layout_marginBottom">@dimen/y2</item>
     </style>
     <!--主页底部按钮ImageView样式-->
     <style name="iv_main">
-        <item name="android:layout_width">@dimen/x20</item>
-        <item name="android:layout_height">@dimen/x20</item>
+        <item name="android:layout_width">@dimen/y15</item>
+        <item name="android:layout_height">@dimen/y15</item>
         <item name="android:scaleType">fitXY</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
@@ -35,7 +36,9 @@
     <style name="tv_main">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/x10</item>
+        <item name="android:textSize">@dimen/y8</item>
+        <item name="android:layout_marginTop">@dimen/y1</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
     <!--顶部标题样式-->
     <style name="tv_top_title">
@@ -51,6 +54,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/y1</item>
         <item name="android:background">@color/side</item>
+    </style>
+    <!--首页图片样式-->
+    <style name="iv_first_page">
+        <item name="android:layout_width">@dimen/x297</item>
+        <item name="android:layout_height">@dimen/y100</item>
+        <item name="android:layout_marginTop">@dimen/y5</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:scaleType">fitXY</item>
     </style>
     <!--我的客服LinearLayout外部样式-->
     <style name="ll_mine_service_out">
@@ -90,7 +101,7 @@
     <RelativeLayout-->
     <style name="rl_top_bar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/y30</item>
+        <item name="android:layout_height">@dimen/y25</item>
         <item name="android:background">@android:color/white</item>
     </style>
     <!--返回RelativeLayout样式-->

@@ -70,32 +70,17 @@
 
             <ImageView
                 android:id="@+id/iv_first_page_find_workder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y90"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:layout_marginTop="@dimen/x10"
-                android:scaleType="fitXY"
+                style="@style/iv_first_page"
                 android:src="@mipmap/find_worker" />
 
             <ImageView
                 android:id="@+id/iv_first_page_find_job"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y90"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:layout_marginTop="@dimen/x10"
-                android:scaleType="fitXY"
+                style="@style/iv_first_page"
                 android:src="@mipmap/find_job" />
 
             <ImageView
                 android:id="@+id/iv_first_page_send_job"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y90"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:layout_marginTop="@dimen/x10"
-                android:scaleType="fitXY"
+                style="@style/iv_first_page"
                 android:src="@mipmap/send_job" />
 
         </LinearLayout>

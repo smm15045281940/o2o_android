@@ -8,18 +8,16 @@ import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-import utils.Utils;
-
-public class JobActivity extends AppCompatActivity implements View.OnClickListener {
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private View rootView;
-    private RelativeLayout returnRl, screenRl;
+    private RelativeLayout returnRl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_job, null);
+        rootView = View.inflate(this, R.layout.activity_setting, null);
         setContentView(rootView);
         initView();
         setListener();
@@ -30,23 +28,18 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_job_return);
-        screenRl = (RelativeLayout) rootView.findViewById(R.id.rl_job_screen);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_setting_return);
     }
 
     private void setListener() {
         returnRl.setOnClickListener(this);
-        screenRl.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_job_return:
+            case R.id.rl_setting_return:
                 finish();
-                break;
-            case R.id.rl_job_screen:
-                Utils.toast(this, "筛选");
                 break;
         }
     }

@@ -29,8 +29,53 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/x50"
+                android:layout_height="@dimen/y50"
                 android:background="@android:color/white">
+
+                <view.CImageView
+                    android:id="@+id/iv_mine_head_shot"
+                    android:layout_width="@dimen/y37"
+                    android:layout_height="@dimen/y37"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/tv_mine_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/iv_mine_head_shot"
+                    android:background="@drawable/shape_mine_login"
+                    android:paddingBottom="@dimen/y1"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
+                    android:paddingTop="@dimen/y1"
+                    android:text="立即登录"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/x15" />
+
+                <TextView
+                    android:id="@+id/tv_mine_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/iv_mine_head_shot"
+                    android:text="王二妮"
+                    android:textColor="@android:color/black"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/iv_mine_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_toRightOf="@+id/tv_mine_username"
+                    android:src="@mipmap/female"
+                    android:visibility="invisible" />
 
             </RelativeLayout>
 

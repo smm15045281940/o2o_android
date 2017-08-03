@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView firstPageTv, workerManageTv, discountTv, mineTv;
 
     private List<Fragment> cFragmentList;
-    private FragmentManager fragmentManager;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
     private int curIndex;
 
     @Override
@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cFragmentList.add(workManageFragment);
         cFragmentList.add(discountInfoFragment);
         cFragmentList.add(mineFragment);
-        fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.ll_main_set, cFragmentList.get(curIndex));
         fragmentTransaction.commit();

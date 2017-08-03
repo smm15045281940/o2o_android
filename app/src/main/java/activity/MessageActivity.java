@@ -8,8 +8,6 @@ import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-import utils.Utils;
-
 public class MessageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private View rootView;
@@ -49,10 +47,10 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.rl_message_job_invite:
-                Utils.toast(this, "工作邀约");
+
                 break;
             case R.id.rl_message_system_msg:
-                Utils.toast(this, "系统消息");
+
                 break;
         }
     }

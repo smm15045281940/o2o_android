@@ -1,16 +1,21 @@
 package fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.gjzg.R;
 
+import activity.ServiceClauseActivity;
+import activity.SettingActivity;
 import utils.Utils;
 
 /**
@@ -25,6 +30,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout collectRl, evaluateRl, walletRl, msgRl;
     private RelativeLayout redBagRl, voucherRl, pointRl;
     private LinearLayout inviteFriendLl, serviceClauseLl, settingLl, customServiceLl;
+    private TextView loginTv, userNameTv;
+    private ImageView headShotIv, sexIv;
 
     @Nullable
     @Override
@@ -52,6 +59,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         serviceClauseLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_service_clause);
         settingLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_setting);
         customServiceLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_custom_service);
+        loginTv = (TextView) rootView.findViewById(R.id.tv_mine_login);
+        userNameTv = (TextView) rootView.findViewById(R.id.tv_mine_username);
+        headShotIv = (ImageView) rootView.findViewById(R.id.iv_mine_head_shot);
+        sexIv = (ImageView) rootView.findViewById(R.id.iv_mine_sex);
     }
 
     private void setListener() {
@@ -66,6 +77,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         serviceClauseLl.setOnClickListener(this);
         settingLl.setOnClickListener(this);
         customServiceLl.setOnClickListener(this);
+        loginTv.setOnClickListener(this);
     }
 
     @Override
@@ -96,13 +108,21 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 Utils.toast(getActivity(), "邀请好友");
                 break;
             case R.id.ll_mine_service_clause:
-                Utils.toast(getActivity(), "服务条款");
+                Intent serviceClauseIntent = new Intent(getActivity(), ServiceClauseActivity.class);
+                startActivity(serviceClauseIntent);
                 break;
             case R.id.ll_mine_setting:
-                Utils.toast(getActivity(), "设置");
+                Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
+                startActivity(settingIntent);
                 break;
             case R.id.ll_mine_custom_service:
                 Utils.toast(getActivity(), "客服");
+                break;
+            case R.id.tv_mine_login:
+                loginTv.setVisibility(View.INVISIBLE);
+                headShotIv.setImageResource(R.mipmap.redbag);
+                userNameTv.setVisibility(View.VISIBLE);
+                sexIv.setVisibility(View.VISIBLE);
                 break;
         }
     }

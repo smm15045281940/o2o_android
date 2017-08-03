@@ -14,6 +14,7 @@ import com.gjzg.R;
 
 import activity.CityActivity;
 import activity.JobActivity;
+import activity.TypeActivity;
 import activity.MessageActivity;
 import utils.Utils;
 
@@ -72,11 +73,12 @@ public class FirstPageFragment extends Fragment implements View.OnClickListener 
                 startActivity(msgIntent);
                 break;
             case R.id.iv_first_page_find_workder:
-                Intent findWorkerIntent = new Intent(getActivity(), JobActivity.class);
+                Intent findWorkerIntent = new Intent(getActivity(), TypeActivity.class);
                 startActivity(findWorkerIntent);
                 break;
             case R.id.iv_first_page_find_job:
-                Utils.toast(getActivity(), "找工作");
+                Intent findJobIntent = new Intent(getActivity(), JobActivity.class);
+                startActivity(findJobIntent);
                 break;
             case R.id.iv_first_page_send_job:
                 Utils.toast(getActivity(), "发布工作");
