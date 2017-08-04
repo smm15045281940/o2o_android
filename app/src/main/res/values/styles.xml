@@ -101,7 +101,7 @@
     <RelativeLayout-->
     <style name="rl_top_bar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/y25</item>
+        <item name="android:layout_height">@dimen/y30</item>
         <item name="android:background">@android:color/white</item>
     </style>
     <!--返回RelativeLayout样式-->
