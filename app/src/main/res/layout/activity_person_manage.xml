@@ -4,7 +4,7 @@
     android:id="@+id/activity_person_manage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context="activity.PersonManageActivity">
 
@@ -26,6 +26,21 @@
 
     <View style="@style/v_split" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/y10"
+            android:layout_marginTop="@dimen/y10"
+            android:scaleType="fitXY"
+            android:src="@mipmap/person_face_default" />
+
+    </RelativeLayout>
+
+    <View style="@style/v_split" />
 
 </LinearLayout>

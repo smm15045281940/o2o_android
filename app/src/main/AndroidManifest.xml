@@ -46,7 +46,9 @@
         <activity
             android:name="activity.RechargeActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name="activity.SendJobActivity"></activity>
+        <activity android:name="activity.SendJobActivity" />
+        <activity android:name="activity.CollectActivity" />
+        <activity android:name="activity.EvaluateActivity"></activity>
     </application>
 
 </manifest>

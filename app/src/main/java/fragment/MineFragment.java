@@ -14,7 +14,10 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import activity.CollectActivity;
+import activity.EvaluateActivity;
 import activity.LoginActivity;
+import activity.MessageActivity;
 import activity.ServiceClauseActivity;
 import activity.SettingActivity;
 import utils.Utils;
@@ -85,16 +88,19 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_mine_collect:
-                Utils.toast(getActivity(), "收藏");
+                Intent collectIntent = new Intent(getActivity(), CollectActivity.class);
+                startActivity(collectIntent);
                 break;
             case R.id.rl_mine_evaluate:
-                Utils.toast(getActivity(), "评价");
+                Intent evaluateIntent = new Intent(getActivity(), EvaluateActivity.class);
+                startActivity(evaluateIntent);
                 break;
             case R.id.rl_mine_wallet:
                 Utils.toast(getActivity(), "钱包");
                 break;
             case R.id.rl_mine_msg:
-                Utils.toast(getActivity(), "消息");
+                Intent messageIntent = new Intent(getActivity(), MessageActivity.class);
+                startActivity(messageIntent);
                 break;
             case R.id.rl_mine_red_bag:
                 Utils.toast(getActivity(), "红包");
