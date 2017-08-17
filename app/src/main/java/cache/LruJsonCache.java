@@ -514,6 +514,14 @@ public class LruJsonCache {
     }
 
     /**
+     * 获取缓存大小
+     */
+
+    public int getCacheSize() {
+        return (int) mCache.cacheSize.get();
+    }
+
+    /**
      * 清除所有数据
      */
     public void clear() {
