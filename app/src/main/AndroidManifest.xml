@@ -58,7 +58,9 @@
         <activity
             android:name="activity.ScreenWorkerActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name="activity.ScreenJobActivity"></activity>
+        <activity
+            android:name="activity.ScreenJobActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>
