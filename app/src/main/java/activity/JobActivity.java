@@ -241,7 +241,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.rl_job_screen:
-                startActivity(new Intent(this, ScreenJobActivity.class));
+                startActivity(new Intent(this, JobScnActivity.class));
                 break;
         }
     }
