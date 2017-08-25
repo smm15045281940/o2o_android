@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -30,6 +30,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import refreshload.PullToRefreshLayout;
+import refreshload.PullableListView;
 import utils.Utils;
 import view.CProgressDialog;
 
@@ -39,16 +41,20 @@ import view.CProgressDialog;
  * 描述:工作邀约
  */
 
-public class JobOfferFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class JobOfferFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshLayout.OnRefreshListener {
 
-    private View rootView, emptyNoNetView, emptyNoDataView;
-    private TextView noNetRefreshTv;
-    private ListView jobOfferLv;
+    private View rootView;
+    private LinearLayout noNetLl, noDataLl;
+    private TextView noNetTv;
+    private PullToRefreshLayout jobOfferPtrl;
+    private PullableListView jobOfferLv;
     private CProgressDialog progressDialog;
+
     private List<SysMsg> jobOfferList;
     private SysMsgAdapter jobOfferAdapter;
     private OkHttpClient okHttpClient;
-    private int LOAD_STATE;
+
+    private int state = StateConfig.LOAD_DONE;
 
     private Handler handler = new Handler() {
         @Override
@@ -78,7 +84,7 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_message, null);
+        rootView = inflater.inflate(R.layout.fragment_msg, null);
         initView();
         initData();
         setData();
@@ -89,25 +95,16 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
 
     private void initView() {
         initRootView();
-        initEmptyView();
         initDialogView();
     }
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        jobOfferLv = (ListView) rootView.findViewById(R.id.lv_message_offer);
-    }
-
-    private void initEmptyView() {
-        emptyNoDataView = View.inflate(getActivity(), R.layout.empty_no_data, null);
-        emptyNoDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) jobOfferLv.getParent()).addView(emptyNoDataView);
-        emptyNoDataView.setVisibility(View.GONE);
-        emptyNoNetView = View.inflate(getActivity(), R.layout.empty_no_net, null);
-        emptyNoNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) jobOfferLv.getParent()).addView(emptyNoNetView);
-        emptyNoNetView.setVisibility(View.GONE);
-        noNetRefreshTv = (TextView) emptyNoNetView.findViewById(R.id.tv_empty_no_net_refresh);
+        jobOfferPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
+        jobOfferLv = (PullableListView) rootView.findViewById(R.id.lv_msg);
+        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
+        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
+        noNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);
     }
 
     private void initDialogView() {
@@ -125,27 +122,29 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void setListener() {
-        noNetRefreshTv.setOnClickListener(this);
+        noNetTv.setOnClickListener(this);
         jobOfferLv.setOnItemClickListener(this);
     }
 
     private void loadData() {
+        progressDialog.show();
         loadNetData();
     }
 
     private void loadNetData() {
-        progressDialog.show();
         Request request = new Request.Builder().url(NetConfig.testUrl).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LOAD_STATE = StateConfig.LOAD_NO_NET;
                 handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    if (state == StateConfig.LOAD_REFRESH) {
+                        jobOfferList.clear();
+                    }
                     String json = response.body().string();
                     parseJson(json);
                 }
@@ -169,7 +168,6 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
                 mo1.setArrowShow(true);
                 jobOfferList.add(mo0);
                 jobOfferList.add(mo1);
-                LOAD_STATE = StateConfig.LOAD_DONE;
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -178,17 +176,36 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void notifyNoNet() {
-        switch (LOAD_STATE) {
-            case StateConfig.LOAD_NO_NET:
-                jobOfferLv.setEmptyView(emptyNoNetView);
-                Utils.toast(getActivity(), StateConfig.loadNonet);
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                progressDialog.dismiss();
+                if (jobOfferList.size() == 0) {
+                    noNetLl.setVisibility(View.VISIBLE);
+                    noDataLl.setVisibility(View.GONE);
+                }
+                break;
+            case StateConfig.LOAD_REFRESH:
+                jobOfferPtrl.refreshFinish(PullToRefreshLayout.FAIL);
+                break;
+            case StateConfig.LOAD_LOAD:
+                jobOfferPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
 
     private void notifyData() {
         jobOfferAdapter.notifyDataSetChanged();
-        jobOfferLv.setEmptyView(emptyNoDataView);
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                progressDialog.dismiss();
+                break;
+            case StateConfig.LOAD_REFRESH:
+                jobOfferPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
+                break;
+            case StateConfig.LOAD_LOAD:
+                jobOfferPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
+                break;
+        }
     }
 
     @Override
@@ -198,6 +215,18 @@ public class JobOfferFragment extends Fragment implements View.OnClickListener, 
                 loadNetData();
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_REFRESH;
+        loadNetData();
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_LOAD;
+        loadNetData();
     }
 
     @Override

@@ -14,14 +14,13 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import activity.CollectActivity;
-import activity.EvaluateActivity;
 import activity.InviteActivity;
 import activity.LoginActivity;
-import activity.MessageActivity;
+import activity.MsgActivity;
 import activity.ServiceClauseActivity;
 import activity.SettingActivity;
 import activity.WalletActivity;
+import config.IntentConfig;
 import utils.Utils;
 
 /**
@@ -90,11 +89,13 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_mine_collect:
-                Intent collectIntent = new Intent(getActivity(), CollectActivity.class);
+                Intent collectIntent = new Intent(getActivity(), MsgActivity.class);
+                collectIntent.putExtra(IntentConfig.intentName, IntentConfig.COLLECT);
                 startActivity(collectIntent);
                 break;
             case R.id.rl_mine_evaluate:
-                Intent evaluateIntent = new Intent(getActivity(), EvaluateActivity.class);
+                Intent evaluateIntent = new Intent(getActivity(), MsgActivity.class);
+                evaluateIntent.putExtra(IntentConfig.intentName, IntentConfig.EVALUATE);
                 startActivity(evaluateIntent);
                 break;
             case R.id.rl_mine_wallet:
@@ -102,7 +103,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 startActivity(walletIntent);
                 break;
             case R.id.rl_mine_msg:
-                Intent messageIntent = new Intent(getActivity(), MessageActivity.class);
+                Intent messageIntent = new Intent(getActivity(), MsgActivity.class);
+                messageIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
                 startActivity(messageIntent);
                 break;
             case R.id.rl_mine_red_bag:

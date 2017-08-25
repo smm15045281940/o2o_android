@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -29,7 +29,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.Utils;
+import refreshload.PullToRefreshLayout;
+import refreshload.PullableListView;
 import view.CProgressDialog;
 
 /**
@@ -38,17 +39,21 @@ import view.CProgressDialog;
  * 描述:系统消息
  */
 
-public class SysMsgFragment extends Fragment implements View.OnClickListener {
+public class SysMsgFragment extends Fragment implements View.OnClickListener , PullToRefreshLayout.OnRefreshListener{
 
-    private View rootView, emptyNoNetView, emptyNoDataView;
-    private TextView noNetRefreshTv;
+    private View rootView;
+    private LinearLayout noNetLl, noDataLl;
+    private TextView noNetTv;
+    private PullToRefreshLayout sysMsgPtrl;
+    private PullableListView sysMsgLv;
     private CProgressDialog progressDialog;
-    private ListView sysMsgLv;
 
     private List<SysMsg> sysMsgList;
     private SysMsgAdapter sysMsgAdapter;
+
     private OkHttpClient okHttpClient;
-    private int LOAD_STATE;
+
+    private int state = StateConfig.LOAD_DONE;
 
     private Handler handler = new Handler() {
         @Override
@@ -77,7 +82,7 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_message, null);
+        rootView = inflater.inflate(R.layout.fragment_msg, null);
         initView();
         initData();
         setData();
@@ -88,25 +93,16 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
 
     private void initView() {
         initRootView();
-        initEmptyView();
         initDialogView();
     }
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        sysMsgLv = (ListView) rootView.findViewById(R.id.lv_message_offer);
-    }
-
-    private void initEmptyView() {
-        emptyNoNetView = View.inflate(getActivity(), R.layout.empty_no_net, null);
-        emptyNoNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        noNetRefreshTv = (TextView) emptyNoNetView.findViewById(R.id.tv_empty_no_net_refresh);
-        ((ViewGroup) sysMsgLv.getParent()).addView(emptyNoNetView);
-        emptyNoNetView.setVisibility(View.INVISIBLE);
-        emptyNoDataView = View.inflate(getActivity(), R.layout.empty_no_data, null);
-        emptyNoDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) sysMsgLv.getParent()).addView(emptyNoDataView);
-        emptyNoDataView.setVisibility(View.INVISIBLE);
+        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
+        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
+        noNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);
+        sysMsgPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
+        sysMsgLv = (PullableListView) rootView.findViewById(R.id.lv_msg);
     }
 
     private void initDialogView() {
@@ -124,26 +120,28 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setListener() {
-        noNetRefreshTv.setOnClickListener(this);
+        noNetTv.setOnClickListener(this);
     }
 
     private void loadData() {
+        progressDialog.show();
         loadNetData();
     }
 
     private void loadNetData() {
-        progressDialog.show();
         Request sysMsgRequest = new Request.Builder().url(NetConfig.testUrl).get().build();
         okHttpClient.newCall(sysMsgRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LOAD_STATE = StateConfig.LOAD_NO_NET;
                 handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    if (state == StateConfig.LOAD_REFRESH) {
+                        sysMsgList.clear();
+                    }
                     String result = response.body().string();
                     parseJson(result);
                 }
@@ -167,7 +165,6 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
                 sm1.setArrowShow(false);
                 sysMsgList.add(sm0);
                 sysMsgList.add(sm1);
-                LOAD_STATE = StateConfig.LOAD_DONE;
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -176,19 +173,40 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
     }
 
     private void notifyNoNet() {
-        progressDialog.dismiss();
-        switch (LOAD_STATE) {
-            case StateConfig.LOAD_NO_NET:
-                sysMsgLv.setEmptyView(emptyNoNetView);
-                Utils.toast(getActivity(), StateConfig.loadNonet);
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                progressDialog.dismiss();
+                if (sysMsgList.size() == 0) {
+                    noNetLl.setVisibility(View.VISIBLE);
+                    noDataLl.setVisibility(View.GONE);
+                }
+                break;
+            case StateConfig.LOAD_REFRESH:
+                sysMsgPtrl.refreshFinish(PullToRefreshLayout.FAIL);
+                break;
+            case StateConfig.LOAD_LOAD:
+                sysMsgPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
 
     private void notifyData() {
-        progressDialog.dismiss();
         sysMsgAdapter.notifyDataSetChanged();
-        sysMsgLv.setEmptyView(emptyNoDataView);
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                progressDialog.dismiss();
+                if(sysMsgList.size() == 0){
+                    noDataLl.setVisibility(View.VISIBLE);
+                    noNetLl.setVisibility(View.GONE);
+                }
+                break;
+            case StateConfig.LOAD_REFRESH:
+                sysMsgPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
+                break;
+            case StateConfig.LOAD_LOAD:
+                sysMsgPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
+                break;
+        }
     }
 
     @Override
@@ -198,5 +216,15 @@ public class SysMsgFragment extends Fragment implements View.OnClickListener {
                 loadNetData();
                 break;
         }
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+
     }
 }

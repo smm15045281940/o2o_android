@@ -33,7 +33,7 @@
         </activity>
         <activity android:name="activity.KindActivity" />
         <activity android:name="activity.WorkerActivity" />
-        <activity android:name="activity.MessageActivity" />
+        <activity android:name="activity.MsgActivity" />
         <activity android:name="activity.CityActivity" />
         <activity android:name="activity.TalkActivity" />
         <activity android:name="activity.WorkerManageActivity" />
@@ -49,8 +49,6 @@
             android:name="activity.RechargeActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name="activity.SendJobActivity" />
-        <activity android:name="activity.CollectActivity" />
-        <activity android:name="activity.EvaluateActivity" />
         <activity android:name="activity.WalletActivity" />
         <activity android:name="activity.DetailActivity" />
         <activity android:name="activity.InviteActivity" />
