@@ -1,6 +1,8 @@
 package fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,10 +19,11 @@ import com.gjzg.R;
 import activity.InviteActivity;
 import activity.LoginActivity;
 import activity.MsgActivity;
-import activity.ServiceClauseActivity;
-import activity.SettingActivity;
+import activity.SevClsActivity;
+import activity.SetActivity;
 import activity.WalletActivity;
 import config.IntentConfig;
+import config.StateConfig;
 import utils.Utils;
 
 /**
@@ -38,6 +41,13 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     private TextView loginTv, userNameTv;
     private ImageView headShotIv, sexIv;
 
+    //客服电话对话框
+    private AlertDialog cusSevDialog;
+    private View cusSevDialogView;
+    private TextView cusSevNumberTv;
+    private TextView cusSevCancelTv;
+    private TextView cusSevSureTv;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +59,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private void initView() {
         initRootView();
+        initDialogView();
     }
 
     private void initRootView() {
@@ -68,6 +79,31 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         userNameTv = (TextView) rootView.findViewById(R.id.tv_mine_username);
         headShotIv = (ImageView) rootView.findViewById(R.id.iv_mine_head_shot);
         sexIv = (ImageView) rootView.findViewById(R.id.iv_mine_sex);
+    }
+
+    private void initDialogView() {
+        cusSevDialogView = View.inflate(getActivity(), R.layout.dialog_cus_sev, null);
+        cusSevNumberTv = (TextView) cusSevDialogView.findViewById(R.id.tv_dialog_cus_sev_number);
+        cusSevNumberTv.setText(StateConfig.cusSevNumber);
+        cusSevCancelTv = (TextView) cusSevDialogView.findViewById(R.id.tv_dialog_cus_sev_cancel);
+        cusSevSureTv = (TextView) cusSevDialogView.findViewById(R.id.tv_dialog_cus_sev_sure);
+        cusSevCancelTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cusSevDialog.dismiss();
+            }
+        });
+        cusSevSureTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cusSevDialog.dismiss();
+                dial(cusSevNumberTv.getText().toString());
+            }
+        });
+        AlertDialog.Builder cusSevDialogBuilder = new AlertDialog.Builder(getActivity());
+        cusSevDialogBuilder.setView(cusSevDialogView);
+        cusSevDialog = cusSevDialogBuilder.create();
+        cusSevDialog.setCanceledOnTouchOutside(false);
     }
 
     private void setListener() {
@@ -120,15 +156,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getActivity(), InviteActivity.class));
                 break;
             case R.id.ll_mine_service_clause:
-                Intent serviceClauseIntent = new Intent(getActivity(), ServiceClauseActivity.class);
+                Intent serviceClauseIntent = new Intent(getActivity(), SevClsActivity.class);
                 startActivity(serviceClauseIntent);
                 break;
             case R.id.ll_mine_setting:
-                Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
+                Intent settingIntent = new Intent(getActivity(), SetActivity.class);
                 startActivity(settingIntent);
                 break;
             case R.id.ll_mine_custom_service:
-                Utils.toast(getActivity(), "客服");
+                cusSevDialog.show();
                 break;
             case R.id.tv_mine_login:
 //                loginTv.setVisibility(View.INVISIBLE);
@@ -139,5 +175,12 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 startActivity(loginIntent);
                 break;
         }
+    }
+
+    private void dial(String num) {
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_DIAL);
+        i.setData(Uri.parse("tel:" + num));
+        startActivity(i);
     }
 }

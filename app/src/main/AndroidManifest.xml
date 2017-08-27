@@ -40,8 +40,8 @@
         <activity android:name="activity.EmployerManageActivity" />
         <activity android:name="activity.PersonManageActivity" />
         <activity android:name="activity.JobActivity" />
-        <activity android:name="activity.SettingActivity" />
-        <activity android:name="activity.ServiceClauseActivity" />
+        <activity android:name="activity.SetActivity" />
+        <activity android:name="activity.SevClsActivity" />
         <activity
             android:name="activity.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
