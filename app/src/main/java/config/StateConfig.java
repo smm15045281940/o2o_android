@@ -23,4 +23,7 @@ public interface StateConfig {
 
     //客服电话
     public static final String cusSevNumber = "4000788889";
+
+    //获取动态密码间隔时间（秒）
+    public static final int getMovePwdSec = 3;
 }
