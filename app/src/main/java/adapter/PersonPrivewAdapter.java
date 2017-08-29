@@ -30,7 +30,7 @@ public class PersonPrivewAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 7) {
+        if (position == 8) {
             return 1;
         } else {
             return 0;
@@ -44,7 +44,7 @@ public class PersonPrivewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return personPreview == null ? 0 : 8;
+        return personPreview == null ? 0 : 9;
     }
 
     @Override
@@ -79,7 +79,11 @@ public class PersonPrivewAdapter extends BaseAdapter {
                         break;
                     case 1:
                         title = personPreview.getSexTitle();
-                        content = personPreview.getSexContent();
+                        if (personPreview.isSex()) {
+                            content = "男";
+                        } else {
+                            content = "女";
+                        }
                         break;
                     case 2:
                         title = personPreview.getIdNumberTitle();
@@ -90,16 +94,24 @@ public class PersonPrivewAdapter extends BaseAdapter {
                         content = personPreview.getAddressContent();
                         break;
                     case 4:
+                        title = personPreview.getHouseHoldTitle();
+                        content = personPreview.getHouseHoldContent();
+                        break;
+                    case 5:
                         title = personPreview.getBriefTitle();
                         content = personPreview.getBriefContent();
                         break;
-                    case 5:
+                    case 6:
                         title = personPreview.getPhoneNumberTitle();
                         content = personPreview.getPhoneNumberContent();
                         break;
-                    case 6:
+                    case 7:
                         title = personPreview.getRoleTitle();
-                        content = personPreview.getRoleContent();
+                        if (personPreview.isRole()) {
+                            content = "我不是工人";
+                        } else {
+                            content = "我是工人";
+                        }
                         break;
                 }
                 holder1.titleTv.setText(title);
@@ -114,7 +126,7 @@ public class PersonPrivewAdapter extends BaseAdapter {
                 holder2 = (ViewHolder2) convertView.getTag();
             }
             if (personPreview != null) {
-                if (position == 7) {
+                if (position == 8) {
                     if (personPreview.getRoleList() != null && personPreview.getRoleList().size() != 0) {
                         holder2.gridView.setAdapter(new RoleAdapter(context, 0, personPreview.getRoleList()));
                         Utils.setGridViewHeight(holder2.gridView, 4);

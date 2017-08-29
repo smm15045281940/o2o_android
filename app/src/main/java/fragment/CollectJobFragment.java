@@ -99,7 +99,7 @@ public class CollectJobFragment extends Fragment implements View.OnClickListener
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         collectJobPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
-        collectJobLv = (PullableListView) rootView.findViewById(R.id.lv_msg);
+        collectJobLv = (PullableListView) rootView.findViewById(R.id.plv_msg);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         emptyNoNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);

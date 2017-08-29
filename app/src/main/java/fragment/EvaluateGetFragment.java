@@ -102,7 +102,7 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);
         evaluateGetPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
-        evaluateGetLv = (PullableListView) rootView.findViewById(R.id.lv_msg);
+        evaluateGetLv = (PullableListView) rootView.findViewById(R.id.plv_msg);
     }
 
     private void initDialogView() {

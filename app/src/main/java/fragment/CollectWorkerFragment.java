@@ -98,7 +98,7 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
 
     private void initRootView() {
         collectWorkerPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
-        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.lv_msg);
+        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.plv_msg);
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);
