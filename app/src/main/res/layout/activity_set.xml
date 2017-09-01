@@ -4,7 +4,7 @@
     android:id="@+id/activity_setting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="activity.SetActivity">
 
@@ -43,7 +43,7 @@
                     android:id="@+id/rl_set_phone_bind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_press_or_not"
+                    android:background="@drawable/sl_black_stroke"
                     android:clickable="true"
                     android:padding="@dimen/y5">
 
@@ -84,7 +84,7 @@
                     android:id="@+id/rl_set_cache_clear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_press_or_not"
+                    android:background="@drawable/sl_black_stroke"
                     android:clickable="true"
                     android:padding="@dimen/y5">
 
@@ -117,7 +117,7 @@
                     android:id="@+id/rl_set_msg_tip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_press_or_not"
+                    android:background="@drawable/sl_black_stroke"
                     android:clickable="true"
                     android:padding="@dimen/y5">
 
@@ -150,7 +150,7 @@
                     android:id="@+id/rl_set_quit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_press_or_not"
+                    android:background="@drawable/sl_black_stroke"
                     android:clickable="true"
                     android:padding="@dimen/y5">
 
@@ -160,7 +160,7 @@
                         android:layout_centerInParent="true"
                         android:layout_centerVertical="true"
                         android:text="退出登录"
-                        android:textColor="@color/red"
+                        android:textColor="@color/red_ff3e50"
                         android:textSize="@dimen/x15" />
 
                 </RelativeLayout>

@@ -4,7 +4,7 @@
     android:id="@+id/activity_wallet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="activity.WalletActivity">
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:background="@drawable/selector_press_or_not"
+            android:background="@drawable/sl_black_stroke"
             android:clickable="true">
 
             <TextView
@@ -56,7 +56,7 @@
             android:layout_marginLeft="@dimen/y10"
             android:layout_marginTop="@dimen/y10"
             android:text="当前余额（元）"
-            android:textColor="@color/red"
+            android:textColor="@color/red_ff3e50"
             android:textSize="@dimen/x15" />
 
         <TextView
@@ -66,7 +66,7 @@
             android:layout_marginLeft="@dimen/y10"
             android:layout_marginTop="@dimen/y10"
             android:text="0.00"
-            android:textColor="@color/red"
+            android:textColor="@color/red_ff3e50"
             android:textSize="@dimen/x20" />
 
     </LinearLayout>
@@ -82,7 +82,7 @@
             android:id="@+id/rl_wallet_recharge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_press_or_not"
+            android:background="@drawable/sl_black_stroke"
             android:clickable="true"
             android:padding="@dimen/y10">
 
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="立即充值"
-                android:textColor="@color/blue_d"
+                android:textColor="@color/blue_2681fc"
                 android:textSize="@dimen/x15" />
 
             <ImageView
@@ -115,7 +115,7 @@
             android:id="@+id/rl_wallet_withdraw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_press_or_not"
+            android:background="@drawable/sl_black_stroke"
             android:clickable="true"
             android:padding="@dimen/y10">
 
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我要提现"
-                android:textColor="@color/blue_d"
+                android:textColor="@color/blue_2681fc"
                 android:textSize="@dimen/x15" />
 
             <ImageView

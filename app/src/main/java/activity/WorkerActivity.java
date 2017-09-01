@@ -1,16 +1,12 @@
 package activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,36 +23,46 @@ import adapter.PersonAdapter;
 import bean.Kind;
 import bean.Person;
 import bean.Screen;
-import cache.LruJsonCache;
 import config.CodeConfig;
 import config.NetConfig;
 import config.StateConfig;
-import listener.OnRefreshListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import refreshload.PullToRefreshLayout;
+import refreshload.PullableListView;
 import utils.Utils;
-import view.CListView;
 import view.CProgressDialog;
 
-public class WorkerActivity extends AppCompatActivity implements View.OnClickListener, OnRefreshListener, AdapterView.OnItemClickListener {
+public class WorkerActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
-    private View rootView, noDataEmptyView, noNetEmptyView;
-    private RelativeLayout returnRl, screenRl;
-    private CListView listView;
-    private CProgressDialog progressDialog;
-    private TextView noNetRefreshTv;
-
+    //根视图
+    private View rootView;
+    //返回视图
+    private RelativeLayout returnRl;
+    //无网络视图
+    private LinearLayout noNetLl;
+    private TextView noNetTv;
+    //无数据视图
+    private LinearLayout noDataLl;
+    //筛选视图
+    private RelativeLayout screenRl;
+    //刷新加载布局
+    private PullToRefreshLayout pTrl;
+    //刷新加载ListView
+    private PullableListView pLv;
+    //加载对话框视图
+    private CProgressDialog cPd;
+    //工人信息数据类集合
     private List<Person> personList;
+    //工人信息数据适配器
     private PersonAdapter personAdapter;
-
+    //okHttpClient
     private OkHttpClient okHttpClient;
-    private LruJsonCache lruJsonCache;
-    private String cacheData;
-
-    private int LOAD_STATE;
+    //加载状态
+    private int state;
 
     private Kind kind;
 
@@ -65,10 +71,9 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg != null) {
-                stopAnim();
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        noNet();
+                        notifyNoNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -86,96 +91,85 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_worker, null);
-        setContentView(rootView);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
+    protected View getRootView() {
+        //初始化根视图
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_worker, null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
-        initEmptyView();
         initDialogView();
     }
 
     private void initRootView() {
+        //初始化返回视图
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_worker_return);
+        //初始化无网络视图
+        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
+        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
+        //初始化无数据视图
+        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
+        //初始化筛选视图
         screenRl = (RelativeLayout) rootView.findViewById(R.id.rl_worker_screen);
-        listView = (CListView) rootView.findViewById(R.id.clv_worker);
-    }
-
-    private void initEmptyView() {
-        noDataEmptyView = LayoutInflater.from(this).inflate(R.layout.empty_no_data, null);
-        noDataEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) listView.getParent()).addView(noDataEmptyView);
-        noDataEmptyView.setVisibility(View.GONE);
-        noNetEmptyView = LayoutInflater.from(this).inflate(R.layout.empty_no_net, null);
-        noNetEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) listView.getParent()).addView(noNetEmptyView);
-        noNetEmptyView.setVisibility(View.GONE);
-        noNetRefreshTv = (TextView) noNetEmptyView.findViewById(R.id.tv_empty_no_net_refresh);
+        //初始化刷新加载布局
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        //初始化刷新加载ListView
+        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
     }
 
     private void initDialogView() {
-        progressDialog = new CProgressDialog(this, R.style.dialog_cprogress);
+        //初始化加载对话框
+        cPd = new CProgressDialog(this, R.style.dialog_cprogress);
     }
 
-    private void startAnim() {
-        progressDialog.show();
-    }
-
-    private void stopAnim() {
-        progressDialog.dismiss();
-    }
-
-    private void initData() {
+    @Override
+    protected void initData() {
         Intent intent = getIntent();
         kind = (Kind) intent.getSerializableExtra("kind");
+        //初始化工人信息数据类集合
         personList = new ArrayList<>();
+        //初始化工人信息数据适配器
         personAdapter = new PersonAdapter(this, personList);
+        //初始化okHttpClient
         okHttpClient = new OkHttpClient();
-        lruJsonCache = LruJsonCache.get(this);
+        //初始化加载状态
+        state = StateConfig.LOAD_DONE;
     }
 
-    private void setData() {
-        listView.setAdapter(personAdapter);
+    @Override
+    protected void setData() {
+        //绑定工人信息数据适配器
+        pLv.setAdapter(personAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
+        //返回视图监听
         returnRl.setOnClickListener(this);
+        //筛选视图监听
         screenRl.setOnClickListener(this);
-        listView.setOnRefreshListener(this);
-        listView.setOnItemClickListener(this);
-        noNetRefreshTv.setOnClickListener(this);
+        //无网络刷新视图监听
+        noNetTv.setOnClickListener(this);
+        //刷新加载布局监听
+        pTrl.setOnRefreshListener(this);
     }
 
-    private void loadData() {
-        startAnim();
+    @Override
+    protected void loadData() {
         if (checkLocalData()) {
             loadLocalData();
         } else {
+            cPd.show();
             loadNetData();
         }
     }
 
     private boolean checkLocalData() {
-        cacheData = lruJsonCache.getAsString("worker");
-        if (!TextUtils.isEmpty(cacheData)) {
-            return false;
-        }
         return false;
     }
 
     private void loadLocalData() {
-        if (parseJson(cacheData)) {
-            handler.sendEmptyMessage(StateConfig.LOAD_DONE);
-        }
     }
 
     private void loadNetData() {
@@ -189,57 +183,56 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    if (!TextUtils.isEmpty(json)) {
-                        lruJsonCache.put("worker", json, 10);
-                        switch (LOAD_STATE) {
-                            case StateConfig.LOAD_REFRESH:
-                                personList.clear();
-                                break;
-                        }
-                        if (parseJson(json)) {
-                            handler.sendEmptyMessage(StateConfig.LOAD_DONE);
-                        }
+                    String result = response.body().string();
+                    if (state == StateConfig.LOAD_REFRESH) {
+                        personList.clear();
                     }
+                    parseJson(result);
                 }
             }
         });
     }
 
+    private void notifyNoNet() {
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                cPd.dismiss();
+                if (personList.size() == 0) {
+                    noNetLl.setVisibility(View.VISIBLE);
+                    noDataLl.setVisibility(View.GONE);
+                    pTrl.setVisibility(View.GONE);
+                }
+                break;
+            case StateConfig.LOAD_REFRESH:
+                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
+                break;
+            case StateConfig.LOAD_LOAD:
+                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
+                break;
+        }
+    }
+
     private void notifyData() {
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                cPd.dismiss();
+                if (personList.size() == 0) {
+                    noNetLl.setVisibility(View.GONE);
+                    noDataLl.setVisibility(View.VISIBLE);
+                    pTrl.setVisibility(View.GONE);
+                }
+                break;
+            case StateConfig.LOAD_REFRESH:
+                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
+                break;
+            case StateConfig.LOAD_LOAD:
+                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
+                break;
+        }
         personAdapter.notifyDataSetChanged();
-        listView.setEmptyView(noDataEmptyView);
-        switch (LOAD_STATE) {
-            case StateConfig.LOAD_REFRESH:
-                listView.hideHeadView();
-                Utils.toast(this, StateConfig.loadRefreshSuccess);
-                break;
-            case StateConfig.LOAD_LOAD:
-                listView.hideFootView();
-                Utils.toast(this, StateConfig.loadLoadSuccess);
-                break;
-        }
     }
 
-    private void noNet() {
-        switch (LOAD_STATE) {
-            case StateConfig.LOAD_NO_NET:
-                personList.clear();
-                listView.setEmptyView(noNetEmptyView);
-                break;
-            case StateConfig.LOAD_REFRESH:
-                listView.hideHeadView();
-                Utils.toast(this, StateConfig.loadRefreshFailure);
-                break;
-            case StateConfig.LOAD_LOAD:
-                listView.hideFootView();
-                Utils.toast(this, StateConfig.loadLoadFailure);
-                break;
-        }
-    }
-
-    private boolean parseJson(String json) {
-        boolean result = false;
+    private void parseJson(String json) {
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
@@ -254,43 +247,29 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
                     person.setDistance("距离3公里");
                     personList.add(person);
                 }
-                result = true;
-            } else {
-                result = false;
+                handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return result;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //返回视图点击事件
             case R.id.rl_worker_return:
                 finish();
                 break;
+            //筛选视图点击事件
             case R.id.rl_worker_screen:
                 startActivityForResult(new Intent(this, WorkerScnActivity.class), CodeConfig.screenRequestCode);
                 break;
-            case R.id.tv_empty_no_net_refresh:
-                startAnim();
-                LOAD_STATE = StateConfig.LOAD_REFRESH;
+            case R.id.tv_no_net_refresh:
+                state = StateConfig.LOAD_REFRESH;
                 loadNetData();
                 break;
         }
-    }
-
-    @Override
-    public void onDownPullRefresh() {
-        LOAD_STATE = StateConfig.LOAD_REFRESH;
-        loadNetData();
-    }
-
-    @Override
-    public void onLoadingMore() {
-        LOAD_STATE = StateConfig.LOAD_LOAD;
-        loadNetData();
     }
 
     @Override
@@ -310,5 +289,17 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
                 Utils.toast(this, a + "");
             }
         }
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_REFRESH;
+        loadNetData();
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_LOAD;
+        loadNetData();
     }
 }

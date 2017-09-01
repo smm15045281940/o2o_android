@@ -9,7 +9,9 @@
         android:layout_height="@dimen/y100"
         android:layout_marginLeft="@dimen/y5"
         android:layout_marginRight="@dimen/y5"
-        android:background="@color/blue_d">
+        android:layout_marginTop="@dimen/y5"
+        android:layout_marginBottom="@dimen/y5"
+        android:background="@color/blue_2681fc">
 
         <TextView
             android:id="@+id/tv_item_discount"

@@ -19,7 +19,6 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@drawable/selector_press_or_not</item>
         <item name="android:clickable">true</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
@@ -52,7 +51,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/y15</item>
-        <item name="android:textColor">@color/tv_main_default</item>
+        <item name="android:textColor">@color/blue_2681fc</item>
         <item name="android:layout_centerInParent">true</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -60,7 +59,7 @@
     <style name="v_split">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/y1</item>
-        <item name="android:background">@color/side</item>
+        <item name="android:background">@color/gray_a0a0a0</item>
     </style>
     <!--我的客服LinearLayout外部样式-->
     <style name="ll_mine_service_out">
@@ -76,7 +75,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/selector_press_or_not</item>
     </style>
     <!--我的客服图片样式-->
     <style name="iv_mine_service">
@@ -93,7 +91,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_marginLeft">@dimen/x5</item>
-        <item name="android:textColor">@color/side</item>
+        <item name="android:textColor">@color/gray_a0a0a0</item>
         <item name="android:textSize">@dimen/x15</item>
     </style>
     <!--顶部bar样式
@@ -107,7 +105,6 @@
     <style name="rl_return">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@drawable/selector_press_or_not</item>
     </style>
     <!--返回图片样式-->
     <style name="iv_return">
@@ -121,7 +118,7 @@
     </style>
     <!--自定义进度对话框样式-->
     <style name="dialog_cprogress" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground">@drawable/shape_dialog_cprogress</item>
+        <item name="android:windowBackground">@drawable/sl_pg</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
@@ -131,7 +128,6 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/selector_press_or_not</item>
     </style>
 
     <style name="tv_manage">
@@ -140,7 +136,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_marginTop">@dimen/y5</item>
         <item name="android:layout_marginBottom">@dimen/y5</item>
-        <item name="android:textColor">@color/side</item>
+        <item name="android:textColor">@color/gray_a0a0a0</item>
         <item name="android:textSize">@dimen/x15</item>
     </style>
 </resources>

@@ -99,11 +99,11 @@ public class WorkerScnActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initDialogView() {
-        dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_screen, null);
+        dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_listview, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         dialog = builder.create();
-        dialogLv = (ListView) dialogView.findViewById(R.id.lv_dialog_screen);
+        dialogLv = (ListView) dialogView.findViewById(R.id.lv_dialog_listview);
     }
 
     private void initData() {
@@ -288,7 +288,7 @@ public class WorkerScnActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         switch (parent.getId()) {
-            case R.id.lv_dialog_screen:
+            case R.id.lv_dialog_listview:
                 dialog.dismiss();
                 switch (dialogState) {
                     case 0:

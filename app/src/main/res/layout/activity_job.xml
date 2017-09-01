@@ -4,7 +4,7 @@
     android:id="@+id/activity_job"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="activity.JobActivity">
 
@@ -47,7 +47,7 @@
             android:id="@+id/lv_job"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/background"
+            android:divider="@color/gray_c4ced3"
             android:dividerHeight="@dimen/y5" />
 
         <include layout="@layout/load_more" />

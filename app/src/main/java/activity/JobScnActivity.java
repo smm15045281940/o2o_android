@@ -59,11 +59,11 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initDialogView() {
-        scnDialogView = View.inflate(this, R.layout.dialog_screen, null);
+        scnDialogView = View.inflate(this, R.layout.dialog_listview, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(scnDialogView);
         scnDialog = builder.create();
-        scnDialogLv = (ListView) scnDialogView.findViewById(R.id.lv_dialog_screen);
+        scnDialogLv = (ListView) scnDialogView.findViewById(R.id.lv_dialog_listview);
     }
 
     private void initData() {

@@ -1,16 +1,12 @@
 package activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,44 +21,51 @@ import java.util.List;
 
 import adapter.KindAdapter;
 import bean.Kind;
-import cache.LruJsonCache;
 import config.NetConfig;
 import config.StateConfig;
-import listener.OnRefreshListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.Utils;
-import view.CListView;
+import refreshload.PullToRefreshLayout;
+import refreshload.PullableListView;
 import view.CProgressDialog;
 
-public class KindActivity extends AppCompatActivity implements View.OnClickListener, OnRefreshListener, AdapterView.OnItemClickListener {
+public class KindActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
-    private View rootView, noDataEmptyView, noNetEmptyView;
+    //根视图
+    private View rootView;
+    //返回视图
     private RelativeLayout returnRl;
-    private CListView listView;
-    private CProgressDialog progressDialog;
-    private TextView noNetRefreshTv;
-
+    //无网络视图
+    private LinearLayout noNetLl;
+    private TextView noNetTv;
+    //无数据视图
+    private LinearLayout noDataLl;
+    //刷新加载布局
+    private PullToRefreshLayout pTrl;
+    //刷新加载ListView
+    private PullableListView pLv;
+    //加载对话框视图
+    private CProgressDialog cPd;
+    //种类数据类集合
     private List<Kind> kindList;
+    //种类数据适配器
     private KindAdapter kindAdapter;
-
+    //okHttpClient
     private OkHttpClient okHttpClient;
-    private LruJsonCache lruJsonCache;
-    private String cacheData;
-    private int LOAD_STATE;
-
+    //加载状态
+    private int state;
+    //handler
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg != null) {
-                stopAnim();
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        noNet();
+                        notifyNoNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -80,84 +83,81 @@ public class KindActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_type, null);
-        setContentView(rootView);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
+    protected View getRootView() {
+        //初始化根视图
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_kind, null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
-        initEmptyView();
         initDialogView();
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_type_return);
-        listView = (CListView) rootView.findViewById(R.id.clv_type);
-    }
-
-    private void initEmptyView() {
-        noDataEmptyView = LayoutInflater.from(this).inflate(R.layout.empty_no_data, null);
-        noDataEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) listView.getParent()).addView(noDataEmptyView);
-        noDataEmptyView.setVisibility(View.GONE);
-        noNetEmptyView = LayoutInflater.from(this).inflate(R.layout.empty_no_net, null);
-        noNetEmptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup) listView.getParent()).addView(noNetEmptyView);
-        noNetEmptyView.setVisibility(View.GONE);
-        noNetRefreshTv = (TextView) noNetEmptyView.findViewById(R.id.tv_empty_no_net_refresh);
+        //初始化返回视图
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_kind_return);
+        //初始化无网络视图
+        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
+        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
+        //初始化无数据视图
+        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
+        //初始化刷新加载布局
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        //初始化刷新加载ListView
+        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
     }
 
     private void initDialogView() {
-        progressDialog = new CProgressDialog(this, R.style.dialog_cprogress);
+        //初始化对话框
+        cPd = new CProgressDialog(this, R.style.dialog_cprogress);
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
+        //初始化种类数据类集合集合
         kindList = new ArrayList<>();
+        //初始化种类数据适配器
         kindAdapter = new KindAdapter(this, kindList);
+        //初始化okHttpClient
         okHttpClient = new OkHttpClient();
-        lruJsonCache = LruJsonCache.get(this);
+        //初始化加载状态
+        state = StateConfig.LOAD_DONE;
     }
 
-    private void setData() {
-        listView.setAdapter(kindAdapter);
+    @Override
+    protected void setData() {
+        //绑定种类数据适配器
+        pLv.setAdapter(kindAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
+        //返回视图监听
         returnRl.setOnClickListener(this);
-        listView.setOnRefreshListener(this);
-        listView.setOnItemClickListener(this);
-        noNetRefreshTv.setOnClickListener(this);
+        //无网络刷新监听
+        noNetTv.setOnClickListener(this);
+        //刷新加载布局监听
+        pTrl.setOnRefreshListener(this);
+        //刷新加载ListView项点击监听
+        pLv.setOnItemClickListener(this);
     }
 
-    private void loadData() {
-        startAnim();
+    @Override
+    protected void loadData() {
         if (checkLocalData()) {
             loadLocalData();
         } else {
+            cPd.show();
             loadNetData();
         }
     }
 
     private boolean checkLocalData() {
-        cacheData = lruJsonCache.getAsString("kind");
-        if (!TextUtils.isEmpty(cacheData)) {
-            return false;
-        }
         return false;
     }
 
     private void loadLocalData() {
-        if (parseJson(cacheData)) {
-            handler.sendEmptyMessage(StateConfig.LOAD_DONE);
-        }
     }
 
     private void loadNetData() {
@@ -171,25 +171,17 @@ public class KindActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    if (!TextUtils.isEmpty(json)) {
-                        lruJsonCache.put("kind", json, 10);
-                        switch (LOAD_STATE) {
-                            case StateConfig.LOAD_REFRESH:
-                                kindList.clear();
-                                break;
-                        }
-                        if (parseJson(json)) {
-                            handler.sendEmptyMessage(StateConfig.LOAD_DONE);
-                        }
+                    String result = response.body().string();
+                    if (state == StateConfig.LOAD_REFRESH) {
+                        kindList.clear();
                     }
+                    parseJson(result);
                 }
             }
         });
     }
 
-    private boolean parseJson(String json) {
-        boolean result = false;
+    private void parseJson(String json) {
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
@@ -200,94 +192,94 @@ public class KindActivity extends AppCompatActivity implements View.OnClickListe
                 Kind k2 = new Kind();
                 k2.setName("焊接工");
                 Kind k3 = new Kind();
-                k3.setName("水暖工");
+                k3.setName("xx工");
                 Kind k4 = new Kind();
-                k4.setName("瓦工");
+                k4.setName("xx工");
+                Kind k5 = new Kind();
+                k5.setName("xx工");
                 kindList.add(k0);
                 kindList.add(k1);
                 kindList.add(k2);
                 kindList.add(k3);
                 kindList.add(k4);
-                result = true;
-            } else {
-                result = false;
+                kindList.add(k5);
+                handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return result;
     }
 
-    private void startAnim() {
-        progressDialog.show();
-    }
-
-    private void stopAnim() {
-        progressDialog.dismiss();
-    }
-
-    private void noNet() {
-        switch (LOAD_STATE) {
-            case StateConfig.LOAD_NO_NET:
-                kindList.clear();
-                listView.setEmptyView(noNetEmptyView);
+    private void notifyNoNet() {
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                cPd.dismiss();
+                if (kindList.size() == 0) {
+                    noNetLl.setVisibility(View.VISIBLE);
+                    pTrl.setVisibility(View.GONE);
+                    noDataLl.setVisibility(View.GONE);
+                }
                 break;
             case StateConfig.LOAD_REFRESH:
-                listView.hideHeadView();
-                Utils.toast(this, StateConfig.loadRefreshFailure);
+                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                listView.hideFootView();
-                Utils.toast(this, StateConfig.loadLoadFailure);
+                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
 
     private void notifyData() {
-        kindAdapter.notifyDataSetChanged();
-        listView.setEmptyView(noDataEmptyView);
-        switch (LOAD_STATE) {
+        switch (state) {
+            case StateConfig.LOAD_DONE:
+                cPd.dismiss();
+                if (kindList.size() == 0) {
+                    noDataLl.setVisibility(View.VISIBLE);
+                    noNetLl.setVisibility(View.GONE);
+                }
+                break;
             case StateConfig.LOAD_REFRESH:
-                listView.hideHeadView();
-                Utils.toast(this, StateConfig.loadRefreshSuccess);
+                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                listView.hideFootView();
-                Utils.toast(this, StateConfig.loadLoadSuccess);
+                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
+        kindAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_type_return:
+            //返回视图点击事件
+            case R.id.rl_kind_return:
                 finish();
                 break;
-            case R.id.tv_empty_no_net_refresh:
-                startAnim();
-                LOAD_STATE = StateConfig.LOAD_REFRESH;
+            //无网络刷新视图点击事件
+            case R.id.tv_no_net_refresh:
+                noNetLl.setVisibility(View.GONE);
+                pTrl.setVisibility(View.VISIBLE);
                 loadNetData();
                 break;
         }
     }
 
     @Override
-    public void onDownPullRefresh() {
-        LOAD_STATE = StateConfig.LOAD_REFRESH;
-        loadNetData();
-    }
-
-    @Override
-    public void onLoadingMore() {
-        LOAD_STATE = StateConfig.LOAD_LOAD;
-        loadNetData();
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, WorkerActivity.class);
-        intent.putExtra("kind", kindList.get(position - 1));
+        intent.putExtra("kind", kindList.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_REFRESH;
+        loadNetData();
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        state = StateConfig.LOAD_LOAD;
+        loadNetData();
     }
 }

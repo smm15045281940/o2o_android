@@ -82,7 +82,7 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_msg, null);
+        rootView = inflater.inflate(R.layout.common_listview, null);
         initView();
         initData();
         setData();
@@ -97,11 +97,11 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
     }
 
     private void initRootView() {
-        collectWorkerPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_msg);
-        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.plv_msg);
+        collectWorkerPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_empty_no_net_refresh);
+        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
     }
 
     private void initDialogView() {
@@ -210,7 +210,7 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_empty_no_net_refresh:
+            case R.id.tv_no_net_refresh:
                 noNetLl.setVisibility(View.GONE);
                 loadNetData();
                 break;

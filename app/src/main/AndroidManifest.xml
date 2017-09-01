@@ -33,13 +33,14 @@
         </activity>
         <activity android:name="activity.KindActivity" />
         <activity android:name="activity.WorkerActivity" />
-        <activity android:name="activity.MsgActivity" />
+        <activity android:name="activity.LeftRightActivity" />
         <activity android:name="activity.CityActivity" />
         <activity android:name="activity.TalkActivity" />
-        <activity android:name="activity.WorkerManageActivity" />
-        <activity android:name="activity.EmployerManageActivity" />
-        <activity android:name="activity.PersonManageActivity"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name="activity.WorkerMagActivity" />
+        <activity android:name="activity.EmpMagActivity" />
+        <activity
+            android:name="activity.PersonMagActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name="activity.JobActivity" />
         <activity android:name="activity.SetActivity" />
         <activity android:name="activity.SevClsActivity" />
@@ -60,6 +61,7 @@
         <activity
             android:name="activity.JobScnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name="activity.SetPwdActivity"></activity>
     </application>
 
 </manifest>

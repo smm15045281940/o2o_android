@@ -1,11 +1,10 @@
 package activity;
 
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -45,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (numSec != -1) {
                         this.sendEmptyMessageDelayed(1, 1000);
                     } else {
-                        getMovePwdGd.setColor(Color.parseColor("#2681FC"));
+//                        getMovePwdGd.setColor(Color.parseColor("#2681FC"));
                         getMovePwdTv.setText("获取动态密码");
                         getMovePwdTv.setEnabled(true);
                         numSec = StateConfig.getMovePwdSec;
@@ -82,8 +81,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         phoneNumberEt = (EditText) rootView.findViewById(R.id.et_login_phone_number);
         //初始化获取动态密码视图
         getMovePwdTv = (TextView) rootView.findViewById(R.id.tv_login_get_move_pwd);
-        getMovePwdGd = (GradientDrawable) getMovePwdTv.getBackground();
-        getMovePwdGd.setColor(Color.parseColor("#2681FC"));
+//        getMovePwdGd = (GradientDrawable) getMovePwdTv.getBackground();
+//        getMovePwdGd.setColor(Color.parseColor("#2681FC"));
         //初始化动态密码视图
         movePwdEt = (EditText) rootView.findViewById(R.id.et_login_move_pwd);
         //初始化登录视图
@@ -125,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void getMovePwd() {
         Utils.toast(this, "获取动态密码");
-        getMovePwdGd.setColor(Color.GRAY);
+//        getMovePwdGd.setColor(Color.GRAY);
         getMovePwdTv.setEnabled(false);
         handler.sendEmptyMessage(1);
     }

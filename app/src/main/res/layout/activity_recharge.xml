@@ -38,7 +38,7 @@
             android:layout_marginLeft="@dimen/x10"
             android:layout_marginTop="@dimen/x10"
             android:text="充值金额"
-            android:textColor="@color/side"
+            android:textColor="@color/gray_a0a0a0"
             android:textSize="@dimen/x15" />
 
         <LinearLayout
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="¥"
-                android:textColor="@color/yellow"
+                android:textColor="@color/yellow_ffc822"
                 android:textSize="@dimen/x15" />
 
             <EditText
@@ -83,7 +83,7 @@
             android:layout_marginLeft="@dimen/x10"
             android:layout_marginTop="@dimen/x40"
             android:text="支付方式"
-            android:textColor="@color/side"
+            android:textColor="@color/gray_a0a0a0"
             android:textSize="@dimen/x15" />
 
         <View
@@ -92,11 +92,118 @@
             android:layout_marginRight="@dimen/x10"
             android:layout_marginTop="@dimen/y5" />
 
-        <ListView
-            android:id="@+id/lv_pay_way"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null" />
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_recharge_wx"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:padding="@dimen/y10">
+
+                <ImageView
+                    android:layout_width="@dimen/y50"
+                    android:layout_height="@dimen/y50"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/wx_pay" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y10"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="微信支付"
+                    android:textSize="@dimen/x15" />
+
+                <RadioButton
+                    android:id="@+id/rb_recharge_wx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:checked="true"
+                    android:clickable="false" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_recharge_zfb"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:padding="@dimen/y10">
+
+                <ImageView
+                    android:layout_width="@dimen/y50"
+                    android:layout_height="@dimen/y50"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ali_pay" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y10"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="支付宝支付"
+                    android:textSize="@dimen/x15" />
+
+                <RadioButton
+                    android:id="@+id/rb_recharge_zfb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_recharge_yl"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:padding="@dimen/y10">
+
+                <ImageView
+                    android:layout_width="@dimen/y50"
+                    android:layout_height="@dimen/y50"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/yl_pay" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y10"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="银联支付"
+                    android:textSize="@dimen/x15" />
+
+                <RadioButton
+                    android:id="@+id/rb_recharge_yl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -109,7 +216,7 @@
         android:layout_marginLeft="@dimen/x10"
         android:layout_marginRight="@dimen/x10"
         android:layout_marginTop="@dimen/x20"
-        android:background="@drawable/shape_login_getcode">
+        android:background="@drawable/sl_black_stroke">
 
         <TextView
             android:layout_width="wrap_content"
@@ -120,7 +227,6 @@
             android:layout_marginRight="@dimen/x20"
             android:layout_marginTop="@dimen/y5"
             android:text="去支付"
-            android:textColor="@android:color/white"
             android:textSize="@dimen/x18" />
 
     </RelativeLayout>

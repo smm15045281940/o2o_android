@@ -4,7 +4,7 @@
     android:id="@+id/activity_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="activity.WorkerScnActivity">
 
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/x10"
-            android:background="@drawable/shape_et_screen"
+            android:background="@drawable/sl_black_stroke"
             android:hint="请输入工人姓名"
             android:padding="@dimen/x5"
             android:textCursorDrawable="@null"
@@ -163,7 +163,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/y5"
-        android:divider="@color/background"
+        android:divider="@color/gray_c4ced3"
         android:dividerHeight="@dimen/y5" />
 
 </LinearLayout>
