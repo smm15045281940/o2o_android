@@ -1,10 +1,7 @@
 package fragment;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Person;
+import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -39,7 +36,7 @@ import view.CProgressDialog;
  * 描述:收藏的工作碎片
  */
 
-public class CollectJobFragment extends Fragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class CollectJobFragment extends CommonFragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private LinearLayout noDataLl, noNetLl;
@@ -48,7 +45,7 @@ public class CollectJobFragment extends Fragment implements View.OnClickListener
     private PullableListView collectJobLv;
     private CProgressDialog progressDialog;
 
-    private List<Person> collectJobList;
+    private List<PersonBean> collectJobList;
     private PersonAdapter collectJobAdapter;
 
     private OkHttpClient okHttpClient;
@@ -79,19 +76,13 @@ public class CollectJobFragment extends Fragment implements View.OnClickListener
         handler.removeMessages(StateConfig.LOAD_DONE);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.common_listview, null);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
-        return rootView;
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview,null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
         initDialogView();
     }
@@ -109,22 +100,26 @@ public class CollectJobFragment extends Fragment implements View.OnClickListener
         progressDialog = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         collectJobList = new ArrayList<>();
         collectJobAdapter = new PersonAdapter(getActivity(), collectJobList);
         okHttpClient = new OkHttpClient();
     }
 
-    private void setData() {
+    @Override
+    protected void setData() {
         collectJobLv.setAdapter(collectJobAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
         emptyNoNetTv.setOnClickListener(this);
         collectJobPtrl.setOnRefreshListener(this);
     }
 
-    private void loadData() {
+    @Override
+    protected void loadData() {
         progressDialog.show();
         loadNetData();
     }
@@ -155,7 +150,7 @@ public class CollectJobFragment extends Fragment implements View.OnClickListener
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 10; i++) {
-                    Person p = new Person();
+                    PersonBean p = new PersonBean();
                     p.setName("急招X工");
                     p.setState(1);
                     p.setShow("x月x日开工、工期XX天");

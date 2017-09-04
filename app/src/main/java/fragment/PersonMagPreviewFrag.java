@@ -18,8 +18,8 @@ import java.util.List;
 
 import activity.PersonMagActivity;
 import adapter.PersonPrivewAdapter;
-import bean.PersonPreview;
-import bean.Role;
+import bean.PersonPreviewBean;
+import bean.RoleBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -44,7 +44,7 @@ public class PersonMagPreviewFrag extends CommonFragment {
     //加载对话框视图
     private CProgressDialog cPd;
     //信息预览数据类对象
-    private PersonPreview personPreview;
+    private PersonPreviewBean personPreviewBean;
     //信息预览数据适配器
     private PersonPrivewAdapter personPrivewAdapter;
     //okHttpClient
@@ -103,9 +103,9 @@ public class PersonMagPreviewFrag extends CommonFragment {
         //初始化个人管理线程
         personPreviewHandler = ((PersonMagActivity) getActivity()).handler;
         //初始化信息预览数据类对象
-        personPreview = new PersonPreview();
+        personPreviewBean = new PersonPreviewBean();
         //初始化信息预览数据适配器
-        personPrivewAdapter = new PersonPrivewAdapter(getActivity(), personPreview);
+        personPrivewAdapter = new PersonPrivewAdapter(getActivity(), personPreviewBean);
         //初始化okHttpClient
         okHttpClient = new OkHttpClient();
     }
@@ -149,39 +149,39 @@ public class PersonMagPreviewFrag extends CommonFragment {
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                personPreview.setNameTitle("姓名");
-                personPreview.setNameContent("王小二");
-                personPreview.setSexTitle("性别");
-                personPreview.setSex(true);
-                personPreview.setIdNumberTitle("身份证号");
-                personPreview.setIdNumberContent("230***********1234");
-                personPreview.setAddressTitle("现居地");
-                personPreview.setAddressContent("哈尔滨-道里区");
-                personPreview.setHouseHoldTitle("户口所在地");
-                personPreview.setHouseHoldContent("蓬莱");
-                personPreview.setBriefTitle("个人简介");
-                personPreview.setBriefContent("专业水泥工，精通水暖，刮大白");
-                personPreview.setPhoneNumberTitle("手机号码（已绑定）");
-                personPreview.setPhoneNumberContent("152****4859");
-                personPreview.setRoleTitle("角色选择");
-                personPreview.setRole(false);
-                List<Role> list = new ArrayList<>();
-                Role role1 = new Role();
-                role1.setId("1");
-                role1.setContent("水泥工");
-                Role role2 = new Role();
-                role2.setId("2");
-                role2.setContent("水暖工");
-                Role role3 = new Role();
-                role3.setId("3");
-                role3.setContent("瓦工");
-                list.add(role1);
-                list.add(role2);
-                list.add(role3);
-                personPreview.setRoleList(list);
+                personPreviewBean.setNameTitle("姓名");
+                personPreviewBean.setNameContent("王小二");
+                personPreviewBean.setSexTitle("性别");
+                personPreviewBean.setSex(true);
+                personPreviewBean.setIdNumberTitle("身份证号");
+                personPreviewBean.setIdNumberContent("230***********1234");
+                personPreviewBean.setAddressTitle("现居地");
+                personPreviewBean.setAddressContent("哈尔滨-道里区");
+                personPreviewBean.setHouseHoldTitle("户口所在地");
+                personPreviewBean.setHouseHoldContent("蓬莱");
+                personPreviewBean.setBriefTitle("个人简介");
+                personPreviewBean.setBriefContent("专业水泥工，精通水暖，刮大白");
+                personPreviewBean.setPhoneNumberTitle("手机号码（已绑定）");
+                personPreviewBean.setPhoneNumberContent("152****4859");
+                personPreviewBean.setRoleTitle("角色选择");
+                personPreviewBean.setRole(false);
+                List<RoleBean> list = new ArrayList<>();
+                RoleBean roleBean1 = new RoleBean();
+                roleBean1.setId("1");
+                roleBean1.setContent("水泥工");
+                RoleBean roleBean2 = new RoleBean();
+                roleBean2.setId("2");
+                roleBean2.setContent("水暖工");
+                RoleBean roleBean3 = new RoleBean();
+                roleBean3.setId("3");
+                roleBean3.setContent("瓦工");
+                list.add(roleBean1);
+                list.add(roleBean2);
+                list.add(roleBean3);
+                personPreviewBean.setRoleBeanList(list);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PersonPreview", personPreview);
+                bundle.putSerializable("PersonPreviewBean", personPreviewBean);
                 Message msg = new Message();
                 msg.setData(bundle);
                 personPreviewHandler.sendMessage(msg);

@@ -1,10 +1,8 @@
 package activity;
 
 import android.app.AlertDialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -16,11 +14,11 @@ import java.util.List;
 
 import adapter.ScnDiaAdapter;
 import adapter.ScnJobCdtAdapter;
-import bean.ScnJob;
+import bean.ScnJobBean;
 import listener.ListItemClickHelp;
 import utils.Utils;
 
-public class JobScnActivity extends AppCompatActivity implements View.OnClickListener, ListItemClickHelp, AdapterView.OnItemClickListener {
+public class JobScnActivity extends CommonActivity implements View.OnClickListener, ListItemClickHelp, AdapterView.OnItemClickListener {
 
     private View rootView, scnDialogView;
     private AlertDialog scnDialog;
@@ -28,7 +26,7 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
     private RelativeLayout returnRl, searchRl;
     private ListView jobScnCdtLv;
 
-    private ScnJob scnJobCdt;
+    private ScnJobBean scnJobBeanCdt;
     private ScnJobCdtAdapter scnJobCdtAdapter;
 
     private ScnDiaAdapter scnDiaAdapter;
@@ -36,18 +34,12 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
     private int scnDiaPos;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_scn_job, null);
-        setContentView(rootView);
-        initView();
-        initData();
-        setData();
-        setListener();
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_scn_job,null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
         initDialogView();
     }
@@ -66,23 +58,24 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
         scnDialogLv = (ListView) scnDialogView.findViewById(R.id.lv_dialog_listview);
     }
 
-    private void initData() {
-        scnJobCdt = new ScnJob();
-        scnJobCdt.setName("");
-        scnJobCdt.setNameHint("输入职位");
-        scnJobCdt.setDisTitle("搜索范围：");
-        scnJobCdt.setDisContent("请选择搜索范围");
-        scnJobCdt.setDurationTitle("项目工期：");
-        scnJobCdt.setDurationContent("请选择项目工期");
-        scnJobCdt.setMoneyTitle("工资金额：");
-        scnJobCdt.setMoneyContent("请选择工资金额");
-        scnJobCdt.setStartTimeTitle("开始时间：");
-        scnJobCdt.setStartTimeContent("请选择项目开始时间");
-        scnJobCdt.setKindTitle("招聘工种：");
-        scnJobCdt.setKindContent("请选择招聘工种");
-        scnJobCdt.setTypeTitle("项目类型：");
-        scnJobCdt.setTypeContent("请选择项目类型");
-        scnJobCdtAdapter = new ScnJobCdtAdapter(this, scnJobCdt, this);
+    @Override
+    protected void initData() {
+        scnJobBeanCdt = new ScnJobBean();
+        scnJobBeanCdt.setName("");
+        scnJobBeanCdt.setNameHint("输入职位");
+        scnJobBeanCdt.setDisTitle("搜索范围：");
+        scnJobBeanCdt.setDisContent("请选择搜索范围");
+        scnJobBeanCdt.setDurationTitle("项目工期：");
+        scnJobBeanCdt.setDurationContent("请选择项目工期");
+        scnJobBeanCdt.setMoneyTitle("工资金额：");
+        scnJobBeanCdt.setMoneyContent("请选择工资金额");
+        scnJobBeanCdt.setStartTimeTitle("开始时间：");
+        scnJobBeanCdt.setStartTimeContent("请选择项目开始时间");
+        scnJobBeanCdt.setKindTitle("招聘工种：");
+        scnJobBeanCdt.setKindContent("请选择招聘工种");
+        scnJobBeanCdt.setTypeTitle("项目类型：");
+        scnJobBeanCdt.setTypeContent("请选择项目类型");
+        scnJobCdtAdapter = new ScnJobCdtAdapter(this, scnJobBeanCdt, this);
 
         scnDialogList = new ArrayList<>();
         scnDiaAdapter = new ScnDiaAdapter(this, scnDialogList);
@@ -127,16 +120,23 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
         typeList.add("大型建筑项目");
     }
 
-    private void setData() {
+    @Override
+    protected void setData() {
         jobScnCdtLv.setAdapter(scnJobCdtAdapter);
         Utils.setListViewHeight(jobScnCdtLv);
         scnDialogLv.setAdapter(scnDiaAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
         returnRl.setOnClickListener(this);
         searchRl.setOnClickListener(this);
         scnDialogLv.setOnItemClickListener(this);
+    }
+
+    @Override
+    protected void loadData() {
+
     }
 
     @Override
@@ -146,7 +146,7 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.rl_screen_job_search:
-                Utils.toast(this, scnJobCdt.toString());
+                Utils.toast(this, scnJobBeanCdt.toString());
                 break;
         }
     }
@@ -193,22 +193,22 @@ public class JobScnActivity extends AppCompatActivity implements View.OnClickLis
         String diaRes = scnDialogList.get(position);
         switch (scnDiaPos) {
             case 1:
-                scnJobCdt.setDisContent(diaRes);
+                scnJobBeanCdt.setDisContent(diaRes);
                 break;
             case 2:
-                scnJobCdt.setDurationContent(diaRes);
+                scnJobBeanCdt.setDurationContent(diaRes);
                 break;
             case 3:
-                scnJobCdt.setMoneyContent(diaRes);
+                scnJobBeanCdt.setMoneyContent(diaRes);
                 break;
             case 4:
-                scnJobCdt.setStartTimeContent(diaRes);
+                scnJobBeanCdt.setStartTimeContent(diaRes);
                 break;
             case 5:
-                scnJobCdt.setKindContent(diaRes);
+                scnJobBeanCdt.setKindContent(diaRes);
                 break;
             case 6:
-                scnJobCdt.setTypeContent(diaRes);
+                scnJobBeanCdt.setTypeContent(diaRes);
                 break;
         }
         scnDialog.dismiss();

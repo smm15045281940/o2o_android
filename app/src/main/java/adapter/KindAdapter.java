@@ -10,7 +10,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.Kind;
+import bean.KindBean;
 
 /**
  * 创建日期：2017/7/31 on 13:46
@@ -18,9 +18,9 @@ import bean.Kind;
  * 描述:种类适配器
  */
 
-public class KindAdapter extends CommonAdapter<Kind> {
+public class KindAdapter extends CommonAdapter<KindBean> {
 
-    public KindAdapter(Context context, List<Kind> list) {
+    public KindAdapter(Context context, List<KindBean> list) {
         super(context, list);
     }
 
@@ -34,7 +34,7 @@ public class KindAdapter extends CommonAdapter<Kind> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Kind job = list.get(position);
+        KindBean job = list.get(position);
         if (job != null) {
             holder.imageIv.setImageResource(R.mipmap.ic_launcher);
             holder.nameTv.setText(job.getName());

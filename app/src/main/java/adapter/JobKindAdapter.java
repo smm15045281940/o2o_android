@@ -11,7 +11,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.JobKind;
+import bean.JobKindBean;
 import listener.ListItemClickHelp;
 
 /**
@@ -23,10 +23,10 @@ import listener.ListItemClickHelp;
 public class JobKindAdapter extends BaseAdapter {
 
     private Context context;
-    private List<JobKind> list;
+    private List<JobKindBean> list;
     private ListItemClickHelp clickHelp;
 
-    public JobKindAdapter(Context context, List<JobKind> list, ListItemClickHelp clickHelp) {
+    public JobKindAdapter(Context context, List<JobKindBean> list, ListItemClickHelp clickHelp) {
         this.context = context;
         this.list = list;
         this.clickHelp = clickHelp;
@@ -57,8 +57,8 @@ public class JobKindAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        JobKind jobKind = list.get(position);
-        if (jobKind.isDel()) {
+        JobKindBean jobKindBean = list.get(position);
+        if (jobKindBean.isDel()) {
             holder.delTv.setVisibility(View.VISIBLE);
         } else {
             holder.delTv.setVisibility(View.GONE);

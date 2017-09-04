@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import bean.PersonPreview;
+import bean.PersonPreviewBean;
 import utils.Utils;
 
 /**
@@ -21,11 +21,11 @@ import utils.Utils;
 public class PersonPrivewAdapter extends BaseAdapter {
 
     private Context context;
-    private PersonPreview personPreview;
+    private PersonPreviewBean personPreviewBean;
 
-    public PersonPrivewAdapter(Context context, PersonPreview personPreview) {
+    public PersonPrivewAdapter(Context context, PersonPreviewBean personPreviewBean) {
         this.context = context;
-        this.personPreview = personPreview;
+        this.personPreviewBean = personPreviewBean;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class PersonPrivewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return personPreview == null ? 0 : 9;
+        return personPreviewBean == null ? 0 : 9;
     }
 
     @Override
     public Object getItem(int position) {
-        return personPreview;
+        return personPreviewBean;
     }
 
     @Override
@@ -71,43 +71,43 @@ public class PersonPrivewAdapter extends BaseAdapter {
             } else {
                 holder1 = (ViewHolder1) convertView.getTag();
             }
-            if (personPreview != null) {
+            if (personPreviewBean != null) {
                 switch (position) {
                     case 0:
-                        title = personPreview.getNameTitle();
-                        content = personPreview.getNameContent();
+                        title = personPreviewBean.getNameTitle();
+                        content = personPreviewBean.getNameContent();
                         break;
                     case 1:
-                        title = personPreview.getSexTitle();
-                        if (personPreview.isSex()) {
+                        title = personPreviewBean.getSexTitle();
+                        if (personPreviewBean.isSex()) {
                             content = "男";
                         } else {
                             content = "女";
                         }
                         break;
                     case 2:
-                        title = personPreview.getIdNumberTitle();
-                        content = personPreview.getIdNumberContent();
+                        title = personPreviewBean.getIdNumberTitle();
+                        content = personPreviewBean.getIdNumberContent();
                         break;
                     case 3:
-                        title = personPreview.getAddressTitle();
-                        content = personPreview.getAddressContent();
+                        title = personPreviewBean.getAddressTitle();
+                        content = personPreviewBean.getAddressContent();
                         break;
                     case 4:
-                        title = personPreview.getHouseHoldTitle();
-                        content = personPreview.getHouseHoldContent();
+                        title = personPreviewBean.getHouseHoldTitle();
+                        content = personPreviewBean.getHouseHoldContent();
                         break;
                     case 5:
-                        title = personPreview.getBriefTitle();
-                        content = personPreview.getBriefContent();
+                        title = personPreviewBean.getBriefTitle();
+                        content = personPreviewBean.getBriefContent();
                         break;
                     case 6:
-                        title = personPreview.getPhoneNumberTitle();
-                        content = personPreview.getPhoneNumberContent();
+                        title = personPreviewBean.getPhoneNumberTitle();
+                        content = personPreviewBean.getPhoneNumberContent();
                         break;
                     case 7:
-                        title = personPreview.getRoleTitle();
-                        if (personPreview.isRole()) {
+                        title = personPreviewBean.getRoleTitle();
+                        if (personPreviewBean.isRole()) {
                             content = "我不是工人";
                         } else {
                             content = "我是工人";
@@ -125,10 +125,10 @@ public class PersonPrivewAdapter extends BaseAdapter {
             } else {
                 holder2 = (ViewHolder2) convertView.getTag();
             }
-            if (personPreview != null) {
+            if (personPreviewBean != null) {
                 if (position == 8) {
-                    if (personPreview.getRoleList() != null && personPreview.getRoleList().size() != 0) {
-                        holder2.gridView.setAdapter(new RoleAdapter(context, 0, personPreview.getRoleList()));
+                    if (personPreviewBean.getRoleBeanList() != null && personPreviewBean.getRoleBeanList().size() != 0) {
+                        holder2.gridView.setAdapter(new RoleAdapter(context, 0, personPreviewBean.getRoleBeanList()));
                         Utils.setGridViewHeight(holder2.gridView, 4);
                     }
                 }

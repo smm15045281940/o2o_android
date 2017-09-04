@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Person;
+import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -51,7 +51,7 @@ public class EmpMagAllFrag extends CommonFragment implements View.OnClickListene
     //加载对话框视图
     private CProgressDialog cPd;
     //全部数据类集合
-    private List<Person> allList;
+    private List<PersonBean> allList;
     //全部数据适配器
     private PersonAdapter allAdapter;
     //okHttpClient
@@ -169,7 +169,7 @@ public class EmpMagAllFrag extends CommonFragment implements View.OnClickListene
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 10; i++) {
-                    Person p = new Person();
+                    PersonBean p = new PersonBean();
                     p.setImage("");
                     p.setLongitude(1);
                     p.setState(0);

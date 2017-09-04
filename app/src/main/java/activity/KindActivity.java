@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.KindAdapter;
-import bean.Kind;
+import bean.KindBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -50,7 +50,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     //加载对话框视图
     private CProgressDialog cPd;
     //种类数据类集合
-    private List<Kind> kindList;
+    private List<KindBean> kindBeanList;
     //种类数据适配器
     private KindAdapter kindAdapter;
     //okHttpClient
@@ -116,9 +116,9 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     @Override
     protected void initData() {
         //初始化种类数据类集合集合
-        kindList = new ArrayList<>();
+        kindBeanList = new ArrayList<>();
         //初始化种类数据适配器
-        kindAdapter = new KindAdapter(this, kindList);
+        kindAdapter = new KindAdapter(this, kindBeanList);
         //初始化okHttpClient
         okHttpClient = new OkHttpClient();
         //初始化加载状态
@@ -173,7 +173,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
                 if (response.isSuccessful()) {
                     String result = response.body().string();
                     if (state == StateConfig.LOAD_REFRESH) {
-                        kindList.clear();
+                        kindBeanList.clear();
                     }
                     parseJson(result);
                 }
@@ -185,24 +185,24 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                Kind k0 = new Kind();
+                KindBean k0 = new KindBean();
                 k0.setName("水泥工");
-                Kind k1 = new Kind();
+                KindBean k1 = new KindBean();
                 k1.setName("搬运工");
-                Kind k2 = new Kind();
+                KindBean k2 = new KindBean();
                 k2.setName("焊接工");
-                Kind k3 = new Kind();
+                KindBean k3 = new KindBean();
                 k3.setName("xx工");
-                Kind k4 = new Kind();
+                KindBean k4 = new KindBean();
                 k4.setName("xx工");
-                Kind k5 = new Kind();
+                KindBean k5 = new KindBean();
                 k5.setName("xx工");
-                kindList.add(k0);
-                kindList.add(k1);
-                kindList.add(k2);
-                kindList.add(k3);
-                kindList.add(k4);
-                kindList.add(k5);
+                kindBeanList.add(k0);
+                kindBeanList.add(k1);
+                kindBeanList.add(k2);
+                kindBeanList.add(k3);
+                kindBeanList.add(k4);
+                kindBeanList.add(k5);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -214,7 +214,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (kindList.size() == 0) {
+                if (kindBeanList.size() == 0) {
                     noNetLl.setVisibility(View.VISIBLE);
                     pTrl.setVisibility(View.GONE);
                     noDataLl.setVisibility(View.GONE);
@@ -233,7 +233,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (kindList.size() == 0) {
+                if (kindBeanList.size() == 0) {
                     noDataLl.setVisibility(View.VISIBLE);
                     noNetLl.setVisibility(View.GONE);
                 }
@@ -267,7 +267,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, WorkerActivity.class);
-        intent.putExtra("kind", kindList.get(position));
+        intent.putExtra("kindBean", kindBeanList.get(position));
         startActivity(intent);
     }
 

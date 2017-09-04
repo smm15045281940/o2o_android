@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Person;
+import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -52,7 +52,7 @@ public class PersonMagRecordFrag extends CommonFragment implements PullToRefresh
     private CProgressDialog cPd;
 
     //投递记录数据集合
-    private List<Person> recordList;
+    private List<PersonBean> recordList;
     //投递记录数据适配器
     private PersonAdapter recordAdapter;
 
@@ -172,7 +172,7 @@ public class PersonMagRecordFrag extends CommonFragment implements PullToRefresh
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 10; i++) {
-                    Person p = new Person();
+                    PersonBean p = new PersonBean();
                     p.setCollect(true);
                     p.setShow("dfdfdf");
                     p.setState(1);

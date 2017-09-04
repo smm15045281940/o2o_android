@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Person;
+import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -48,7 +48,7 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
     private TextView noNetTv;
     private CProgressDialog progressDialog;
 
-    private List<Person> collectWorkerList;
+    private List<PersonBean> collectWorkerList;
     private PersonAdapter collectWorkerAdapter;
 
     private OkHttpClient okHttpClient;
@@ -154,7 +154,7 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 10; i++) {
-                    Person p = new Person();
+                    PersonBean p = new PersonBean();
                     p.setName("dfdf");
                     p.setShow("weedt");
                     p.setPlay("hadifdf");

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.EvaluateAdapter;
-import bean.Evaluate;
+import bean.EvaluateBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -49,7 +49,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
     private PullableListView evaluateGiveLv;
     private CProgressDialog progressDialog;
 
-    private List<Evaluate> evaluateGiveList;
+    private List<EvaluateBean> evaluateBeanGiveList;
     private EvaluateAdapter evaluateGiveAdapter;
 
     private OkHttpClient okHttpClient;
@@ -110,8 +110,8 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
     }
 
     private void initData() {
-        evaluateGiveList = new ArrayList<>();
-        evaluateGiveAdapter = new EvaluateAdapter(getActivity(), evaluateGiveList);
+        evaluateBeanGiveList = new ArrayList<>();
+        evaluateGiveAdapter = new EvaluateAdapter(getActivity(), evaluateBeanGiveList);
         okHttpClient = new OkHttpClient();
     }
 
@@ -141,7 +141,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        evaluateGiveList.clear();
+                        evaluateBeanGiveList.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -155,14 +155,14 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 5; i++) {
-                    Evaluate e = new Evaluate();
+                    EvaluateBean e = new EvaluateBean();
                     e.setGet(false);
                     e.setNumCount(5);
                     e.setIcon("");
                     e.setContent("老板太苛刻");
                     e.setPraiseCount(0);
                     e.setTime("2017年5月4日 17:25");
-                    evaluateGiveList.add(e);
+                    evaluateBeanGiveList.add(e);
                 }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
@@ -175,7 +175,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
         switch (state) {
             case StateConfig.LOAD_DONE:
                 progressDialog.dismiss();
-                if (evaluateGiveList.size() == 0) {
+                if (evaluateBeanGiveList.size() == 0) {
                     noNetLl.setVisibility(View.VISIBLE);
                     noDataLl.setVisibility(View.GONE);
                 }
@@ -194,7 +194,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
         switch (state) {
             case StateConfig.LOAD_DONE:
                 progressDialog.dismiss();
-                if (evaluateGiveList.size() == 0) {
+                if (evaluateBeanGiveList.size() == 0) {
                     noNetLl.setVisibility(View.GONE);
                     noDataLl.setVisibility(View.VISIBLE);
                 }

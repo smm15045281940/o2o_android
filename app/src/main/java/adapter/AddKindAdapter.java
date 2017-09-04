@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.AddKind;
+import bean.AddKindBean;
 import listener.ListItemClickHelp;
 
 /**
@@ -27,10 +27,10 @@ import listener.ListItemClickHelp;
 public class AddKindAdapter extends BaseAdapter {
 
     private Context context;
-    private List<AddKind> list;
+    private List<AddKindBean> list;
     private ListItemClickHelp callback;
 
-    public AddKindAdapter(Context context, List<AddKind> list, ListItemClickHelp callback) {
+    public AddKindAdapter(Context context, List<AddKindBean> list, ListItemClickHelp callback) {
         this.context = context;
         this.list = list;
         this.callback = callback;
@@ -70,15 +70,15 @@ public class AddKindAdapter extends BaseAdapter {
                 callback.onClick(view, parent, p, id, isChecked);
             }
         });
-        AddKind addKind = list.get(position);
-        if (addKind != null) {
-            if (!TextUtils.isEmpty(addKind.getImg())) {
-                Picasso.with(context).load(addKind.getImg()).placeholder(holder.imgIv.getDrawable()).into(holder.imgIv);
+        AddKindBean addKindBean = list.get(position);
+        if (addKindBean != null) {
+            if (!TextUtils.isEmpty(addKindBean.getImg())) {
+                Picasso.with(context).load(addKindBean.getImg()).placeholder(holder.imgIv.getDrawable()).into(holder.imgIv);
             } else {
                 holder.imgIv.setImageResource(R.mipmap.ic_launcher);
             }
-            holder.contentTv.setText(addKind.getContent());
-            holder.checkedCb.setChecked(addKind.isChecked());
+            holder.contentTv.setText(addKindBean.getContent());
+            holder.checkedCb.setChecked(addKindBean.isChecked());
         }
         return convertView;
     }

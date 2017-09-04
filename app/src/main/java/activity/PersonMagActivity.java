@@ -17,7 +17,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.PersonPreview;
+import bean.PersonPreviewBean;
 import fragment.PersonMagPreviewFrag;
 import fragment.PersonMagEditFrag;
 import fragment.PersonMagRecordFrag;
@@ -51,14 +51,14 @@ public class PersonMagActivity extends CommonActivity implements View.OnClickLis
     //目标碎片索引
     private int tarPosition;
     //信息预览数据类对象
-    public PersonPreview personPreview;
+    public PersonPreviewBean personPreviewBean;
     //handler
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg != null) {
-                personPreview = (PersonPreview) (msg.getData()).getSerializable("PersonPreview");
+                personPreviewBean = (PersonPreviewBean) (msg.getData()).getSerializable("PersonPreviewBean");
             }
         }
     };
@@ -66,7 +66,7 @@ public class PersonMagActivity extends CommonActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacksAndMessages(personPreview);
+        handler.removeCallbacksAndMessages(personPreviewBean);
     }
 
     @Override

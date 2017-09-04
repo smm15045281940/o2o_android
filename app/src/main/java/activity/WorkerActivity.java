@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Kind;
-import bean.Person;
-import bean.Screen;
+import bean.KindBean;
+import bean.PersonBean;
+import bean.ScreenBean;
 import config.CodeConfig;
 import config.NetConfig;
 import config.StateConfig;
@@ -56,7 +56,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     //加载对话框视图
     private CProgressDialog cPd;
     //工人信息数据类集合
-    private List<Person> personList;
+    private List<PersonBean> personBeanList;
     //工人信息数据适配器
     private PersonAdapter personAdapter;
     //okHttpClient
@@ -64,7 +64,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     //加载状态
     private int state;
 
-    private Kind kind;
+    private KindBean kindBean;
 
     private Handler handler = new Handler() {
         @Override
@@ -126,11 +126,11 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     @Override
     protected void initData() {
         Intent intent = getIntent();
-        kind = (Kind) intent.getSerializableExtra("kind");
+        kindBean = (KindBean) intent.getSerializableExtra("kindBean");
         //初始化工人信息数据类集合
-        personList = new ArrayList<>();
+        personBeanList = new ArrayList<>();
         //初始化工人信息数据适配器
-        personAdapter = new PersonAdapter(this, personList);
+        personAdapter = new PersonAdapter(this, personBeanList);
         //初始化okHttpClient
         okHttpClient = new OkHttpClient();
         //初始化加载状态
@@ -185,7 +185,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
                 if (response.isSuccessful()) {
                     String result = response.body().string();
                     if (state == StateConfig.LOAD_REFRESH) {
-                        personList.clear();
+                        personBeanList.clear();
                     }
                     parseJson(result);
                 }
@@ -197,7 +197,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (personList.size() == 0) {
+                if (personBeanList.size() == 0) {
                     noNetLl.setVisibility(View.VISIBLE);
                     noDataLl.setVisibility(View.GONE);
                     pTrl.setVisibility(View.GONE);
@@ -216,7 +216,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (personList.size() == 0) {
+                if (personBeanList.size() == 0) {
                     noNetLl.setVisibility(View.GONE);
                     noDataLl.setVisibility(View.VISIBLE);
                     pTrl.setVisibility(View.GONE);
@@ -237,15 +237,15 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 5; i++) {
-                    Person person = new Person();
-                    person.setImage("");
-                    person.setName(kind.getName() + "-" + i);
-                    person.setPlay("精通刮大白");
-                    person.setShow("十年刮大白经验");
-                    person.setState(1);
-                    person.setCollect(false);
-                    person.setDistance("距离3公里");
-                    personList.add(person);
+                    PersonBean personBean = new PersonBean();
+                    personBean.setImage("");
+                    personBean.setName(kindBean.getName() + "-" + i);
+                    personBean.setPlay("精通刮大白");
+                    personBean.setShow("十年刮大白经验");
+                    personBean.setState(1);
+                    personBean.setCollect(false);
+                    personBean.setDistance("距离3公里");
+                    personBeanList.add(personBean);
                 }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
@@ -275,7 +275,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, TalkActivity.class);
-        intent.putExtra("worker", personList.get(position - 1));
+        intent.putExtra("worker", personBeanList.get(position - 1));
         startActivity(intent);
     }
 
@@ -283,9 +283,9 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CodeConfig.screenRequestCode && resultCode == CodeConfig.screenResultCode && data != null) {
-            Screen screen = (Screen) data.getSerializableExtra("screen");
-            if (screen != null) {
-                int a = screen.getState();
+            ScreenBean screenBean = (ScreenBean) data.getSerializableExtra("screenBean");
+            if (screenBean != null) {
+                int a = screenBean.getState();
                 Utils.toast(this, a + "");
             }
         }

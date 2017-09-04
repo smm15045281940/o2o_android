@@ -1,29 +1,23 @@
 package activity;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-public class InviteActivity extends AppCompatActivity implements View.OnClickListener {
+public class InviteActivity extends CommonActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_invite, null);
-        setContentView(rootView);
-        initView();
-        setListener();
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_invite, null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
     }
 
@@ -31,8 +25,24 @@ public class InviteActivity extends AppCompatActivity implements View.OnClickLis
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_invite_return);
     }
 
-    private void setListener() {
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void setData() {
+
+    }
+
+    @Override
+    protected void setListener() {
         returnRl.setOnClickListener(this);
+    }
+
+    @Override
+    protected void loadData() {
+
     }
 
     @Override

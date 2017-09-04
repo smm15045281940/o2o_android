@@ -61,7 +61,13 @@
         <activity
             android:name="activity.JobScnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name="activity.SetPwdActivity"></activity>
+        <activity android:name="activity.SetPwdActivity" />
+        <activity
+            android:name="activity.PwdActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+        <activity
+            android:name="activity.PhoneProveActivity"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
     </application>
 
 </manifest>

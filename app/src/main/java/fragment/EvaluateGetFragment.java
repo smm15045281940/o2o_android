@@ -1,13 +1,9 @@
 package fragment;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.EvaluateAdapter;
-import bean.Evaluate;
+import bean.EvaluateBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -39,7 +35,7 @@ import view.CProgressDialog;
  * 描述:收到的评价
  */
 
-public class EvaluateGetFragment extends Fragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class EvaluateGetFragment extends CommonFragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private LinearLayout noNetLl;
@@ -49,7 +45,7 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
     private PullableListView evaluateGetLv;
     private CProgressDialog progressDialog;
 
-    private List<Evaluate> evaluateGetList;
+    private List<EvaluateBean> evaluateBeanGetList;
     private EvaluateAdapter evaluateGetAdapter;
 
     private OkHttpClient okHttpClient;
@@ -80,19 +76,13 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
         handler.removeMessages(StateConfig.LOAD_DONE);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.common_listview, null);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
-        return rootView;
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview,null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
         initDialogView();
     }
@@ -109,22 +99,26 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
         progressDialog = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
     }
 
-    private void initData() {
-        evaluateGetList = new ArrayList<>();
-        evaluateGetAdapter = new EvaluateAdapter(getActivity(), evaluateGetList);
+    @Override
+    protected void initData() {
+        evaluateBeanGetList = new ArrayList<>();
+        evaluateGetAdapter = new EvaluateAdapter(getActivity(), evaluateBeanGetList);
         okHttpClient = new OkHttpClient();
     }
 
-    private void setData() {
+    @Override
+    protected void setData() {
         evaluateGetLv.setAdapter(evaluateGetAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
         noNetTv.setOnClickListener(this);
         evaluateGetPtrl.setOnRefreshListener(this);
     }
 
-    private void loadData() {
+    @Override
+    protected void loadData() {
         progressDialog.show();
         loadNetData();
     }
@@ -141,7 +135,7 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        evaluateGetList.clear();
+                        evaluateBeanGetList.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -155,13 +149,13 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 for (int i = 0; i < 10; i++) {
-                    Evaluate e = new Evaluate();
+                    EvaluateBean e = new EvaluateBean();
                     e.setGet(true);
                     e.setNumCount(10);
                     e.setContent("小伙子干活特麻利");
                     e.setPraiseCount(3);
                     e.setTime("2017年5月4日 17:25");
-                    evaluateGetList.add(e);
+                    evaluateBeanGetList.add(e);
                 }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
@@ -174,7 +168,7 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
         switch (state) {
             case StateConfig.LOAD_DONE:
                 progressDialog.dismiss();
-                if (evaluateGetList.size() == 0) {
+                if (evaluateBeanGetList.size() == 0) {
                     noNetLl.setVisibility(View.VISIBLE);
                     noDataLl.setVisibility(View.GONE);
                 }
@@ -193,7 +187,7 @@ public class EvaluateGetFragment extends Fragment implements View.OnClickListene
         switch (state) {
             case StateConfig.LOAD_DONE:
                 progressDialog.dismiss();
-                if (evaluateGetList.size() == 0) {
+                if (evaluateBeanGetList.size() == 0) {
                     noNetLl.setVisibility(View.GONE);
                     noDataLl.setVisibility(View.VISIBLE);
                 }

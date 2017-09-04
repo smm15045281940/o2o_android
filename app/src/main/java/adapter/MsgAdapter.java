@@ -10,7 +10,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.Msg;
+import bean.MsgBean;
 
 /**
  * 创建日期：2017/8/22 on 15:52
@@ -18,9 +18,9 @@ import bean.Msg;
  * 描述:工作邀约-系统消息适配器
  */
 
-public class MsgAdapter extends CommonAdapter<Msg> {
+public class MsgAdapter extends CommonAdapter<MsgBean> {
 
-    public MsgAdapter(Context context, List<Msg> list) {
+    public MsgAdapter(Context context, List<MsgBean> list) {
         super(context, list);
     }
 
@@ -34,12 +34,12 @@ public class MsgAdapter extends CommonAdapter<Msg> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Msg msg = list.get(position);
-        if (msg != null) {
-            holder.titleTv.setText(msg.getTitle());
-            holder.dateTv.setText(msg.getDate());
-            holder.desTv.setText(msg.getDes());
-            if (msg.isArrowShow()) {
+        MsgBean msgBean = list.get(position);
+        if (msgBean != null) {
+            holder.titleTv.setText(msgBean.getTitle());
+            holder.dateTv.setText(msgBean.getDate());
+            holder.desTv.setText(msgBean.getDes());
+            if (msgBean.isArrowShow()) {
                 holder.arrowIv.setVisibility(View.VISIBLE);
             } else {
                 holder.arrowIv.setVisibility(View.GONE);

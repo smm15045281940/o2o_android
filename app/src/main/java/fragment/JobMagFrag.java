@@ -9,8 +9,8 @@ import com.gjzg.R;
 
 import activity.EmpMagActivity;
 import activity.PersonMagActivity;
-import activity.RechargeActivity;
 import activity.SendJobActivity;
+import activity.WalletActivity;
 import activity.WorkerMagActivity;
 
 /**
@@ -92,8 +92,7 @@ public class JobMagFrag extends CommonFragment implements View.OnClickListener {
         switch (v.getId()) {
             //充值视图点击事件
             case R.id.rl_frag_job_mag_prepaid:
-                Intent rechargeIntent = new Intent(getActivity(), RechargeActivity.class);
-                startActivity(rechargeIntent);
+                startActivity(new Intent(getActivity(), WalletActivity.class));
                 break;
             //发布工作视图点击事件
             case R.id.rl_frag_job_mag_send_job:

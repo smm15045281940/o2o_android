@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.MsgAdapter;
-import bean.Msg;
+import bean.MsgBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -54,7 +54,7 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
     //加载对话框视图
     private CProgressDialog cPd;
     //工作邀约数据类集合
-    private List<Msg> jobOfferList;
+    private List<MsgBean> jobOfferList;
     //工作邀约数据适配器
     private MsgAdapter jobOfferAdapter;
     //okHttpClient
@@ -172,12 +172,12 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                Msg mo0 = new Msg();
+                MsgBean mo0 = new MsgBean();
                 mo0.setTitle("工作邀约");
                 mo0.setDate("2017/03/07");
                 mo0.setDes("有一份适合你的工作，雇主已经向您发起邀约，等待您同意");
                 mo0.setArrowShow(true);
-                Msg mo1 = new Msg();
+                MsgBean mo1 = new MsgBean();
                 mo1.setTitle("工作邀约");
                 mo1.setDate("2017/03/06");
                 mo1.setDes("您发布的工作有工人感兴趣并向您发起邀约，等待您同意");

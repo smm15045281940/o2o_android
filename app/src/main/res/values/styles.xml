@@ -139,4 +139,42 @@
         <item name="android:textColor">@color/gray_a0a0a0</item>
         <item name="android:textSize">@dimen/x15</item>
     </style>
+
+    <!--设置密码-->
+    <style name="ll_pwd">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/x40</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/sl_black_stroke</item>
+    </style>
+
+    <style name="rl_pwd">
+        <item name="android:layout_width">@dimen/x40</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="iv_pwd">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:src">@drawable/p_black</item>
+    </style>
+
+    <style name="v_pwd">
+        <item name="android:layout_width">@dimen/x1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/black_000000</item>
+    </style>
+
+    <style name="tv_pwd">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:textSize">@dimen/x15</item>
+    </style>
+
 </resources>

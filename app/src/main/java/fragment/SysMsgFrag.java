@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.MsgAdapter;
-import bean.Msg;
+import bean.MsgBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -52,7 +52,7 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
     //加载对话框视图
     private CProgressDialog cPd;
     //系统消息集合
-    private List<Msg> msgList;
+    private List<MsgBean> msgBeanList;
     //系统消息适配器
     private MsgAdapter msgAdapter;
     //okHttpClient
@@ -117,9 +117,9 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
     @Override
     protected void initData() {
         //初始化系统消息集合
-        msgList = new ArrayList<>();
+        msgBeanList = new ArrayList<>();
         //初始化系统消息适配器
-        msgAdapter = new MsgAdapter(getActivity(), msgList);
+        msgAdapter = new MsgAdapter(getActivity(), msgBeanList);
         //初始化okHttpClient
         okHttpClient = new OkHttpClient();
     }
@@ -156,7 +156,7 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        msgList.clear();
+                        msgBeanList.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -169,18 +169,18 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                Msg sm0 = new Msg();
+                MsgBean sm0 = new MsgBean();
                 sm0.setTitle("系统消息");
                 sm0.setDate("2017/03/05");
                 sm0.setDes("系统升级，钢建众工2.0版本全新上市，更多高薪工作等你来");
                 sm0.setArrowShow(false);
-                Msg sm1 = new Msg();
+                MsgBean sm1 = new MsgBean();
                 sm1.setTitle("系统消息");
                 sm1.setDate("2017/03/04");
                 sm1.setDes("你有新的红包等待领取");
                 sm1.setArrowShow(false);
-                msgList.add(sm0);
-                msgList.add(sm1);
+                msgBeanList.add(sm0);
+                msgBeanList.add(sm1);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -192,7 +192,7 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (msgList.size() == 0) {
+                if (msgBeanList.size() == 0) {
                     noNetLl.setVisibility(View.VISIBLE);
                     noDataLl.setVisibility(View.GONE);
                 }
@@ -211,7 +211,7 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
-                if (msgList.size() == 0) {
+                if (msgBeanList.size() == 0) {
                     noDataLl.setVisibility(View.VISIBLE);
                     noNetLl.setVisibility(View.GONE);
                 }

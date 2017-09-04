@@ -1,13 +1,11 @@
 package activity;
 
 import android.app.AlertDialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,12 +19,12 @@ import java.util.List;
 
 import adapter.JobKindAdapter;
 import adapter.ScnDiaAdapter;
-import bean.JobKind;
-import bean.SendJob;
+import bean.JobKindBean;
+import bean.SendJobBean;
 import listener.ListItemClickHelp;
 import utils.Utils;
 
-public class SendJobActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, ListItemClickHelp {
+public class SendJobActivity extends CommonActivity implements View.OnClickListener, AdapterView.OnItemClickListener, ListItemClickHelp {
 
     //根视图
     private View rootView;
@@ -49,11 +47,11 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
     //确认提交视图
     private TextView projectSubmitTv;
     //招聘工种数据类集合
-    private List<JobKind> jobKindList;
+    private List<JobKindBean> jobKindBeanList;
     //招聘工种数据适配器
     private JobKindAdapter jobKindAdapter;
     //发布工作数据类
-    private SendJob sendJob;
+    private SendJobBean sendJobBean;
 
     //项目类型对话框视图
     private AlertDialog kindDialog;
@@ -66,20 +64,12 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
     private ScnDiaAdapter kindAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        //初始化根视图
-        rootView = View.inflate(this, R.layout.activity_send_job, null);
-        setContentView(rootView);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_send_job,null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
         initDialogView();
     }
@@ -113,27 +103,30 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
         kindDialogLv = (ListView) kindDialogView.findViewById(R.id.lv_dialog_listview);
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         //初始化项目类型数据集合
         kindList = new ArrayList<>();
         //初始化项目类型数据适配器
         kindAdapter = new ScnDiaAdapter(this, kindList);
         //初始化招聘工种数据类集合
-        jobKindList = new ArrayList<>();
+        jobKindBeanList = new ArrayList<>();
         //初始化招聘工种数据适配器
-        jobKindAdapter = new JobKindAdapter(this, jobKindList, this);
+        jobKindAdapter = new JobKindAdapter(this, jobKindBeanList, this);
         //初始化发布工作数据类
-        sendJob = new SendJob();
+        sendJobBean = new SendJobBean();
     }
 
-    private void setData() {
+    @Override
+    protected void setData() {
         //绑定项目类型数据适配器
         kindDialogLv.setAdapter(kindAdapter);
         //绑定招聘工种数据适配器
         projectLv.setAdapter(jobKindAdapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
         //返回视图监听
         returnRl.setOnClickListener(this);
         //增加工种视图监听
@@ -154,40 +147,41 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
         projectSubmitTv.setOnClickListener(this);
     }
 
-    private void loadData() {
+    @Override
+    protected void loadData() {
         //加载工程类型数据
         kindList.add("小型工地");
         kindList.add("个人家装");
         kindList.add("大型建筑项目");
         kindAdapter.notifyDataSetChanged();
         //加载招聘工种数据
-        JobKind jobKind = new JobKind();
-        jobKind.setDel(false);
-        jobKindList.add(jobKind);
+        JobKindBean jobKindBean = new JobKindBean();
+        jobKindBean.setDel(false);
+        jobKindBeanList.add(jobKindBean);
         jobKindAdapter.notifyDataSetChanged();
         Utils.setListViewHeight(projectLv);
     }
 
     private void addKind() {
-        JobKind jobKind = new JobKind();
-        jobKind.setDel(true);
-        jobKindList.add(jobKind);
+        JobKindBean jobKindBean = new JobKindBean();
+        jobKindBean.setDel(true);
+        jobKindBeanList.add(jobKindBean);
         jobKindAdapter.notifyDataSetChanged();
         Utils.setListViewHeight(projectLv);
     }
 
     private void judge() {
-        if (TextUtils.isEmpty(sendJob.getName())) {
+        if (TextUtils.isEmpty(sendJobBean.getName())) {
             Utils.toast(this, "请输入标题");
             return;
-        } else if (TextUtils.isEmpty(sendJob.getDes())) {
+        } else if (TextUtils.isEmpty(sendJobBean.getDes())) {
             Utils.toast(this, "请输入描述");
             return;
-        } else if (TextUtils.isEmpty(sendJob.getKind())) {
+        } else if (TextUtils.isEmpty(sendJobBean.getKind())) {
             Utils.toast(this, "请选择工程类型");
             return;
         } else {
-            Utils.toast(this, sendJob.toString());
+            Utils.toast(this, sendJobBean.toString());
         }
     }
 
@@ -222,7 +216,7 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
         switch (which) {
             case R.id.tv_item_send_job_del:
                 Utils.toast(this, "删除该工种" + position);
-                jobKindList.remove(position);
+                jobKindBeanList.remove(position);
                 jobKindAdapter.notifyDataSetChanged();
                 Utils.setListViewHeight(projectLv);
                 break;
@@ -242,7 +236,7 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void afterTextChanged(Editable s) {
-            sendJob.setName(s.toString());
+            sendJobBean.setName(s.toString());
         }
     };
 
@@ -259,7 +253,7 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void afterTextChanged(Editable s) {
-            sendJob.setDes(s.toString());
+            sendJobBean.setDes(s.toString());
         }
     };
 
@@ -276,7 +270,7 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void afterTextChanged(Editable s) {
-            sendJob.setAdddress(s.toString());
+            sendJobBean.setAdddress(s.toString());
         }
     };
 
@@ -286,7 +280,7 @@ public class SendJobActivity extends AppCompatActivity implements View.OnClickLi
             //项目类型ListView
             case R.id.lv_dialog_listview:
                 projectKindTv.setText(kindList.get(position));
-                sendJob.setKind(projectKindTv.getText().toString());
+                sendJobBean.setKind(projectKindTv.getText().toString());
                 kindDialog.dismiss();
                 break;
         }

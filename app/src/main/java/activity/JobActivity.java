@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.Person;
+import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -40,7 +40,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     private RelativeLayout returnRl, screenRl;
     private CProgressDialog progressDialog;
 
-    private List<Person> personList;
+    private List<PersonBean> personBeanList;
     private PersonAdapter personAdapter;
 
     private OkHttpClient okHttpClient;
@@ -107,8 +107,8 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initData() {
-        personList = new ArrayList<>();
-        personAdapter = new PersonAdapter(this, personList);
+        personBeanList = new ArrayList<>();
+        personAdapter = new PersonAdapter(this, personBeanList);
         okHttpClient = new OkHttpClient();
     }
 
@@ -152,7 +152,7 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
                 if (response.isSuccessful()) {
                     switch (LOAD_STATE) {
                         case StateConfig.LOAD_REFRESH:
-                            personList.clear();
+                            personBeanList.clear();
                             break;
                     }
                     String json = response.body().string();
@@ -181,22 +181,22 @@ public class JobActivity extends AppCompatActivity implements View.OnClickListen
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                Person p0 = new Person();
+                PersonBean p0 = new PersonBean();
                 p0.setName("专业水泥工");
                 p0.setCollect(false);
                 p0.setState(0);
                 p0.setDistance("距离3公里");
                 p0.setPlay("X月X日开工，工期2天");
                 p0.setShow("工资：200/人/天");
-                Person p1 = new Person();
+                PersonBean p1 = new PersonBean();
                 p1.setName("专业瓦工");
                 p1.setCollect(true);
                 p1.setState(1);
                 p1.setDistance("距离一公里");
                 p1.setPlay("10月2号开工，工期5天");
                 p1.setShow("工资：500/人/天");
-                personList.add(p0);
-                personList.add(p1);
+                personBeanList.add(p0);
+                personBeanList.add(p1);
                 b = true;
             }
         } catch (JSONException e) {

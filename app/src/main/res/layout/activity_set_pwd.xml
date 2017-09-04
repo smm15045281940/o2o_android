@@ -24,4 +24,29 @@
 
     </RelativeLayout>
 
+    <LinearLayout style="@style/ll_mine_service_out">
+
+        <LinearLayout
+            android:id="@+id/ll_set_pwd_cash"
+            style="@style/ll_mine_service_in">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/y5"
+                android:layout_weight="1"
+                android:text="设置提现密码"
+                android:textSize="@dimen/x15" />
+
+            <ImageView
+                android:layout_margin="@dimen/y5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/arrow_r" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

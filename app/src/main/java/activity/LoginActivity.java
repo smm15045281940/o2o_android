@@ -1,12 +1,10 @@
 package activity;
 
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,7 +14,7 @@ import com.gjzg.R;
 import config.StateConfig;
 import utils.Utils;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends CommonActivity implements View.OnClickListener {
 
     //根视图
     private View rootView;
@@ -61,16 +59,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_login, null);
-        setContentView(rootView);
-        initView();
-        setListener();
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_login,null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
     }
 
@@ -89,13 +83,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginTv = (TextView) rootView.findViewById(R.id.tv_login_log);
     }
 
-    private void setListener() {
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void setData() {
+
+    }
+
+    @Override
+    protected void setListener() {
         //返回视图监听
         returnRl.setOnClickListener(this);
         //获取动态密码视图监听
         getMovePwdTv.setOnClickListener(this);
         //登录视图监听
         loginTv.setOnClickListener(this);
+    }
+
+    @Override
+    protected void loadData() {
+
     }
 
     @Override

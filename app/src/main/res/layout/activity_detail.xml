@@ -27,7 +27,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:background="@drawable/sl_black_stroke"
             android:clickable="true"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/y5"
@@ -53,11 +52,90 @@
 
     </RelativeLayout>
 
-    <view.CListView
-        android:id="@+id/lv_detail"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/gray_c4ced3"
-        android:dividerHeight="@dimen/y1" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/empty_no_data" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="暂时没有相关数据"
+                android:textColor="@color/blue_2681fc"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_no_net"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitXY"
+                android:src="@mipmap/no_net" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="当前网络不可用，请检查您的网络"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/x15"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_no_net_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/sl_black_stroke"
+                android:clickable="true"
+                android:padding="@dimen/x5"
+                android:text="重新刷新"
+                android:textSize="@dimen/x15" />
+
+        </LinearLayout>
+
+        <refreshload.PullToRefreshLayout
+            android:id="@+id/ptrl_common_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/y5">
+
+            <include layout="@layout/refresh_head" />
+
+            <refreshload.PullableListView
+                android:id="@+id/plv_common_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/gray_c4ced3"
+                android:dividerHeight="@dimen/y5" />
+
+            <include layout="@layout/load_more" />
+
+        </refreshload.PullToRefreshLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

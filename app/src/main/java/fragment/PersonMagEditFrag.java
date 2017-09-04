@@ -22,9 +22,9 @@ import java.util.List;
 import activity.PersonMagActivity;
 import adapter.AddKindAdapter;
 import adapter.RoleAdapter;
-import bean.AddKind;
-import bean.PersonPreview;
-import bean.Role;
+import bean.AddKindBean;
+import bean.PersonPreviewBean;
+import bean.RoleBean;
 import listener.ListItemClickHelp;
 import utils.Utils;
 
@@ -69,17 +69,17 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
     private TextView addKindDialogYesTv;
 
     //工人种类数据类集合
-    private List<Role> roleList;
+    private List<RoleBean> roleBeanList;
     //工人种类适配器
     private RoleAdapter roleAdapter;
 
     //添加工种数据类集合
-    private List<AddKind> addKindList;
+    private List<AddKindBean> addKindBeanList;
     //添加工种适配器
     private AddKindAdapter addKindAdapter;
 
     //信息预览数据类
-    private PersonPreview personPreview;
+    private PersonPreviewBean personPreviewBean;
 
     @Override
     protected View getRootView() {
@@ -130,15 +130,15 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
     @Override
     protected void initData() {
         //初始化信息预览数据类
-        personPreview = ((PersonMagActivity) getActivity()).personPreview;
+        personPreviewBean = ((PersonMagActivity) getActivity()).personPreviewBean;
         //初始化工人种类数据类集合
-        roleList = new ArrayList<>();
+        roleBeanList = new ArrayList<>();
         //初始化工人种类适配器
-        roleAdapter = new RoleAdapter(getActivity(), 1, roleList);
+        roleAdapter = new RoleAdapter(getActivity(), 1, roleBeanList);
         //初始化添加工种数据类集合
-        addKindList = new ArrayList<>();
+        addKindBeanList = new ArrayList<>();
         //初始化添加工种适配器
-        addKindAdapter = new AddKindAdapter(getActivity(), addKindList, this);
+        addKindAdapter = new AddKindAdapter(getActivity(), addKindBeanList, this);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-                personPreview.setNameContent(s.toString());
+                personPreviewBean.setNameContent(s.toString());
             }
         });
         //性别视图监听
@@ -184,7 +184,7 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-                personPreview.setIdNumberContent(s.toString());
+                personPreviewBean.setIdNumberContent(s.toString());
             }
         });
         //现居地视图监听
@@ -205,7 +205,7 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-                personPreview.setBriefContent(s.toString());
+                personPreviewBean.setBriefContent(s.toString());
             }
         });
         //角色选择视图监听
@@ -224,53 +224,53 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
 
     @Override
     protected void loadData() {
-        nameEt.setText(personPreview.getNameContent());
-        if (personPreview.isSex()) {
+        nameEt.setText(personPreviewBean.getNameContent());
+        if (personPreviewBean.isSex()) {
             ((RadioButton) sexRg.getChildAt(0)).setChecked(true);
         } else {
             ((RadioButton) sexRg.getChildAt(1)).setChecked(true);
         }
-        idNumberEt.setText(personPreview.getIdNumberContent());
-        addressTv.setText(personPreview.getAddressContent());
-        houseHoldTv.setText(personPreview.getHouseHoldContent());
-        briefEt.setText(personPreview.getBriefContent());
-        phoneTv.setText(personPreview.getPhoneNumberContent());
-        if (personPreview.isRole()) {
+        idNumberEt.setText(personPreviewBean.getIdNumberContent());
+        addressTv.setText(personPreviewBean.getAddressContent());
+        houseHoldTv.setText(personPreviewBean.getHouseHoldContent());
+        briefEt.setText(personPreviewBean.getBriefContent());
+        phoneTv.setText(personPreviewBean.getPhoneNumberContent());
+        if (personPreviewBean.isRole()) {
             ((RadioButton) roleRg.getChildAt(0)).setChecked(true);
         } else {
             ((RadioButton) roleRg.getChildAt(1)).setChecked(true);
         }
-        roleList.addAll(personPreview.getRoleList());
+        roleBeanList.addAll(personPreviewBean.getRoleBeanList());
         roleAdapter.notifyDataSetChanged();
         //动态设置gridview高度
         Utils.setGridViewHeight(workerGv, 3);
 
         //加载添加工种数据
         for (int i = 0; i < 10; i++) {
-            AddKind ak = new AddKind();
+            AddKindBean ak = new AddKindBean();
             ak.setId(i);
             ak.setImg("");
             ak.setContent("瓦工" + i);
             ak.setChecked(false);
-            addKindList.add(ak);
+            addKindBeanList.add(ak);
         }
         addKindAdapter.notifyDataSetChanged();
     }
 
     private void addKind() {
-        for (int i = 0; i < addKindList.size(); i++) {
-            AddKind a = addKindList.get(i);
+        for (int i = 0; i < addKindBeanList.size(); i++) {
+            AddKindBean a = addKindBeanList.get(i);
             if (a.isChecked()) {
-                Role r = new Role();
+                RoleBean r = new RoleBean();
                 r.setId(a.getId() + "");
                 r.setContent(a.getContent());
-                roleList.add(r);
+                roleBeanList.add(r);
             }
         }
         roleAdapter.notifyDataSetChanged();
         Utils.setGridViewHeight(workerGv, 3);
-        for (int i = 0; i < addKindList.size(); i++) {
-            addKindList.get(i).setChecked(false);
+        for (int i = 0; i < addKindBeanList.size(); i++) {
+            addKindBeanList.get(i).setChecked(false);
         }
         addKindAdapter.notifyDataSetChanged();
     }
@@ -293,8 +293,8 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
             //添加工种取消视图点击事件
             case R.id.tv_dialog_person_edit_add_kind_no:
                 addKindDialog.dismiss();
-                for (int i = 0; i < addKindList.size(); i++) {
-                    addKindList.get(i).setChecked(false);
+                for (int i = 0; i < addKindBeanList.size(); i++) {
+                    addKindBeanList.get(i).setChecked(false);
                 }
                 addKindAdapter.notifyDataSetChanged();
                 break;
@@ -306,7 +306,7 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
                 break;
             //提交信息视图点击事件
             case R.id.tv_person_edit_submit:
-                Utils.toast(getActivity(), personPreview.toString());
+                Utils.toast(getActivity(), personPreviewBean.toString());
                 break;
         }
     }
@@ -318,10 +318,10 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
             case R.id.rg_person_edit_sex:
                 switch (checkedId) {
                     case R.id.rb_person_edit_male:
-                        personPreview.setSex(true);
+                        personPreviewBean.setSex(true);
                         break;
                     case R.id.rb_person_edit_female:
-                        personPreview.setSex(false);
+                        personPreviewBean.setSex(false);
                         break;
                     default:
                         break;
@@ -332,11 +332,11 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
                 switch (checkedId) {
                     case R.id.rb_person_edit_no:
                         workerLl.setVisibility(View.GONE);
-                        personPreview.setRole(true);
+                        personPreviewBean.setRole(true);
                         break;
                     case R.id.rb_person_edit_yes:
                         workerLl.setVisibility(View.VISIBLE);
-                        personPreview.setRole(false);
+                        personPreviewBean.setRole(false);
                         break;
                     default:
                         break;
@@ -352,10 +352,10 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
         switch (parent.getId()) {
             //gridview的item的点击事件
             case R.id.gv_person_edit_worker:
-                roleList.remove(position);
+                roleBeanList.remove(position);
                 roleAdapter.notifyDataSetChanged();
                 Utils.setGridViewHeight(workerGv, 3);
-                personPreview.setRoleList(roleList);
+                personPreviewBean.setRoleBeanList(roleBeanList);
                 break;
         }
     }
@@ -364,7 +364,7 @@ public class PersonMagEditFrag extends CommonFragment implements View.OnClickLis
     public void onClick(View item, View widget, int position, int which, boolean isChecked) {
         switch (which) {
             case R.id.cb_item_add_kind_checked:
-                addKindList.get(position).setChecked(isChecked);
+                addKindBeanList.get(position).setChecked(isChecked);
                 break;
         }
     }
