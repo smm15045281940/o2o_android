@@ -15,7 +15,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/y5">
+        android:layout_marginTop="@dimen/x1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,20 +35,12 @@
                     <LinearLayout style="@style/ll_main">
 
                         <ImageView
-                            android:layout_width="@dimen/x30"
-                            android:layout_height="@dimen/x30"
-                            android:layout_gravity="center_horizontal"
-                            android:scaleType="fitXY"
+                            style="@style/iv_job_mag_pay"
                             android:src="@mipmap/prepaid" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="@dimen/x5"
-                            android:text="充值"
-                            android:textColor="@color/gray_a0a0a0"
-                            android:textStyle="bold" />
+                            style="@style/tv_job_mag_pay"
+                            android:text="充值" />
 
                     </LinearLayout>
 
@@ -61,20 +53,12 @@
                     <LinearLayout style="@style/ll_main">
 
                         <ImageView
-                            android:layout_width="@dimen/x30"
-                            android:layout_height="@dimen/x30"
-                            android:layout_gravity="center_horizontal"
-                            android:scaleType="fitXY"
+                            style="@style/iv_job_mag_pay"
                             android:src="@mipmap/send_job2" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="@dimen/x5"
-                            android:text="发布工作"
-                            android:textColor="@color/gray_a0a0a0"
-                            android:textStyle="bold" />
+                            style="@style/tv_job_mag_pay"
+                            android:text="发布工作" />
 
                     </LinearLayout>
 
@@ -85,33 +69,21 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y5"
+                android:layout_marginTop="@dimen/y10"
                 android:background="@android:color/white"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:id="@+id/rl_frag_job_mag_worker"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/y57"
                     android:clickable="true">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="工人工作管理"
-                        android:textColor="@color/blue_2681fc"
-                        android:textSize="@dimen/x15"
-                        android:textStyle="bold" />
+                        style="@style/tv_job_mag_mag"
+                        android:text="工人工作管理" />
 
-                    <ImageView
-                        android:layout_width="@dimen/x30"
-                        android:layout_height="@dimen/x30"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="@dimen/x20"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/right" />
+                    <ImageView style="@style/iv_job_mag_mag" />
 
                 </RelativeLayout>
 
@@ -127,26 +99,14 @@
                 <RelativeLayout
                     android:id="@+id/rl_frag_job_mag_emp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/y57"
                     android:clickable="true">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="雇主发布管理"
-                        android:textColor="@color/blue_2681fc"
-                        android:textSize="@dimen/x15"
-                        android:textStyle="bold" />
+                        style="@style/tv_job_mag_mag"
+                        android:text="雇主发布管理" />
 
-                    <ImageView
-                        android:layout_width="@dimen/x30"
-                        android:layout_height="@dimen/x30"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="@dimen/x20"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/right" />
+                    <ImageView style="@style/iv_job_mag_mag" />
 
                 </RelativeLayout>
 
@@ -162,26 +122,14 @@
                 <RelativeLayout
                     android:id="@+id/rl_frag_job_mag_person"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/y57"
                     android:clickable="true">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:text="个人信息管理"
-                        android:textColor="@color/blue_2681fc"
-                        android:textSize="@dimen/x15"
-                        android:textStyle="bold" />
+                        style="@style/tv_job_mag_mag"
+                        android:text="个人信息管理" />
 
-                    <ImageView
-                        android:layout_width="@dimen/x30"
-                        android:layout_height="@dimen/x30"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="@dimen/x20"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/right" />
+                    <ImageView style="@style/iv_job_mag_mag" />
 
                 </RelativeLayout>
 

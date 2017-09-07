@@ -104,9 +104,9 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
         //初始化无数据视图
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         //初始化刷新加载布局
-        sysMsgPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        sysMsgPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         //初始化刷新加载ListView
-        sysMsgLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        sysMsgLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
@@ -198,10 +198,8 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                sysMsgPtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                sysMsgPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -217,10 +215,8 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                sysMsgPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                sysMsgPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

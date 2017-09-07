@@ -13,4 +13,6 @@ public interface ColorConfig {
     int blue_2681fc = Color.parseColor("#2681fc");
     int red_ff3e50 = Color.parseColor("#ff3e50");
     int gray_a0a0a0 = Color.parseColor("#a0a0a0");
+    int yellow_ffc822 = Color.parseColor("#ffc822");
+    int white_ffffff = Color.parseColor("#ffffff");
 }

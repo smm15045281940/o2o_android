@@ -101,9 +101,9 @@ public class WorkerMagUnderWayFrag extends CommonFragment implements View.OnClic
         //初始化无数据视图
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         //初始化刷新布局视图
-        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         //初始化刷新ListView视图
-        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        pLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
@@ -199,10 +199,8 @@ public class WorkerMagUnderWayFrag extends CommonFragment implements View.OnClic
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
             default:
                 break;
@@ -220,10 +218,8 @@ public class WorkerMagUnderWayFrag extends CommonFragment implements View.OnClic
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
             default:
                 break;

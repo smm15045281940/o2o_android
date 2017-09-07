@@ -2,7 +2,6 @@ package fragment;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -155,13 +154,18 @@ public class DiscountFrag extends CommonFragment implements AdapterView.OnItemCl
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                for (int i = 0; i < 3; i++) {
-                    DcBean d = new DcBean();
-                    d.setTitle("百度");
-                    d.setUrl("https://www.baidu.com/");
-                    tempList.add(d);
-                }
-                Log.e("tempList:", tempList.toString());
+                DcBean d0 = new DcBean();
+                d0.setTitle("优惠一");
+                d0.setUrl("https://www.baidu.com/");
+                DcBean d1 = new DcBean();
+                d1.setTitle("优惠二");
+                d1.setUrl("https://www.baidu.com/");
+                DcBean d2 = new DcBean();
+                d2.setTitle("优惠三");
+                d2.setUrl("https://www.baidu.com/");
+                tempList.add(d0);
+                tempList.add(d1);
+                tempList.add(d2);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -179,10 +183,8 @@ public class DiscountFrag extends CommonFragment implements AdapterView.OnItemCl
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
             default:
                 break;
@@ -191,7 +193,6 @@ public class DiscountFrag extends CommonFragment implements AdapterView.OnItemCl
 
     private void notifyData() {
         dcBeanList.addAll(tempList);
-        Log.e("dcBeanList:", dcBeanList.toString());
         dcAdapter.notifyDataSetChanged();
         tempList.clear();
         switch (state) {
@@ -203,10 +204,8 @@ public class DiscountFrag extends CommonFragment implements AdapterView.OnItemCl
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }
@@ -215,7 +214,7 @@ public class DiscountFrag extends CommonFragment implements AdapterView.OnItemCl
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.plv_frag_discount:
-                Utils.toast(getActivity(), dcBeanList.get(position).getUrl());
+                Utils.toast(getActivity(), dcBeanList.get(position).getTitle());
                 break;
             default:
                 break;

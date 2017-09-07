@@ -5,8 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PersonAdapter;
-import bean.KindBean;
 import bean.PersonBean;
 import bean.ScreenBean;
 import config.CodeConfig;
@@ -38,33 +38,20 @@ import view.CProgressDialog;
 
 public class WorkerActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
-    //根视图
     private View rootView;
-    //返回视图
     private RelativeLayout returnRl;
-    //无网络视图
-    private LinearLayout noNetLl;
-    private TextView noNetTv;
-    //无数据视图
-    private LinearLayout noDataLl;
-    //筛选视图
     private RelativeLayout screenRl;
-    //刷新加载布局
     private PullToRefreshLayout pTrl;
-    //刷新加载ListView
     private PullableListView pLv;
-    //加载对话框视图
     private CProgressDialog cPd;
-    //工人信息数据类集合
     private List<PersonBean> personBeanList;
-    //工人信息数据适配器
     private PersonAdapter personAdapter;
-    //okHttpClient
     private OkHttpClient okHttpClient;
-    //加载状态
     private int state;
-
-    private KindBean kindBean;
+    private FrameLayout emptyFl;
+    private View emptyDataView;
+    private View emptyNetView;
+    private TextView noNetRefreshTv;
 
     private Handler handler = new Handler() {
         @Override
@@ -92,7 +79,6 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
 
     @Override
     protected View getRootView() {
-        //初始化根视图
         return rootView = LayoutInflater.from(this).inflate(R.layout.activity_worker, null);
     }
 
@@ -100,76 +86,65 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     protected void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
-        //初始化返回视图
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_worker_return);
-        //初始化无网络视图
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        //初始化无数据视图
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        //初始化筛选视图
         screenRl = (RelativeLayout) rootView.findViewById(R.id.rl_worker_screen);
-        //初始化刷新加载布局
-        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        //初始化刷新加载ListView
-        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        pLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        //初始化加载对话框
         cPd = new CProgressDialog(this, R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        emptyFl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        emptyFl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(this).inflate(R.layout.empty_net, null);
+        noNetRefreshTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        emptyFl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
     }
 
     @Override
     protected void initData() {
-        Intent intent = getIntent();
-        kindBean = (KindBean) intent.getSerializableExtra("kindBean");
-        //初始化工人信息数据类集合
         personBeanList = new ArrayList<>();
-        //初始化工人信息数据适配器
         personAdapter = new PersonAdapter(this, personBeanList);
-        //初始化okHttpClient
         okHttpClient = new OkHttpClient();
-        //初始化加载状态
         state = StateConfig.LOAD_DONE;
     }
 
     @Override
     protected void setData() {
-        //绑定工人信息数据适配器
         pLv.setAdapter(personAdapter);
     }
 
     @Override
     protected void setListener() {
-        //返回视图监听
         returnRl.setOnClickListener(this);
-        //筛选视图监听
         screenRl.setOnClickListener(this);
-        //无网络刷新视图监听
-        noNetTv.setOnClickListener(this);
-        //刷新加载布局监听
         pTrl.setOnRefreshListener(this);
+        pLv.setOnItemClickListener(this);
+        noNetRefreshTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     @Override
     protected void loadData() {
-        if (checkLocalData()) {
-            loadLocalData();
-        } else {
-            cPd.show();
-            loadNetData();
-        }
-    }
-
-    private boolean checkLocalData() {
-        return false;
-    }
-
-    private void loadLocalData() {
+        cPd.show();
+        loadNetData();
     }
 
     private void loadNetData() {
@@ -198,16 +173,16 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
                 if (personBeanList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
-                    noDataLl.setVisibility(View.GONE);
                     pTrl.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.VISIBLE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
         }
     }
@@ -217,16 +192,16 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
                 if (personBeanList.size() == 0) {
-                    noNetLl.setVisibility(View.GONE);
-                    noDataLl.setVisibility(View.VISIBLE);
                     pTrl.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
+                pTrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
+                pTrl.hideFootView();
                 break;
         }
         personAdapter.notifyDataSetChanged();
@@ -236,17 +211,30 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                for (int i = 0; i < 5; i++) {
-                    PersonBean personBean = new PersonBean();
-                    personBean.setImage("");
-                    personBean.setName(kindBean.getName() + "-" + i);
-                    personBean.setPlay("精通刮大白");
-                    personBean.setShow("十年刮大白经验");
-                    personBean.setState(1);
-                    personBean.setCollect(false);
-                    personBean.setDistance("距离3公里");
-                    personBeanList.add(personBean);
-                }
+                PersonBean p0 = new PersonBean();
+                p0.setName("专业水泥工");
+                p0.setPlay("精通XX，XX，XX");
+                p0.setShow("完成过xx项目，个人家装");
+                p0.setState(StateConfig.LEISURE);
+                p0.setCollect(false);
+                p0.setDistance("距离3公里");
+                PersonBean p1 = new PersonBean();
+                p1.setName("专业水泥工");
+                p1.setPlay("精通XX，XX，XX");
+                p1.setShow("完成过xx项目，个人家装");
+                p1.setState(StateConfig.WORKING);
+                p1.setCollect(false);
+                p1.setDistance("距离3公里");
+                PersonBean p2 = new PersonBean();
+                p2.setName("专业水泥工");
+                p2.setPlay("精通XX，XX，XX");
+                p2.setShow("完成过xx项目，个人家装");
+                p2.setState(StateConfig.TALKING);
+                p2.setCollect(true);
+                p2.setDistance("距离3公里");
+                personBeanList.add(p0);
+                personBeanList.add(p1);
+                personBeanList.add(p2);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -257,17 +245,13 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //返回视图点击事件
             case R.id.rl_worker_return:
                 finish();
                 break;
-            //筛选视图点击事件
             case R.id.rl_worker_screen:
                 startActivityForResult(new Intent(this, WorkerScnActivity.class), CodeConfig.screenRequestCode);
                 break;
-            case R.id.tv_no_net_refresh:
-                state = StateConfig.LOAD_REFRESH;
-                loadNetData();
+            default:
                 break;
         }
     }
@@ -275,7 +259,7 @@ public class WorkerActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, TalkActivity.class);
-        intent.putExtra("worker", personBeanList.get(position - 1));
+        intent.putExtra("worker", personBeanList.get(position));
         startActivity(intent);
     }
 

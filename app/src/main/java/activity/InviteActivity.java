@@ -3,13 +3,17 @@ package activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.gjzg.R;
+
+import utils.Utils;
 
 public class InviteActivity extends CommonActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl;
+    private TextView inviteTv;
 
     @Override
     protected View getRootView() {
@@ -23,6 +27,7 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
 
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_invite_return);
+        inviteTv = (TextView) rootView.findViewById(R.id.tv_invite);
     }
 
     @Override
@@ -38,6 +43,7 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
     @Override
     protected void setListener() {
         returnRl.setOnClickListener(this);
+        inviteTv.setOnClickListener(this);
     }
 
     @Override
@@ -50,6 +56,9 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.rl_invite_return:
                 finish();
+                break;
+            case R.id.tv_invite:
+                Utils.toast(this, "邀请好友功能暂未开通");
                 break;
         }
     }

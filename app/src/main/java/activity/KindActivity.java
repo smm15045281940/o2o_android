@@ -5,8 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,34 +31,26 @@ import okhttp3.Request;
 import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.Utils;
 import view.CProgressDialog;
 
 public class KindActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
-    //根视图
     private View rootView;
-    //返回视图
     private RelativeLayout returnRl;
-    //无网络视图
-    private LinearLayout noNetLl;
-    private TextView noNetTv;
-    //无数据视图
-    private LinearLayout noDataLl;
-    //刷新加载布局
     private PullToRefreshLayout pTrl;
-    //刷新加载ListView
     private PullableListView pLv;
-    //加载对话框视图
     private CProgressDialog cPd;
-    //种类数据类集合
-    private List<KindBean> kindBeanList;
-    //种类数据适配器
+    private List<KindBean> kindBeanList, tempList;
     private KindAdapter kindAdapter;
-    //okHttpClient
     private OkHttpClient okHttpClient;
-    //加载状态
     private int state;
-    //handler
+
+    private FrameLayout emptyFl;
+    private View emptyDataView;
+    private View emptyNetView;
+    private TextView noNetRefreshTv;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -84,7 +77,6 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
 
     @Override
     protected View getRootView() {
-        //初始化根视图
         return rootView = LayoutInflater.from(this).inflate(R.layout.activity_kind, null);
     }
 
@@ -92,72 +84,64 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     protected void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
-        //初始化返回视图
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_kind_return);
-        //初始化无网络视图
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        //初始化无数据视图
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        //初始化刷新加载布局
-        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        //初始化刷新加载ListView
-        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        pLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        //初始化对话框
         cPd = new CProgressDialog(this, R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        emptyFl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        emptyFl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(this).inflate(R.layout.empty_net, null);
+        noNetRefreshTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        emptyFl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
     }
 
     @Override
     protected void initData() {
-        //初始化种类数据类集合集合
         kindBeanList = new ArrayList<>();
-        //初始化种类数据适配器
+        tempList = new ArrayList<>();
         kindAdapter = new KindAdapter(this, kindBeanList);
-        //初始化okHttpClient
         okHttpClient = new OkHttpClient();
-        //初始化加载状态
         state = StateConfig.LOAD_DONE;
     }
 
     @Override
     protected void setData() {
-        //绑定种类数据适配器
         pLv.setAdapter(kindAdapter);
     }
 
     @Override
     protected void setListener() {
-        //返回视图监听
         returnRl.setOnClickListener(this);
-        //无网络刷新监听
-        noNetTv.setOnClickListener(this);
-        //刷新加载布局监听
         pTrl.setOnRefreshListener(this);
-        //刷新加载ListView项点击监听
         pLv.setOnItemClickListener(this);
+        noNetRefreshTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     @Override
     protected void loadData() {
-        if (checkLocalData()) {
-            loadLocalData();
-        } else {
-            cPd.show();
-            loadNetData();
-        }
-    }
-
-    private boolean checkLocalData() {
-        return false;
-    }
-
-    private void loadLocalData() {
+        cPd.show();
+        loadNetData();
     }
 
     private void loadNetData() {
@@ -186,23 +170,14 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 KindBean k0 = new KindBean();
-                k0.setName("水泥工");
+                k0.setName("水泥工（瓦匠）");
                 KindBean k1 = new KindBean();
                 k1.setName("搬运工");
                 KindBean k2 = new KindBean();
                 k2.setName("焊接工");
-                KindBean k3 = new KindBean();
-                k3.setName("xx工");
-                KindBean k4 = new KindBean();
-                k4.setName("xx工");
-                KindBean k5 = new KindBean();
-                k5.setName("xx工");
-                kindBeanList.add(k0);
-                kindBeanList.add(k1);
-                kindBeanList.add(k2);
-                kindBeanList.add(k3);
-                kindBeanList.add(k4);
-                kindBeanList.add(k5);
+                tempList.add(k0);
+                tempList.add(k1);
+                tempList.add(k2);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -215,34 +190,41 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
                 if (kindBeanList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.VISIBLE);
                     pTrl.setVisibility(View.GONE);
-                    noDataLl.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
+                pTrl.hideHeadView();
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
+                pTrl.hideFootView();
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
         }
     }
 
     private void notifyData() {
+        kindBeanList.addAll(tempList);
+        tempList.clear();
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cPd.dismiss();
                 if (kindBeanList.size() == 0) {
-                    noDataLl.setVisibility(View.VISIBLE);
-                    noNetLl.setVisibility(View.GONE);
+                    pTrl.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.GONE);
+                } else {
+                    pTrl.setVisibility(View.VISIBLE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
+                pTrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
+                pTrl.hideFootView();
                 break;
         }
         kindAdapter.notifyDataSetChanged();
@@ -251,24 +233,15 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //返回视图点击事件
             case R.id.rl_kind_return:
                 finish();
-                break;
-            //无网络刷新视图点击事件
-            case R.id.tv_no_net_refresh:
-                noNetLl.setVisibility(View.GONE);
-                pTrl.setVisibility(View.VISIBLE);
-                loadNetData();
                 break;
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(this, WorkerActivity.class);
-        intent.putExtra("kindBean", kindBeanList.get(position));
-        startActivity(intent);
+        startActivity(new Intent(this, WorkerActivity.class));
     }
 
     @Override

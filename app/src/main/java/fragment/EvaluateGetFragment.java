@@ -91,8 +91,8 @@ public class EvaluateGetFragment extends CommonFragment implements View.OnClickL
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        evaluateGetPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        evaluateGetLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        evaluateGetPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        evaluateGetLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
@@ -174,10 +174,8 @@ public class EvaluateGetFragment extends CommonFragment implements View.OnClickL
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                evaluateGetPtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                evaluateGetPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -193,10 +191,8 @@ public class EvaluateGetFragment extends CommonFragment implements View.OnClickL
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                evaluateGetPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                evaluateGetPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

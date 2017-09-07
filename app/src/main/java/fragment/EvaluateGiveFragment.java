@@ -101,8 +101,8 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        evaluateGivePtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        evaluateGiveLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        evaluateGivePtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        evaluateGiveLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
@@ -181,10 +181,8 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                evaluateGivePtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                evaluateGivePtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -200,10 +198,8 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                evaluateGivePtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                evaluateGivePtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

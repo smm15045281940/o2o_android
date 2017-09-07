@@ -115,9 +115,9 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
         //初始化无数据视图
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         //初始化刷新加载布局
-        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         //初始化刷新加载ListView
-        pLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        pLv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
@@ -249,10 +249,8 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -268,10 +266,8 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                pTrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                pTrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
         detailAdapter.notifyDataSetChanged();

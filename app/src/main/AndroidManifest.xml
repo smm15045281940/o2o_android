@@ -44,9 +44,7 @@
         <activity android:name="activity.JobActivity" />
         <activity android:name="activity.SetActivity" />
         <activity android:name="activity.SevClsActivity" />
-        <activity
-            android:name="activity.LoginActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name="activity.LoginActivity" />
         <activity
             android:name="activity.RechargeActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -68,6 +66,7 @@
         <activity
             android:name="activity.PhoneProveActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+        <activity android:name="activity.ProjectActivity"></activity>
     </application>
 
 </manifest>

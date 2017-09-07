@@ -9,8 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,7 +38,14 @@ public class TalkActivity extends AppCompatActivity implements View.OnClickListe
     private View rootView;
     private RelativeLayout returnRl;
     private TextView topTitleTv, noLocationTipTv;
+    private TextView wyzgTv;
+    private ImageView phoneIv;
     private MapView mapView;
+
+    //取消工人弹窗
+    private View cancelWorkerPopView;
+    private PopupWindow cancelWorkerPopWindow;
+    private TextView cancelWorkerNoTv, cancelWorkerYesTv;
 
     private BaiduMap baiduMap;
     private LatLng point;
@@ -76,6 +88,7 @@ public class TalkActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         initRootView();
+        initPopView();
     }
 
     private void initRootView() {
@@ -83,6 +96,39 @@ public class TalkActivity extends AppCompatActivity implements View.OnClickListe
         topTitleTv = (TextView) rootView.findViewById(R.id.tv_talk_top_title);
         mapView = (MapView) rootView.findViewById(R.id.mv_worker);
         noLocationTipTv = (TextView) rootView.findViewById(R.id.tv_talk_no_location_tip);
+        phoneIv = (ImageView) rootView.findViewById(R.id.iv_talk_phone);
+        phoneIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelWorkerPopWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+            }
+        });
+        wyzgTv = (TextView) rootView.findViewById(R.id.tv_talk_wyzg);
+        wyzgTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TalkActivity.this, ProjectActivity.class));
+            }
+        });
+    }
+
+    private void initPopView() {
+        cancelWorkerPopView = LayoutInflater.from(this).inflate(R.layout.pop_cancel_worker, null);
+        cancelWorkerNoTv = (TextView) cancelWorkerPopView.findViewById(R.id.tv_pop_cancel_worker_no);
+        cancelWorkerYesTv = (TextView) cancelWorkerPopView.findViewById(R.id.tv_pop_cancel_worker_yes);
+        cancelWorkerNoTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelWorkerPopWindow.dismiss();
+            }
+        });
+        cancelWorkerYesTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelWorkerPopWindow.dismiss();
+            }
+        });
+        cancelWorkerPopWindow = new PopupWindow(cancelWorkerPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     private void initData() {
@@ -112,7 +158,7 @@ public class TalkActivity extends AppCompatActivity implements View.OnClickListe
     private void loadLocation() {
         baiduMap = mapView.getMap();
         point = new LatLng(latitude, longitude);
-        bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher);
+        bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.point_blue);
         option = new MarkerOptions().position(point).icon(bitmap);
         mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point,
                 Float.parseFloat("19"));

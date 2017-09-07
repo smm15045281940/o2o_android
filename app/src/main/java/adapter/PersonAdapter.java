@@ -11,6 +11,7 @@ import com.gjzg.R;
 import java.util.List;
 
 import bean.PersonBean;
+import config.StateConfig;
 
 /**
  * 创建日期：2017/8/2 on 10:39
@@ -37,7 +38,25 @@ public class PersonAdapter extends CommonAdapter<PersonBean> {
         PersonBean personBean = list.get(position);
         if (personBean != null) {
             holder.imageIv.setImageResource(R.mipmap.person_face_default);
-            holder.stateIv.setImageResource(R.mipmap.worker_leisure);
+            switch (personBean.getState()) {
+                case StateConfig.LEISURE:
+                    holder.stateIv.setImageResource(R.mipmap.worker_leisure);
+                    break;
+                case StateConfig.WAIT:
+                    holder.stateIv.setImageResource(R.mipmap.worker_wait);
+                    break;
+                case StateConfig.TALKING:
+                    holder.stateIv.setImageResource(R.mipmap.worker_talk);
+                    break;
+                case StateConfig.WORKING:
+                    holder.stateIv.setImageResource(R.mipmap.worker_mid);
+                    break;
+                case StateConfig.OVER:
+                    holder.stateIv.setImageResource(R.mipmap.worker_over);
+                    break;
+                default:
+                    break;
+            }
             if (personBean.isCollect()) {
                 holder.collectIv.setImageResource(R.mipmap.collect_yellow);
             } else {

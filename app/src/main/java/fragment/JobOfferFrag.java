@@ -101,9 +101,9 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         //初始化刷新加载布局
-        jobOfferPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
+        jobOfferPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         //初始化刷新加载ListView
-        jobOfferLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        jobOfferLv = (PullableListView) rootView.findViewById(R.id.plv);
         //初始化无网络视图
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
@@ -201,10 +201,8 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                jobOfferPtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                jobOfferPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -216,10 +214,8 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
                 cPd.dismiss();
                 break;
             case StateConfig.LOAD_REFRESH:
-                jobOfferPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                jobOfferPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

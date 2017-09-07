@@ -89,8 +89,8 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        collectJobPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        collectJobLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        collectJobPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        collectJobLv = (PullableListView) rootView.findViewById(R.id.plv);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         emptyNoNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
@@ -177,10 +177,8 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                collectJobPtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                collectJobPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -196,10 +194,8 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                collectJobPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                collectJobPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

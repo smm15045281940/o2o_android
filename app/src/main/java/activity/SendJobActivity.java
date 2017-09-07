@@ -97,10 +97,10 @@ public class SendJobActivity extends CommonActivity implements View.OnClickListe
 
     private void initDialogView() {
         //初始化项目类型对话框视图
-        kindDialogView = View.inflate(this, R.layout.dialog_listview, null);
+        kindDialogView = View.inflate(this, R.layout.dialog_scn, null);
         kindDialog = new AlertDialog.Builder(this).setView(kindDialogView).create();
         kindDialog.setCanceledOnTouchOutside(false);
-        kindDialogLv = (ListView) kindDialogView.findViewById(R.id.lv_dialog_listview);
+        kindDialogLv = (ListView) kindDialogView.findViewById(R.id.lv_dialog_scn);
     }
 
     @Override
@@ -278,7 +278,7 @@ public class SendJobActivity extends CommonActivity implements View.OnClickListe
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             //项目类型ListView
-            case R.id.lv_dialog_listview:
+            case R.id.lv_dialog_scn:
                 projectKindTv.setText(kindList.get(position));
                 sendJobBean.setKind(projectKindTv.getText().toString());
                 kindDialog.dismiss();

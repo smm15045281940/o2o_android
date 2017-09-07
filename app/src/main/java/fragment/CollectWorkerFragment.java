@@ -97,8 +97,8 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
     }
 
     private void initRootView() {
-        collectWorkerPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl_common_listview);
-        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.plv_common_listview);
+        collectWorkerPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        collectWorkerLv = (PullableListView) rootView.findViewById(R.id.plv);
         noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
         noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
         noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
@@ -180,10 +180,8 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                collectWorkerPtrl.refreshFinish(PullToRefreshLayout.FAIL);
                 break;
             case StateConfig.LOAD_LOAD:
-                collectWorkerPtrl.loadmoreFinish(PullToRefreshLayout.FAIL);
                 break;
         }
     }
@@ -199,10 +197,8 @@ public class CollectWorkerFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
-                collectWorkerPtrl.refreshFinish(PullToRefreshLayout.SUCCEED);
                 break;
             case StateConfig.LOAD_LOAD:
-                collectWorkerPtrl.loadmoreFinish(PullToRefreshLayout.SUCCEED);
                 break;
         }
     }

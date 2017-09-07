@@ -46,6 +46,8 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
     private ScreenHistoryAdapter screenHistoryAdapter;
 
     private AlertDialog dialog;
+    private TextView dialogTitleTv;
+    private ImageView dialogCloseIv;
 
     private int workerState = 0;
     private int dialogState = 0;
@@ -59,7 +61,7 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
 
     @Override
     protected View getRootView() {
-        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_screen_worker,null);
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_screen_worker, null);
     }
 
     @Override
@@ -89,11 +91,20 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
     }
 
     private void initDialogView() {
-        dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_listview, null);
+        dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_scn, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView);
         dialog = builder.create();
-        dialogLv = (ListView) dialogView.findViewById(R.id.lv_dialog_listview);
+        dialog.setCanceledOnTouchOutside(false);
+        dialogLv = (ListView) dialogView.findViewById(R.id.lv_dialog_scn);
+        dialogTitleTv = (TextView) dialogView.findViewById(R.id.tv_dialog_scn_title);
+        dialogCloseIv = (ImageView) dialogView.findViewById(R.id.iv_dialog_scn_close);
+        dialogCloseIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -137,6 +148,11 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
         if (checkHistoryData()) {
             screenBeanList.addAll(screenHistoryBean.getScreenBeanList());
             screenHistoryAdapter.notifyDataSetChanged();
+            if (screenBeanList.size() == 0) {
+                historyLv.setVisibility(View.GONE);
+            } else {
+                historyLv.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -222,7 +238,7 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
         if (!disClick) {
             Utils.toast(this, "请选择搜索范围");
         } else if (!kindClick) {
-            Utils.toast(this, "青选择工种");
+            Utils.toast(this, "请选择工种");
         } else {
             saveToLocalData();
             result(screenBean);
@@ -268,9 +284,11 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
         dialogList.clear();
         switch (tarState) {
             case 0:
+                dialogTitleTv.setText("搜索范围");
                 dialogList.addAll(disList);
                 break;
             case 1:
+                dialogTitleTv.setText("选择工种");
                 dialogList.addAll(kindList);
                 break;
         }
@@ -282,7 +300,7 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         switch (parent.getId()) {
-            case R.id.lv_dialog_listview:
+            case R.id.lv_dialog_scn:
                 dialog.dismiss();
                 switch (dialogState) {
                     case 0:
@@ -314,6 +332,11 @@ public class WorkerScnActivity extends CommonActivity implements View.OnClickLis
         lruJsonCache.remove("screenHistoryBean");
         screenBeanList.remove(p);
         screenHistoryAdapter.notifyDataSetChanged();
+        if (screenBeanList.size() == 0) {
+            historyLv.setVisibility(View.GONE);
+        } else {
+            historyLv.setVisibility(View.VISIBLE);
+        }
         screenHistoryBean.setScreenBeanList(screenBeanList);
         lruJsonCache.put("screenHistoryBean", screenHistoryBean);
     }

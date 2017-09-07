@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@mipmap/empty_no_data" />
+                android:src="@mipmap/empty_data" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include layout="@layout/refresh_head" />
+            <include layout="@layout/head" />
 
             <refreshload.PullableListView
                 android:id="@+id/plv_frag_discount"
@@ -89,7 +89,7 @@
                 android:layout_height="match_parent"
                 android:divider="@null" />
 
-            <include layout="@layout/load_more" />
+            <include layout="@layout/foot" />
 
         </refreshload.PullToRefreshLayout>
 
