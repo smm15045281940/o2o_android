@@ -76,13 +76,13 @@ public class PersonAdapter extends CommonAdapter<PersonBean> {
         private TextView nameTv, playTv, showTv, distanceTv;
 
         public ViewHolder(View itemView) {
-            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_image);
-            stateIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_state);
-            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_collect);
-            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_name);
-            playTv = (TextView) itemView.findViewById(R.id.tv_item_worker_play);
-            showTv = (TextView) itemView.findViewById(R.id.tv_item_worker_show);
-            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_worker_distance);
+            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_mag_image);
+            stateIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_mag_state);
+            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_mag_collect);
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_mag_name);
+            playTv = (TextView) itemView.findViewById(R.id.tv_item_worker_mag_play);
+            showTv = (TextView) itemView.findViewById(R.id.tv_item_worker_mag_show);
+            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_worker_mag_distance);
         }
     }
 }

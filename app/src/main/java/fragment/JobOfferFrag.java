@@ -5,8 +5,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -38,30 +37,19 @@ import view.CProgressDialog;
  * 描述:工作邀约
  */
 
-public class JobOfferFrag extends CommonFragment implements View.OnClickListener, AdapterView.OnItemClickListener, PullToRefreshLayout.OnRefreshListener {
+public class JobOfferFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
 
-    //根视图
     private View rootView;
-    //无网络视图
-    private LinearLayout noNetLl;
-    private TextView noNetTv;
-    //无数据视图
-    private LinearLayout noDataLl;
-    //刷新加载布局
-    private PullToRefreshLayout jobOfferPtrl;
-    //刷新加载ListView
-    private PullableListView jobOfferLv;
-    //加载对话框视图
-    private CProgressDialog cPd;
-    //工作邀约数据类集合
-    private List<MsgBean> jobOfferList;
-    //工作邀约数据适配器
-    private MsgAdapter jobOfferAdapter;
-    //okHttpClient
+    private FrameLayout fl;
+    private View emptyDataView, emptyNetView;
+    private TextView emptyNetTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
+    private CProgressDialog cpd;
+    private List<MsgBean> list;
+    private MsgAdapter adapter;
     private OkHttpClient okHttpClient;
-    //加载状态
     private int state = StateConfig.LOAD_DONE;
-    //handler
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -69,7 +57,7 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNoNet();
+                        notifyNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -88,7 +76,6 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
 
     @Override
     protected View getRootView() {
-        //初始化根布局
         return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
     }
 
@@ -96,53 +83,60 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
     protected void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //初始化刷新加载布局
-        jobOfferPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        //初始化刷新加载ListView
-        jobOfferLv = (PullableListView) rootView.findViewById(R.id.plv);
-        //初始化无网络视图
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        //初始化无数据视图
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        //初始化加载对话框
-        cPd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+        cpd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
+        emptyNetTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        //初始化工作邀约数据类集合
-        jobOfferList = new ArrayList<>();
-        //初始化工作邀约数据适配器
-        jobOfferAdapter = new MsgAdapter(getActivity(), jobOfferList);
-        //初始化okHttpClient
+        list = new ArrayList<>();
+        adapter = new MsgAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
     }
 
     @Override
     protected void setData() {
-        //绑定工作邀约数据适配器
-        jobOfferLv.setAdapter(jobOfferAdapter);
+        plv.setAdapter(adapter);
     }
 
     @Override
     protected void setListener() {
-        //无网络刷新监听
-        noNetTv.setOnClickListener(this);
-        //工作邀约项点击监听
-        jobOfferLv.setOnItemClickListener(this);
+        ptrl.setOnRefreshListener(this);
     }
 
     @Override
     protected void loadData() {
-        cPd.show();
+        cpd.show();
         loadNetData();
     }
 
@@ -159,7 +153,7 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        jobOfferList.clear();
+                        list.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -182,8 +176,8 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
                 mo1.setDate("2017/03/06");
                 mo1.setDes("您发布的工作有工人感兴趣并向您发起邀约，等待您同意");
                 mo1.setArrowShow(true);
-                jobOfferList.add(mo0);
-                jobOfferList.add(mo1);
+                list.add(mo0);
+                list.add(mo1);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -191,42 +185,47 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
         }
     }
 
-    private void notifyNoNet() {
+    private void notifyNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
-                if (jobOfferList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
-                    noDataLl.setVisibility(View.GONE);
-                }
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
         }
     }
 
     private void notifyData() {
-        jobOfferAdapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
+                cpd.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
+                }
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
                 break;
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_no_net_refresh:
-                loadNetData();
-                break;
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -239,10 +238,5 @@ public class JobOfferFrag extends CommonFragment implements View.OnClickListener
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_LOAD;
         loadNetData();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Utils.toast(getActivity(), "你点击了第" + (position + 1) + "个" + jobOfferList.get(position).getTitle());
     }
 }

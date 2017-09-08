@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -31,6 +31,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.Utils;
 import view.CProgressDialog;
 
 /**
@@ -39,18 +40,18 @@ import view.CProgressDialog;
  * 描述:给别人的评价
  */
 
-public class EvaluateGiveFragment extends Fragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class EvaluateGiveFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
-    private LinearLayout noNetLl;
-    private LinearLayout noDataLl;
-    private TextView noNetTv;
-    private PullToRefreshLayout evaluateGivePtrl;
-    private PullableListView evaluateGiveLv;
-    private CProgressDialog progressDialog;
+    private FrameLayout fl;
+    private View emptyDataView, emptyNetView;
+    private TextView emptyNetTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
+    private CProgressDialog cpd;
 
-    private List<EvaluateBean> evaluateBeanGiveList;
-    private EvaluateAdapter evaluateGiveAdapter;
+    private List<EvaluateBean> list;
+    private EvaluateAdapter adapter;
 
     private OkHttpClient okHttpClient;
 
@@ -95,37 +96,55 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
     private void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        evaluateGivePtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        evaluateGiveLv = (PullableListView) rootView.findViewById(R.id.plv);
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        progressDialog = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+        cpd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
+        emptyNetTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     private void initData() {
-        evaluateBeanGiveList = new ArrayList<>();
-        evaluateGiveAdapter = new EvaluateAdapter(getActivity(), evaluateBeanGiveList);
+        list = new ArrayList<>();
+        adapter = new EvaluateAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
     }
 
     private void setData() {
-        evaluateGiveLv.setAdapter(evaluateGiveAdapter);
+        plv.setAdapter(adapter);
     }
 
     private void setListener() {
-        noNetTv.setOnClickListener(this);
-        evaluateGivePtrl.setOnRefreshListener(this);
+        ptrl.setOnRefreshListener(this);
     }
 
     private void loadData() {
-        progressDialog.show();
+        cpd.show();
         loadNetData();
     }
 
@@ -141,7 +160,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        evaluateBeanGiveList.clear();
+                        list.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -162,7 +181,7 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
                     e.setContent("老板太苛刻");
                     e.setPraiseCount(0);
                     e.setTime("2017年5月4日 17:25");
-                    evaluateBeanGiveList.add(e);
+                    list.add(e);
                 }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
@@ -174,44 +193,44 @@ public class EvaluateGiveFragment extends Fragment implements View.OnClickListen
     private void notifyNoNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                progressDialog.dismiss();
-                if (evaluateBeanGiveList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
-                    noDataLl.setVisibility(View.GONE);
-                }
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.GONE);
+                emptyNetView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
         }
     }
 
     private void notifyData() {
-        evaluateGiveAdapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_DONE:
-                progressDialog.dismiss();
-                if (evaluateBeanGiveList.size() == 0) {
-                    noNetLl.setVisibility(View.GONE);
-                    noDataLl.setVisibility(View.VISIBLE);
+                cpd.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
                 break;
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_no_net_refresh:
-                noNetLl.setVisibility(View.GONE);
-                loadNetData();
-                break;
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

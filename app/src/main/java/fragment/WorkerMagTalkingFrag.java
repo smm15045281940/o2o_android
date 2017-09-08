@@ -1,10 +1,7 @@
 package fragment;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +17,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.PersonAdapter;
+import adapter.WorkerMagAdapter;
 import bean.PersonBean;
 import config.NetConfig;
 import config.StateConfig;
+import listener.ListItemClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -35,28 +33,24 @@ import utils.Utils;
 import view.CProgressDialog;
 
 /**
- * 创建日期：2017/8/8 on 10:18
+ * 创建日期：2017/8/29 on 16:27
  * 作者:孙明明
- * 描述:收藏的工人碎片
+ * 描述:工人工作管理碎片-洽谈中
  */
 
-public class CollectWorkerFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
+public class WorkerMagTalkingFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener, ListItemClickHelp {
 
     private View rootView;
     private FrameLayout fl;
-    private View emptyDataView, emptyNetView;
+    private View emptyNetView, emptyDataView;
     private TextView emptyNetTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-
     private List<PersonBean> list;
-    private PersonAdapter adapter;
-
+    private WorkerMagAdapter adapter;
     private OkHttpClient okHttpClient;
-
     private int state = StateConfig.LOAD_DONE;
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -81,25 +75,20 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
         handler.removeMessages(StateConfig.LOAD_DONE);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.common_listview, null);
-        initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
-        return rootView;
+    protected View getRootView() {
+        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
         initRootView();
         initDialogView();
         initEmptyView();
     }
 
     private void initRootView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
@@ -128,28 +117,32 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
         });
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         list = new ArrayList<>();
-        adapter = new PersonAdapter(getActivity(), list);
+        adapter = new WorkerMagAdapter(getActivity(), list, this);
         okHttpClient = new OkHttpClient();
     }
 
-    private void setData() {
+    @Override
+    protected void setData() {
         plv.setAdapter(adapter);
     }
 
-    private void setListener() {
+    @Override
+    protected void setListener() {
         ptrl.setOnRefreshListener(this);
     }
 
-    private void loadData() {
+    @Override
+    protected void loadData() {
         cpd.show();
         loadNetData();
     }
 
     private void loadNetData() {
-        Request collectWorkerRequest = new Request.Builder().url(NetConfig.testUrl).get().build();
-        okHttpClient.newCall(collectWorkerRequest).enqueue(new Callback() {
+        Request request = new Request.Builder().url(NetConfig.testUrl).get().build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
@@ -172,16 +165,15 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                for (int i = 0; i < 10; i++) {
-                    PersonBean p = new PersonBean();
-                    p.setName("dfdf");
-                    p.setPlay("hadifdf");
-                    p.setShow("weedt");
-                    p.setDistance("vcvcv");
-                    p.setState(2);
-                    p.setCollect(true);
-                    list.add(p);
-                }
+                PersonBean p1 = new PersonBean();
+                p1.setImage("");
+                p1.setName("专业水泥工");
+                p1.setPlay("X月X日开工，工期5天");
+                p1.setShow("工资：100/人/天");
+                p1.setState(StateConfig.TALKING);
+                p1.setCollect(false);
+                p1.setDistance("距离3公里");
+                list.add(p1);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -204,6 +196,8 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
                 Utils.toast(getActivity(), StateConfig.loadNonet);
+                break;
+            default:
                 break;
         }
     }
@@ -228,6 +222,8 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
                 break;
+            default:
+                break;
         }
         adapter.notifyDataSetChanged();
     }
@@ -242,5 +238,10 @@ public class CollectWorkerFragment extends Fragment implements PullToRefreshLayo
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_LOAD;
         loadNetData();
+    }
+
+    @Override
+    public void onClick(View item, View widget, int position, int which, boolean isChecked) {
+
     }
 }

@@ -5,7 +5,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -28,6 +28,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.Utils;
 import view.CProgressDialog;
 
 /**
@@ -36,17 +37,18 @@ import view.CProgressDialog;
  * 描述:收藏的工作碎片
  */
 
-public class CollectJobFragment extends CommonFragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class CollectJobFragment extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
-    private LinearLayout noDataLl, noNetLl;
-    private TextView emptyNoNetTv;
-    private PullToRefreshLayout collectJobPtrl;
-    private PullableListView collectJobLv;
-    private CProgressDialog progressDialog;
+    private FrameLayout fl;
+    private View emptyDataView,emptyNetView;
+    private TextView emptyNetTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
+    private CProgressDialog cpd;
 
-    private List<PersonBean> collectJobList;
-    private PersonAdapter collectJobAdapter;
+    private List<PersonBean> list;
+    private PersonAdapter adapter;
 
     private OkHttpClient okHttpClient;
 
@@ -59,7 +61,7 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNoNet();
+                        notifyNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -85,42 +87,59 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
     protected void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
-        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        collectJobPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        collectJobLv = (PullableListView) rootView.findViewById(R.id.plv);
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        emptyNoNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        progressDialog = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+        cpd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
+        emptyNetTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        collectJobList = new ArrayList<>();
-        collectJobAdapter = new PersonAdapter(getActivity(), collectJobList);
+        list = new ArrayList<>();
+        adapter = new PersonAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
     }
 
     @Override
     protected void setData() {
-        collectJobLv.setAdapter(collectJobAdapter);
+        plv.setAdapter(adapter);
     }
 
     @Override
     protected void setListener() {
-        emptyNoNetTv.setOnClickListener(this);
-        collectJobPtrl.setOnRefreshListener(this);
+        ptrl.setOnRefreshListener(this);
     }
 
     @Override
     protected void loadData() {
-        progressDialog.show();
+        cpd.show();
         loadNetData();
     }
 
@@ -136,7 +155,7 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        collectJobList.clear();
+                        list.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -157,7 +176,7 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
                     p.setPlay("工资：xxx");
                     p.setDistance("距我x公里");
                     p.setCollect(false);
-                    collectJobList.add(p);
+                    list.add(p);
                 }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
@@ -166,48 +185,47 @@ public class CollectJobFragment extends CommonFragment implements View.OnClickLi
         }
     }
 
-    private void notifyNoNet() {
-        collectJobAdapter.notifyDataSetChanged();
+    private void notifyNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                progressDialog.dismiss();
-                if (collectJobList.size() == 0) {
-                    noDataLl.setVisibility(View.GONE);
-                    noNetLl.setVisibility(View.VISIBLE);
-                }
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.GONE);
+                emptyNetView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
         }
     }
 
     private void notifyData() {
-        collectJobAdapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_DONE:
-                progressDialog.dismiss();
-                if (collectJobList.size() == 0) {
-                    noNetLl.setVisibility(View.GONE);
-                    noDataLl.setVisibility(View.VISIBLE);
+                cpd.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
                 break;
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_no_net_refresh:
-                noNetLl.setVisibility(View.GONE);
-                loadNetData();
-                break;
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

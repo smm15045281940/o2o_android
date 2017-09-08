@@ -142,7 +142,7 @@
     <style name="v_split">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/gray_a0a0a0</item>
+        <item name="android:background">@color/gray_c4ced3</item>
     </style>
     <!--我的客服LinearLayout外部样式-->
     <style name="ll_mine_service_out">
@@ -220,7 +220,7 @@
         <item name="android:layout_marginTop">@dimen/y5</item>
         <item name="android:layout_marginBottom">@dimen/y5</item>
         <item name="android:textColor">@color/gray_a0a0a0</item>
-        <item name="android:textSize">@dimen/x15</item>
+        <item name="android:textSize">@dimen/y11</item>
     </style>
 
     <!--设置密码-->

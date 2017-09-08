@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -31,41 +32,28 @@ import okhttp3.Request;
 import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.Utils;
 import view.CProgressDialog;
 
 public class DetailActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
-    //根视图
     private View rootView;
-    //返回视图
     private RelativeLayout returnRl;
-    //菜单视图
     private LinearLayout menuLl;
-    //弹窗视图
     private View menuPopView;
     private PopupWindow menuPopWindow;
     private RelativeLayout menuAllRl, menuOutRl, menuInRl;
     private TextView menuContentTv;
-    //无网络视图
-    private LinearLayout noNetLl;
-    private TextView noNetTv;
-    //无数据视图
-    private LinearLayout noDataLl;
-    //加载对话框视图
-    private CProgressDialog cPd;
-    //刷新加载布局
-    private PullToRefreshLayout pTrl;
-    //刷新加载ListView
-    private PullableListView pLv;
-    //明细数据类集合
-    private List<DetailBean> detailBeanList;
-    //明细数据适配器
-    private DetailAdapter detailAdapter;
-    //okHttpClient
+    private CProgressDialog cpd;
+    private FrameLayout fl;
+    private View emptyNetView, emptyDataView;
+    private TextView emptyNetTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
+    private List<DetailBean> list;
+    private DetailAdapter adapter;
     private OkHttpClient okHttpClient;
-    //加载状态
-    private int state;
-    //handler
+    private int state = StateConfig.LOAD_DONE;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -73,7 +61,7 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNoNet();
+                        notifyNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -92,7 +80,6 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
 
     @Override
     protected View getRootView() {
-        //初始化根布局
         return rootView = LayoutInflater.from(this).inflate(R.layout.activity_detail, null);
     }
 
@@ -101,32 +88,22 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
         initRootView();
         initDialogView();
         initPopWindowView();
+        initEmptyView();
     }
 
     private void initRootView() {
-        //初始化返回视图
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_detail_return);
-        //初始化菜单视图
         menuLl = (LinearLayout) rootView.findViewById(R.id.ll_detail_menu);
         menuContentTv = (TextView) rootView.findViewById(R.id.tv_detail_menu_content);
-        //初始化无网络视图
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        //初始化无数据视图
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        //初始化刷新加载布局
-        pTrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        //初始化刷新加载ListView
-        pLv = (PullableListView) rootView.findViewById(R.id.plv);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        //初始化加载对话框视图
-        cPd = new CProgressDialog(this, R.style.dialog_cprogress);
+        cpd = new CProgressDialog(this, R.style.dialog_cprogress);
     }
 
     private void initPopWindowView() {
-        //初始化弹窗视图
         menuPopView = LayoutInflater.from(this).inflate(R.layout.popwindow_detail_menu, null);
         menuAllRl = (RelativeLayout) menuPopView.findViewById(R.id.rl_popwindow_detail_menu_all);
         menuOutRl = (RelativeLayout) menuPopView.findViewById(R.id.rl_popwindow_detail_menu_out);
@@ -144,56 +121,52 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
         });
     }
 
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(this).inflate(R.layout.empty_net, null);
+        emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
+        emptyNetTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
+    }
+
     @Override
     protected void initData() {
-        //初始化明细数据类集合
-        detailBeanList = new ArrayList<>();
-        //初始化明细数据适配器
-        detailAdapter = new DetailAdapter(this, detailBeanList);
-        //初始化okHttpClient
+        list = new ArrayList<>();
+        adapter = new DetailAdapter(this, list);
         okHttpClient = new OkHttpClient();
-        //初始化加载状态
-        state = StateConfig.LOAD_DONE;
     }
 
     @Override
     protected void setData() {
-        //绑定明细数据适配器
-        pLv.setAdapter(detailAdapter);
+        plv.setAdapter(adapter);
     }
 
     @Override
     protected void setListener() {
-        //返回视图监听
+        ptrl.setOnRefreshListener(this);
         returnRl.setOnClickListener(this);
-        //菜单视图监听
         menuLl.setOnClickListener(this);
-        //菜单全部监听
         menuAllRl.setOnClickListener(this);
-        //菜单支出监听
         menuOutRl.setOnClickListener(this);
-        //菜单收入监听
         menuInRl.setOnClickListener(this);
-        //无网络刷新监听
-        noNetTv.setOnClickListener(this);
     }
 
     @Override
     protected void loadData() {
-        if (checkLocalData()) {
-            loadLocalData();
-        } else {
-            cPd.show();
-            loadNetData();
-        }
-    }
-
-    private boolean checkLocalData() {
-        return false;
-    }
-
-    private void loadLocalData() {
-
+        cpd.show();
+        loadNetData();
     }
 
     private void loadNetData() {
@@ -209,7 +182,7 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
                 if (response.isSuccessful()) {
                     String result = response.body().string();
                     if (state == StateConfig.LOAD_REFRESH) {
-                        detailBeanList.clear();
+                        list.clear();
                     }
                     parseJson(result);
                 }
@@ -222,11 +195,29 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
                 DetailBean d0 = new DetailBean();
-                d0.setTitle("支出");
-                d0.setDes("dfdfd");
-                d0.setTime("derer");
-                d0.setBalance("gtfbrt");
-                detailBeanList.add(d0);
+                d0.setTitle("提现");
+                d0.setDes("-300.00");
+                d0.setTime("2017-08-06");
+                d0.setBalance("余额：100.00");
+                DetailBean d1 = new DetailBean();
+                d1.setTitle("支付");
+                d1.setDes("-300.00");
+                d1.setTime("2017-08-01");
+                d1.setBalance("余额：100.00");
+                DetailBean d2 = new DetailBean();
+                d2.setTitle("充值");
+                d2.setDes("+100.00");
+                d2.setTime("2017-07-06");
+                d2.setBalance("余额：200.00");
+                DetailBean d3 = new DetailBean();
+                d3.setTitle("收入");
+                d3.setDes("+100.00");
+                d3.setTime("2016-08-06");
+                d3.setBalance("余额：300.00");
+                list.add(d0);
+                list.add(d1);
+                list.add(d2);
+                list.add(d3);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -234,23 +225,21 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
         }
     }
 
-    private void saveToLocalData(String json) {
-
-    }
-
-    private void notifyNoNet() {
+    private void notifyNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
-                if (detailBeanList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
-                    noDataLl.setVisibility(View.GONE);
-                    pTrl.setVisibility(View.GONE);
-                }
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.GONE);
+                emptyNetView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
         }
     }
@@ -258,19 +247,25 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
     private void notifyData() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
-                if (detailBeanList.size() == 0) {
-                    noDataLl.setVisibility(View.VISIBLE);
-                    noNetLl.setVisibility(View.GONE);
-                    pTrl.setVisibility(View.GONE);
+                cpd.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
                 break;
         }
-        detailAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -283,43 +278,32 @@ public class DetailActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //返回视图点击事件
             case R.id.rl_detail_return:
                 finish();
                 break;
-            //菜单视图点击事件
             case R.id.ll_detail_menu:
                 if (!menuPopWindow.isShowing()) {
-                    menuPopWindow.showAsDropDown(menuLl, -10, 10);
+                    menuPopWindow.showAsDropDown(menuLl, -20, -10);
                     backgroundAlpha(0.8f);
                 }
                 break;
-            //菜单全部点击事件
             case R.id.rl_popwindow_detail_menu_all:
                 if (menuPopWindow.isShowing()) {
                     menuPopWindow.dismiss();
                     menuContentTv.setText("全部");
                 }
                 break;
-            //菜单支出点击事件
             case R.id.rl_popwindow_detail_menu_out:
                 if (menuPopWindow.isShowing()) {
                     menuPopWindow.dismiss();
                     menuContentTv.setText("支出");
                 }
                 break;
-            //菜单收入点击事件
             case R.id.rl_popwindow_detail_menu_in:
                 if (menuPopWindow.isShowing()) {
                     menuPopWindow.dismiss();
                     menuContentTv.setText("收入");
                 }
-                break;
-            //无网络刷新点击事件
-            case R.id.tv_no_net_refresh:
-                noNetLl.setVisibility(View.GONE);
-                pTrl.setVisibility(View.VISIBLE);
-                loadNetData();
                 break;
         }
     }

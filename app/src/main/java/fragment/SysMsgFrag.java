@@ -5,7 +5,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -28,6 +28,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.Utils;
 import view.CProgressDialog;
 
 /**
@@ -36,30 +37,19 @@ import view.CProgressDialog;
  * 描述:系统消息
  */
 
-public class SysMsgFrag extends CommonFragment implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class SysMsgFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
 
-    //根视图
     private View rootView;
-    //无网络视图
-    private LinearLayout noNetLl;
-    private TextView noNetTv;
-    //无数据视图
-    private LinearLayout noDataLl;
-    //刷新加载布局
-    private PullToRefreshLayout sysMsgPtrl;
-    //刷新加载ListView
-    private PullableListView sysMsgLv;
-    //加载对话框视图
-    private CProgressDialog cPd;
-    //系统消息集合
-    private List<MsgBean> msgBeanList;
-    //系统消息适配器
-    private MsgAdapter msgAdapter;
-    //okHttpClient
+    private FrameLayout fl;
+    private View emptyDataView, emptyNetView;
+    private TextView emptyNetTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
+    private CProgressDialog cpd;
+    private List<MsgBean> list;
+    private MsgAdapter adapter;
     private OkHttpClient okHttpClient;
-    //加载状态
     private int state = StateConfig.LOAD_DONE;
-    //handler
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -67,10 +57,12 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNoNet();
+                        notifyNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -86,7 +78,6 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
 
     @Override
     protected View getRootView() {
-        //初始化根布局
         return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
     }
 
@@ -94,53 +85,60 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
     protected void initView() {
         initRootView();
         initDialogView();
+        initEmptyView();
     }
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        //初始化无网络视图
-        noNetLl = (LinearLayout) rootView.findViewById(R.id.ll_no_net);
-        noNetTv = (TextView) rootView.findViewById(R.id.tv_no_net_refresh);
-        //初始化无数据视图
-        noDataLl = (LinearLayout) rootView.findViewById(R.id.ll_no_data);
-        //初始化刷新加载布局
-        sysMsgPtrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        //初始化刷新加载ListView
-        sysMsgLv = (PullableListView) rootView.findViewById(R.id.plv);
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        //初始化加载对话框视图
-        cPd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+        cpd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+    }
+
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyDataView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
+        emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyDataView);
+        emptyDataView.setVisibility(View.GONE);
+        emptyNetView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
+        emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl.addView(emptyNetView);
+        emptyNetView.setVisibility(View.GONE);
+        emptyNetTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emptyNetView.setVisibility(View.GONE);
+                loadNetData();
+            }
+        });
     }
 
     @Override
     protected void initData() {
-        //初始化系统消息集合
-        msgBeanList = new ArrayList<>();
-        //初始化系统消息适配器
-        msgAdapter = new MsgAdapter(getActivity(), msgBeanList);
-        //初始化okHttpClient
+        list = new ArrayList<>();
+        adapter = new MsgAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
     }
 
     @Override
     protected void setData() {
-        //绑定系统消息适配器
-        sysMsgLv.setAdapter(msgAdapter);
+        plv.setAdapter(adapter);
     }
 
     @Override
     protected void setListener() {
-        //无网络刷新适配器
-        noNetTv.setOnClickListener(this);
-        //刷新加载布局监听
-        sysMsgPtrl.setOnRefreshListener(this);
+        ptrl.setOnRefreshListener(this);
     }
 
     @Override
     protected void loadData() {
-        cPd.show();
+        cpd.show();
         loadNetData();
     }
 
@@ -156,7 +154,7 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (state == StateConfig.LOAD_REFRESH) {
-                        msgBeanList.clear();
+                        list.clear();
                     }
                     String result = response.body().string();
                     parseJson(result);
@@ -179,8 +177,8 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
                 sm1.setDate("2017/03/04");
                 sm1.setDes("你有新的红包等待领取");
                 sm1.setArrowShow(false);
-                msgBeanList.add(sm0);
-                msgBeanList.add(sm1);
+                list.add(sm0);
+                list.add(sm1);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -188,46 +186,51 @@ public class SysMsgFrag extends CommonFragment implements View.OnClickListener, 
         }
     }
 
-    private void notifyNoNet() {
+    private void notifyNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
-                if (msgBeanList.size() == 0) {
-                    noNetLl.setVisibility(View.VISIBLE);
-                    noDataLl.setVisibility(View.GONE);
-                }
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyDataView.setVisibility(View.GONE);
+                emptyNetView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                Utils.toast(getActivity(), StateConfig.loadNonet);
+                break;
+            default:
                 break;
         }
     }
 
     private void notifyData() {
-        msgAdapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_DONE:
-                cPd.dismiss();
-                if (msgBeanList.size() == 0) {
-                    noDataLl.setVisibility(View.VISIBLE);
-                    noNetLl.setVisibility(View.GONE);
+                cpd.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.GONE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    emptyNetView.setVisibility(View.GONE);
+                    emptyDataView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
+                ptrl.hideHeadView();
                 break;
             case StateConfig.LOAD_LOAD:
+                ptrl.hideFootView();
+                break;
+            default:
                 break;
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_no_net_refresh:
-                loadNetData();
-                break;
-        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override

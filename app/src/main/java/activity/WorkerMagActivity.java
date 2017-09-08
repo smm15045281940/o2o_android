@@ -15,9 +15,9 @@ import java.util.List;
 
 import config.ColorConfig;
 import fragment.WorkerMagAllFrag;
-import fragment.WorkerMagContactingFrag;
-import fragment.WorkerMagFinishedFrag;
-import fragment.WorkerMagUnderWayFrag;
+import fragment.WorkerMagTalkingFrag;
+import fragment.WorkerMagOverFrag;
+import fragment.WorkerMagWorkingFrag;
 
 public class WorkerMagActivity extends CommonActivity implements View.OnClickListener {
 
@@ -85,9 +85,9 @@ public class WorkerMagActivity extends CommonActivity implements View.OnClickLis
         fragmentManager = getSupportFragmentManager();
         //初始化加载碎片
         WorkerMagAllFrag allFrag = new WorkerMagAllFrag();
-        WorkerMagContactingFrag contactingFrag = new WorkerMagContactingFrag();
-        WorkerMagUnderWayFrag underWayFrag = new WorkerMagUnderWayFrag();
-        WorkerMagFinishedFrag finishedFrag = new WorkerMagFinishedFrag();
+        WorkerMagTalkingFrag contactingFrag = new WorkerMagTalkingFrag();
+        WorkerMagWorkingFrag underWayFrag = new WorkerMagWorkingFrag();
+        WorkerMagOverFrag finishedFrag = new WorkerMagOverFrag();
         fragmentList.add(allFrag);
         fragmentList.add(contactingFrag);
         fragmentList.add(underWayFrag);

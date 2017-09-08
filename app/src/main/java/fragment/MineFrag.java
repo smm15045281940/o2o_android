@@ -203,15 +203,15 @@ public class MineFrag extends CommonFragment implements View.OnClickListener {
                 break;
             //红包视图点击事件
             case R.id.rl_mine_red_bag:
-                Utils.toast(getActivity(), "红包");
+                Utils.toast(getActivity(), "红包功能暂未开通");
                 break;
             //代金券视图点击事件
             case R.id.rl_mine_voucher:
-                Utils.toast(getActivity(), "代金券");
+                Utils.toast(getActivity(), "代金券功能暂未开通");
                 break;
             //积分视图点击事件
             case R.id.rl_mine_point:
-                Utils.toast(getActivity(), "积分");
+                Utils.toast(getActivity(), "积分功能暂未开通");
                 break;
             //设置提现密码视图点击事件
             case R.id.ll_mine_set_cash_pwd:

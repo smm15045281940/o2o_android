@@ -46,7 +46,7 @@
                 android:layout_marginBottom="@dimen/y10"
                 android:layout_marginTop="@dimen/y10"
                 android:textColor="@color/red_ff3e50"
-                android:textSize="@dimen/x15" />
+                android:textSize="@dimen/y12" />
 
         </RelativeLayout>
 
@@ -65,7 +65,7 @@
                 android:layout_marginBottom="@dimen/y10"
                 android:layout_marginTop="@dimen/y10"
                 android:textColor="@color/gray_a0a0a0"
-                android:textSize="@dimen/x15" />
+                android:textSize="@dimen/y12" />
 
         </RelativeLayout>
 
@@ -75,7 +75,6 @@
         android:id="@+id/ll_left_right_sit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/y5"
         android:orientation="vertical" />
 
 </LinearLayout>
