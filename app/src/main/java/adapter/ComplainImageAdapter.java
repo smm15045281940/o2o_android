@@ -2,7 +2,7 @@ package adapter;
 
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +12,10 @@ import com.gjzg.R;
 
 import java.util.List;
 
-public class ComplainImageAdapter extends CommonAdapter<String> {
+public class ComplainImageAdapter extends CommonAdapter<Bitmap> {
 
-    private BitmapFactory.Options options;
-
-    public ComplainImageAdapter(Context context, List<String> list) {
+    public ComplainImageAdapter(Context context, List<Bitmap> list) {
         super(context, list);
-        options = new BitmapFactory.Options();
-        options.inSampleSize = 10;
-        options.inTempStorage = new byte[1024];
     }
 
     @Override
@@ -33,7 +28,7 @@ public class ComplainImageAdapter extends CommonAdapter<String> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.imageIv.setImageBitmap(BitmapFactory.decodeFile(list.get(position), options));
+        holder.imageIv.setImageBitmap(list.get(position));
         return convertView;
     }
 

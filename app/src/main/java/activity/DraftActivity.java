@@ -1,22 +1,19 @@
 package activity;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-public class SetPwdActivity extends CommonActivity implements View.OnClickListener {
+public class DraftActivity extends CommonActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl;
-    private LinearLayout cashLl;
 
     @Override
     protected View getRootView() {
-        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_set_pwd, null);
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_draft, null);
     }
 
     @Override
@@ -25,8 +22,7 @@ public class SetPwdActivity extends CommonActivity implements View.OnClickListen
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_pwd_return);
-        cashLl = (LinearLayout) rootView.findViewById(R.id.ll_set_pwd_cash);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_draft_return);
     }
 
     @Override
@@ -42,7 +38,6 @@ public class SetPwdActivity extends CommonActivity implements View.OnClickListen
     @Override
     protected void setListener() {
         returnRl.setOnClickListener(this);
-        cashLl.setOnClickListener(this);
     }
 
     @Override
@@ -53,11 +48,10 @@ public class SetPwdActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_set_pwd_return:
+            case R.id.rl_draft_return:
                 finish();
                 break;
-            case R.id.ll_set_pwd_cash:
-                startActivity(new Intent(this,PwdActivity.class));
+            default:
                 break;
         }
     }

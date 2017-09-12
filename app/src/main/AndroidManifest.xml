@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name="application.CApplication"
@@ -53,7 +54,9 @@
         <activity android:name="activity.WalletActivity" />
         <activity android:name="activity.DetailActivity" />
         <activity android:name="activity.InviteActivity" />
-        <activity android:name="activity.WithDrawActivity" />
+        <activity
+            android:name="activity.WithDrawActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="activity.WorkerScnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
@@ -69,7 +72,16 @@
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
         <activity android:name="activity.ProjectActivity" />
         <activity android:name="activity.ResignActivity" />
-        <activity android:name="activity.ComplainActivity"></activity>
+        <activity android:name="activity.ComplainActivity" />
+        <activity android:name="activity.PicActivity" />
+
+        <service android:name="service.CodeTimerService" />
+
+        <activity android:name="activity.IdActivity" />
+        <activity
+            android:name="activity.PhoneBindActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+        <activity android:name="activity.DraftActivity"></activity>
     </application>
 
 </manifest>

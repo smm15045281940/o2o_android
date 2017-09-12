@@ -5,6 +5,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -17,10 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.PersonAdapter;
-import bean.PersonBean;
+import adapter.DcAdapter;
+import bean.DcBean;
 import config.NetConfig;
 import config.StateConfig;
+import config.VarConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -32,12 +34,12 @@ import utils.Utils;
 import view.CProgressDialog;
 
 /**
- * 创建日期：2017/8/29 on 17:27
+ * 创建日期：2017/7/28 on 13:53
  * 作者:孙明明
- * 描述:雇主工作管理-进行中
+ * 描述:优惠
  */
 
-public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
+public class DcFragment extends CommonFragment implements PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
     private View rootView, emptyDataView, emptyNetView;
     private FrameLayout fl;
@@ -45,10 +47,12 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-    private List<PersonBean> list;
-    private PersonAdapter adapter;
+
+    private List<DcBean> list;
+    private DcAdapter adapter;
     private OkHttpClient okHttpClient;
     private int state = StateConfig.LOAD_DONE;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -56,10 +60,12 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNet();
+                        notifyNoNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -75,7 +81,7 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
 
     @Override
     protected View getRootView() {
-        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.frag_discount, null);
     }
 
     @Override
@@ -86,6 +92,8 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
     }
 
     private void initRootView() {
+        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
@@ -117,9 +125,8 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        adapter = new PersonAdapter(getActivity(), list);
+        adapter = new DcAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
-        state = StateConfig.LOAD_DONE;
     }
 
     @Override
@@ -130,6 +137,7 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
     @Override
     protected void setListener() {
         ptrl.setOnRefreshListener(this);
+        plv.setOnItemClickListener(this);
     }
 
     @Override
@@ -152,8 +160,8 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
                     if (state == StateConfig.LOAD_REFRESH) {
                         list.clear();
                     }
-                    String result = response.body().string();
-                    parseJson(result);
+                    String json = response.body().string();
+                    parseJson(json);
                 }
             }
         });
@@ -163,15 +171,18 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                PersonBean p0 = new PersonBean();
-                p0.setImage("");
-                p0.setState(StateConfig.WORKING);
-                p0.setName("急招水泥工");
-                p0.setCollect(false);
-                p0.setShow("工资：200/人/天");
-                p0.setDistance("南马路12号");
-                p0.setPlay("X月X日开工，工期2天");
-                list.add(p0);
+                DcBean d0 = new DcBean();
+                d0.setTitle("优惠一");
+                d0.setUrl("https://www.baidu.com/");
+                DcBean d1 = new DcBean();
+                d1.setTitle("优惠二");
+                d1.setUrl("https://www.baidu.com/");
+                DcBean d2 = new DcBean();
+                d2.setTitle("优惠三");
+                d2.setUrl("https://www.baidu.com/");
+                list.add(d0);
+                list.add(d1);
+                list.add(d2);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -179,7 +190,7 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
         }
     }
 
-    private void notifyNet() {
+    private void notifyNoNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cpd.dismiss();
@@ -188,14 +199,10 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
                 emptyNetView.setVisibility(View.VISIBLE);
                 break;
             case StateConfig.LOAD_REFRESH:
-                ptrl.hideHeadView();
                 Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
-                ptrl.hideFootView();
                 Utils.toast(getActivity(), StateConfig.loadNonet);
-                break;
-            default:
                 break;
         }
     }
@@ -209,9 +216,9 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
                     emptyNetView.setVisibility(View.GONE);
                     emptyDataView.setVisibility(View.VISIBLE);
                 } else {
+                    ptrl.setVisibility(View.VISIBLE);
                     emptyNetView.setVisibility(View.GONE);
                     emptyDataView.setVisibility(View.GONE);
-                    ptrl.setVisibility(View.VISIBLE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
@@ -219,8 +226,6 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
                 break;
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
-                break;
-            default:
                 break;
         }
         adapter.notifyDataSetChanged();
@@ -236,5 +241,10 @@ public class EmpMagUnderWayFrag extends CommonFragment implements PullToRefreshL
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_LOAD;
         loadNetData();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Utils.toast(getActivity(), VarConfig.notyetTip);
     }
 }

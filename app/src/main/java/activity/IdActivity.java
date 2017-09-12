@@ -2,6 +2,7 @@ package activity;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -10,15 +11,16 @@ import com.gjzg.R;
 import config.VarConfig;
 import utils.Utils;
 
-public class InviteActivity extends CommonActivity implements View.OnClickListener {
+public class IdActivity extends CommonActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl;
-    private TextView inviteTv;
+    private TextView tipTv, nextTv;
+    private EditText numberEt;
 
     @Override
     protected View getRootView() {
-        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_invite, null);
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_id, null);
     }
 
     @Override
@@ -27,13 +29,15 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_invite_return);
-        inviteTv = (TextView) rootView.findViewById(R.id.tv_invite);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_id_return);
+        tipTv = (TextView) rootView.findViewById(R.id.tv_id_tip);
+        nextTv = (TextView) rootView.findViewById(R.id.tv_id_next);
+        numberEt = (EditText) rootView.findViewById(R.id.et_id_number);
     }
 
     @Override
     protected void initData() {
-
+        tipTv.setText("请填写王小二的身份证号");
     }
 
     @Override
@@ -44,7 +48,7 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
     @Override
     protected void setListener() {
         returnRl.setOnClickListener(this);
-        inviteTv.setOnClickListener(this);
+        nextTv.setOnClickListener(this);
     }
 
     @Override
@@ -55,11 +59,13 @@ public class InviteActivity extends CommonActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_invite_return:
+            case R.id.rl_id_return:
                 finish();
                 break;
-            case R.id.tv_invite:
+            case R.id.tv_id_next:
                 Utils.toast(this, VarConfig.notyetTip);
+                break;
+            default:
                 break;
         }
     }

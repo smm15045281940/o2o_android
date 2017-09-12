@@ -110,10 +110,49 @@
         <View style="@style/v_split" />
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/y3"
-            android:layout_marginBottom="@dimen/y3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/y3"
+            android:layout_marginTop="@dimen/y3">
+
+            <LinearLayout
+                android:id="@+id/ll_item_worker_mag_wait"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/y11"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_item_worker_mag_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:background="@drawable/sl_me_login"
+                    android:paddingBottom="@dimen/y4"
+                    android:paddingLeft="@dimen/y9"
+                    android:paddingRight="@dimen/y9"
+                    android:paddingTop="@dimen/y4"
+                    android:text="取消发布"
+                    android:textColor="@color/black_000000"
+                    android:textSize="@dimen/y7" />
+
+                <TextView
+                    android:id="@+id/tv_item_worker_mag_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:background="@drawable/sl_me_login"
+                    android:paddingBottom="@dimen/y4"
+                    android:paddingLeft="@dimen/y9"
+                    android:paddingRight="@dimen/y9"
+                    android:paddingTop="@dimen/y4"
+                    android:text="修改"
+                    android:textColor="@color/black_000000"
+                    android:textSize="@dimen/y7" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_item_worker_mag_working"
