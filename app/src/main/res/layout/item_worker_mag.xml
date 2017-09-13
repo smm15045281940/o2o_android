@@ -135,7 +135,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="取消发布"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
                 <TextView
@@ -149,7 +149,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="修改"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
             </LinearLayout>
@@ -173,7 +173,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="我要辞职"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
             </LinearLayout>
@@ -197,7 +197,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="不接此单"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
             </LinearLayout>
@@ -221,7 +221,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="投诉雇主"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
                 <TextView
@@ -235,7 +235,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="删除信息"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
                 <TextView
@@ -249,7 +249,7 @@
                     android:paddingRight="@dimen/y9"
                     android:paddingTop="@dimen/y4"
                     android:text="追加评价"
-                    android:textColor="@color/black_000000"
+                    android:textColor="@color/black_252323"
                     android:textSize="@dimen/y7" />
 
             </LinearLayout>

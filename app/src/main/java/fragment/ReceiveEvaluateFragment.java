@@ -1,6 +1,5 @@
 package fragment;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -18,15 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import activity.ComplainActivity;
-import activity.EvaluateActivity;
-import activity.RefuseOrderActivity;
-import activity.ResignActivity;
-import adapter.WorkerMagAdapter;
-import bean.PersonBean;
+import adapter.EvaluateAdapter;
+import bean.EvaluateBean;
 import config.NetConfig;
 import config.StateConfig;
-import listener.ListItemClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,25 +31,24 @@ import refreshload.PullableListView;
 import utils.Utils;
 import view.CProgressDialog;
 
-/**
- * 创建日期：2017/8/29 on 16:26
- * 作者:孙明明
- * 描述:工人工作管理碎片-全部
- */
-
-public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener, ListItemClickHelp {
+//收到评价
+public class ReceiveEvaluateFragment extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private FrameLayout fl;
-    private View emptyNetView, emptyDataView;
+    private View emptyDataView, emptyNetView;
     private TextView emptyNetTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-    private List<PersonBean> list;
-    private WorkerMagAdapter adapter;
+
+    private List<EvaluateBean> list;
+    private EvaluateAdapter adapter;
+
     private OkHttpClient okHttpClient;
+
     private int state = StateConfig.LOAD_DONE;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -63,7 +56,7 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
             if (msg != null) {
                 switch (msg.what) {
                     case StateConfig.LOAD_NO_NET:
-                        notifyNet();
+                        notifyNoNet();
                         break;
                     case StateConfig.LOAD_DONE:
                         notifyData();
@@ -125,7 +118,7 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        adapter = new WorkerMagAdapter(getActivity(), list, this);
+        adapter = new EvaluateAdapter(getActivity(), list);
         okHttpClient = new OkHttpClient();
     }
 
@@ -146,8 +139,8 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     }
 
     private void loadNetData() {
-        Request request = new Request.Builder().url(NetConfig.testUrl).get().build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        Request evaluateGetRequest = new Request.Builder().url(NetConfig.testUrl).get().build();
+        okHttpClient.newCall(evaluateGetRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
@@ -170,33 +163,15 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                PersonBean p0 = new PersonBean();
-                p0.setImage("");
-                p0.setName("专业水泥工");
-                p0.setPlay("X月X日开工，工期2天");
-                p0.setShow("工资：200/人/天");
-                p0.setState(StateConfig.WORKING);
-                p0.setCollect(false);
-                p0.setDistance("距离3公里");
-                PersonBean p1 = new PersonBean();
-                p1.setImage("");
-                p1.setName("专业水泥工");
-                p1.setPlay("X月X日开工，工期5天");
-                p1.setShow("工资：100/人/天");
-                p1.setState(StateConfig.TALKING);
-                p1.setCollect(false);
-                p1.setDistance("距离3公里");
-                PersonBean p2 = new PersonBean();
-                p2.setImage("");
-                p2.setName("专业水泥工");
-                p2.setPlay("11月1日开工，工期一天");
-                p2.setShow("工资：500/人/天");
-                p2.setState(StateConfig.OVER);
-                p2.setCollect(true);
-                p2.setDistance("距离3公里");
-                list.add(p0);
-                list.add(p1);
-                list.add(p2);
+                for (int i = 0; i < 10; i++) {
+                    EvaluateBean e = new EvaluateBean();
+                    e.setGet(true);
+                    e.setNumCount(10);
+                    e.setContent("小伙子干活特麻利");
+                    e.setPraiseCount(3);
+                    e.setTime("2017年5月4日 17:25");
+                    list.add(e);
+                }
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -204,7 +179,7 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
         }
     }
 
-    private void notifyNet() {
+    private void notifyNoNet() {
         switch (state) {
             case StateConfig.LOAD_DONE:
                 cpd.dismiss();
@@ -220,8 +195,6 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
                 ptrl.hideFootView();
                 Utils.toast(getActivity(), StateConfig.loadNonet);
                 break;
-            default:
-                break;
         }
     }
 
@@ -231,12 +204,12 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
                 cpd.dismiss();
                 if (list.size() == 0) {
                     ptrl.setVisibility(View.GONE);
-                    emptyNetView.setVisibility(View.GONE);
                     emptyDataView.setVisibility(View.VISIBLE);
-                } else {
                     emptyNetView.setVisibility(View.GONE);
-                    emptyDataView.setVisibility(View.GONE);
+                } else {
                     ptrl.setVisibility(View.VISIBLE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
@@ -244,8 +217,6 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
                 break;
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
-                break;
-            default:
                 break;
         }
         adapter.notifyDataSetChanged();
@@ -261,29 +232,5 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_LOAD;
         loadNetData();
-    }
-
-    @Override
-    public void onClick(View item, View widget, int position, int which, boolean isChecked) {
-        switch (which) {
-            case R.id.tv_item_worker_mag_quit:
-                startActivity(new Intent(getActivity(), ResignActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_refuse:
-                startActivity(new Intent(getActivity(), RefuseOrderActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_complain:
-                startActivity(new Intent(getActivity(), ComplainActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_delete:
-                list.remove(position);
-                adapter.notifyDataSetChanged();
-                break;
-            case R.id.tv_item_worker_mag_evaluate:
-                startActivity(new Intent(getActivity(), EvaluateActivity.class));
-                break;
-            default:
-                break;
-        }
     }
 }

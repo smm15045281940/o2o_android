@@ -1,12 +1,15 @@
-package fragment;
+package activity;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -18,15 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import activity.ComplainActivity;
-import activity.EvaluateActivity;
-import activity.RefuseOrderActivity;
-import activity.ResignActivity;
-import adapter.WorkerMagAdapter;
-import bean.PersonBean;
+import adapter.DetailAdapter;
+import bean.DetailBean;
 import config.NetConfig;
 import config.StateConfig;
-import listener.ListItemClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,23 +35,23 @@ import refreshload.PullableListView;
 import utils.Utils;
 import view.CProgressDialog;
 
-/**
- * 创建日期：2017/8/29 on 16:26
- * 作者:孙明明
- * 描述:工人工作管理碎片-全部
- */
-
-public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLayout.OnRefreshListener, ListItemClickHelp {
+public class AccountDetailActivity extends CommonActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
+    private RelativeLayout returnRl;
+    private LinearLayout menuLl;
+    private View menuPopView;
+    private PopupWindow menuPopWindow;
+    private RelativeLayout menuAllRl, menuOutRl, menuInRl;
+    private TextView menuContentTv;
+    private CProgressDialog cpd;
     private FrameLayout fl;
     private View emptyNetView, emptyDataView;
     private TextView emptyNetTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
-    private CProgressDialog cpd;
-    private List<PersonBean> list;
-    private WorkerMagAdapter adapter;
+    private List<DetailBean> list;
+    private DetailAdapter adapter;
     private OkHttpClient okHttpClient;
     private int state = StateConfig.LOAD_DONE;
     private Handler handler = new Handler() {
@@ -74,7 +72,7 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     };
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         handler.removeMessages(StateConfig.LOAD_NO_NET);
         handler.removeMessages(StateConfig.LOAD_DONE);
@@ -82,33 +80,54 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
 
     @Override
     protected View getRootView() {
-        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+        return rootView = LayoutInflater.from(this).inflate(R.layout.activity_detail, null);
     }
 
     @Override
     protected void initView() {
         initRootView();
         initDialogView();
+        initPopWindowView();
         initEmptyView();
     }
 
     private void initRootView() {
-        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_detail_return);
+        menuLl = (LinearLayout) rootView.findViewById(R.id.ll_detail_menu);
+        menuContentTv = (TextView) rootView.findViewById(R.id.tv_detail_menu_content);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
     private void initDialogView() {
-        cpd = new CProgressDialog(getActivity(), R.style.dialog_cprogress);
+        cpd = new CProgressDialog(this, R.style.dialog_cprogress);
+    }
+
+    private void initPopWindowView() {
+        menuPopView = LayoutInflater.from(this).inflate(R.layout.popwindow_detail_menu, null);
+        menuAllRl = (RelativeLayout) menuPopView.findViewById(R.id.rl_popwindow_detail_menu_all);
+        menuOutRl = (RelativeLayout) menuPopView.findViewById(R.id.rl_popwindow_detail_menu_out);
+        menuInRl = (RelativeLayout) menuPopView.findViewById(R.id.rl_popwindow_detail_menu_in);
+        menuPopWindow = new PopupWindow(menuPopView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        menuPopWindow.setAnimationStyle(R.style.popwin_anim_style);
+        menuPopWindow.setFocusable(true);
+        menuPopWindow.setTouchable(true);
+        menuPopWindow.setOutsideTouchable(true);
+        menuPopWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
     }
 
     private void initEmptyView() {
         fl = (FrameLayout) rootView.findViewById(R.id.fl);
-        emptyDataView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
+        emptyDataView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
         emptyDataView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         fl.addView(emptyDataView);
         emptyDataView.setVisibility(View.GONE);
-        emptyNetView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        emptyNetView = LayoutInflater.from(this).inflate(R.layout.empty_net, null);
         emptyNetTv = (TextView) emptyNetView.findViewById(R.id.tv_no_net_refresh);
         emptyNetView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         fl.addView(emptyNetView);
@@ -125,7 +144,7 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        adapter = new WorkerMagAdapter(getActivity(), list, this);
+        adapter = new DetailAdapter(this, list);
         okHttpClient = new OkHttpClient();
     }
 
@@ -137,6 +156,11 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     @Override
     protected void setListener() {
         ptrl.setOnRefreshListener(this);
+        returnRl.setOnClickListener(this);
+        menuLl.setOnClickListener(this);
+        menuAllRl.setOnClickListener(this);
+        menuOutRl.setOnClickListener(this);
+        menuInRl.setOnClickListener(this);
     }
 
     @Override
@@ -156,10 +180,10 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    String result = response.body().string();
                     if (state == StateConfig.LOAD_REFRESH) {
                         list.clear();
                     }
-                    String result = response.body().string();
                     parseJson(result);
                 }
             }
@@ -170,33 +194,30 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
         try {
             JSONObject objBean = new JSONObject(json);
             if (objBean.optInt("code") == 200) {
-                PersonBean p0 = new PersonBean();
-                p0.setImage("");
-                p0.setName("专业水泥工");
-                p0.setPlay("X月X日开工，工期2天");
-                p0.setShow("工资：200/人/天");
-                p0.setState(StateConfig.WORKING);
-                p0.setCollect(false);
-                p0.setDistance("距离3公里");
-                PersonBean p1 = new PersonBean();
-                p1.setImage("");
-                p1.setName("专业水泥工");
-                p1.setPlay("X月X日开工，工期5天");
-                p1.setShow("工资：100/人/天");
-                p1.setState(StateConfig.TALKING);
-                p1.setCollect(false);
-                p1.setDistance("距离3公里");
-                PersonBean p2 = new PersonBean();
-                p2.setImage("");
-                p2.setName("专业水泥工");
-                p2.setPlay("11月1日开工，工期一天");
-                p2.setShow("工资：500/人/天");
-                p2.setState(StateConfig.OVER);
-                p2.setCollect(true);
-                p2.setDistance("距离3公里");
-                list.add(p0);
-                list.add(p1);
-                list.add(p2);
+                DetailBean d0 = new DetailBean();
+                d0.setTitle("提现");
+                d0.setDes("-300.00");
+                d0.setTime("2017-08-06");
+                d0.setBalance("余额：100.00");
+                DetailBean d1 = new DetailBean();
+                d1.setTitle("支付");
+                d1.setDes("-300.00");
+                d1.setTime("2017-08-01");
+                d1.setBalance("余额：100.00");
+                DetailBean d2 = new DetailBean();
+                d2.setTitle("充值");
+                d2.setDes("+100.00");
+                d2.setTime("2017-07-06");
+                d2.setBalance("余额：200.00");
+                DetailBean d3 = new DetailBean();
+                d3.setTitle("收入");
+                d3.setDes("+100.00");
+                d3.setTime("2016-08-06");
+                d3.setBalance("余额：300.00");
+                list.add(d0);
+                list.add(d1);
+                list.add(d2);
+                list.add(d3);
                 handler.sendEmptyMessage(StateConfig.LOAD_DONE);
             }
         } catch (JSONException e) {
@@ -214,13 +235,11 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
                 break;
             case StateConfig.LOAD_REFRESH:
                 ptrl.hideHeadView();
-                Utils.toast(getActivity(), StateConfig.loadNonet);
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
-                Utils.toast(getActivity(), StateConfig.loadNonet);
-                break;
-            default:
+                Utils.toast(this, StateConfig.loadNonet);
                 break;
         }
     }
@@ -234,9 +253,9 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
                     emptyNetView.setVisibility(View.GONE);
                     emptyDataView.setVisibility(View.VISIBLE);
                 } else {
-                    emptyNetView.setVisibility(View.GONE);
-                    emptyDataView.setVisibility(View.GONE);
                     ptrl.setVisibility(View.VISIBLE);
+                    emptyDataView.setVisibility(View.GONE);
+                    emptyNetView.setVisibility(View.GONE);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
@@ -245,10 +264,48 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
             case StateConfig.LOAD_LOAD:
                 ptrl.hideFootView();
                 break;
-            default:
-                break;
         }
         adapter.notifyDataSetChanged();
+    }
+
+
+    private void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha;
+        getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_detail_return:
+                finish();
+                break;
+            case R.id.ll_detail_menu:
+                if (!menuPopWindow.isShowing()) {
+                    menuPopWindow.showAsDropDown(menuLl, -20, -10);
+                    backgroundAlpha(0.8f);
+                }
+                break;
+            case R.id.rl_popwindow_detail_menu_all:
+                if (menuPopWindow.isShowing()) {
+                    menuPopWindow.dismiss();
+                    menuContentTv.setText("全部");
+                }
+                break;
+            case R.id.rl_popwindow_detail_menu_out:
+                if (menuPopWindow.isShowing()) {
+                    menuPopWindow.dismiss();
+                    menuContentTv.setText("支出");
+                }
+                break;
+            case R.id.rl_popwindow_detail_menu_in:
+                if (menuPopWindow.isShowing()) {
+                    menuPopWindow.dismiss();
+                    menuContentTv.setText("收入");
+                }
+                break;
+        }
     }
 
     @Override
@@ -261,29 +318,5 @@ public class WorkerMagAllFrag extends CommonFragment implements PullToRefreshLay
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_LOAD;
         loadNetData();
-    }
-
-    @Override
-    public void onClick(View item, View widget, int position, int which, boolean isChecked) {
-        switch (which) {
-            case R.id.tv_item_worker_mag_quit:
-                startActivity(new Intent(getActivity(), ResignActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_refuse:
-                startActivity(new Intent(getActivity(), RefuseOrderActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_complain:
-                startActivity(new Intent(getActivity(), ComplainActivity.class));
-                break;
-            case R.id.tv_item_worker_mag_delete:
-                list.remove(position);
-                adapter.notifyDataSetChanged();
-                break;
-            case R.id.tv_item_worker_mag_evaluate:
-                startActivity(new Intent(getActivity(), EvaluateActivity.class));
-                break;
-            default:
-                break;
-        }
     }
 }

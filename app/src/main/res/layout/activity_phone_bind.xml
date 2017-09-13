@@ -77,7 +77,7 @@
                 android:paddingLeft="@dimen/y5"
                 android:paddingRight="@dimen/y5"
                 android:paddingTop="@dimen/y3"
-                android:textColor="@color/black_000000"
+                android:textColor="@color/black_252323"
                 android:textSize="@dimen/y10" />
 
         </LinearLayout>
@@ -108,7 +108,7 @@
             android:padding="@dimen/y5"
             android:paddingBottom="@dimen/y5"
             android:text="确定"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textSize="@dimen/y10" />
 
     </RelativeLayout>

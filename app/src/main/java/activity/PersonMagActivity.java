@@ -23,29 +23,20 @@ import java.util.List;
 
 import bean.PersonPreviewBean;
 import config.PermissionConfig;
-import fragment.PersonMagEditFrag;
-import fragment.PersonMagPreviewFrag;
-import fragment.PersonMagRecordFrag;
+import fragment.EditInfoFragment;
+import fragment.PicaViewFragment;
+import fragment.DeliveryRecordFragment;
 
 public class PersonMagActivity extends CommonActivity implements View.OnClickListener {
 
-    private View rootView;
-    private RelativeLayout returnRl;
-    private RelativeLayout previewRl;
-    private TextView previewTv;
-    private RelativeLayout editRl;
-    private TextView editTv;
-    private RelativeLayout recordRl;
-    private TextView recordTv;
+    private View rootView, editDialogView;
+    private RelativeLayout returnRl, previewRl, editRl, recordRl;
+    private TextView previewTv, editTv, recordTv, editDialogYesTv, editDialogNotv;
     private AlertDialog editDialog;
-    private View editDialogView;
-    private TextView editDialogYesTv;
-    private TextView editDialogNotv;
     private ImageView iconIv;
     private FragmentManager fragmentManager;
     private List<Fragment> fragmentList;
-    private int curPosition;
-    private int tarPosition;
+    private int curPosition = 0, tarPosition = -1;
     public PersonPreviewBean personPreviewBean;
     public Handler handler = new Handler() {
         @Override
@@ -108,16 +99,14 @@ public class PersonMagActivity extends CommonActivity implements View.OnClickLis
 
     @Override
     protected void initData() {
+        Fragment picaViewFragment = new PicaViewFragment();
+        Fragment editInfoFragment = new EditInfoFragment();
+        Fragment deliveryRecordFragment = new DeliveryRecordFragment();
         fragmentList = new ArrayList<>();
-        PersonMagPreviewFrag previewFrag = new PersonMagPreviewFrag();
-        PersonMagEditFrag editFrag = new PersonMagEditFrag();
-        PersonMagRecordFrag recordFrag = new PersonMagRecordFrag();
-        fragmentList.add(previewFrag);
-        fragmentList.add(editFrag);
-        fragmentList.add(recordFrag);
+        fragmentList.add(picaViewFragment);
+        fragmentList.add(editInfoFragment);
+        fragmentList.add(deliveryRecordFragment);
         fragmentManager = getSupportFragmentManager();
-        curPosition = 0;
-        tarPosition = -1;
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.ll_person_manage_sit, fragmentList.get(curPosition));
         transaction.commit();

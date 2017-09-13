@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/y5"
             android:text="姓名"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textSize="@dimen/y10" />
 
         <EditText
@@ -48,7 +48,7 @@
             android:hint="收款人姓名"
             android:padding="@dimen/y5"
             android:singleLine="true"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textColorHint="@color/gray_a0a0a0"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/y10" />
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/y5"
             android:text="卡号"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textSize="@dimen/y10" />
 
         <EditText
@@ -77,7 +77,7 @@
             android:background="@null"
             android:hint="收款人储蓄卡号"
             android:padding="@dimen/y5"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textColorHint="@color/gray_a0a0a0"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/y10" />
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/y5"
             android:text="银行"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textSize="@dimen/y10" />
 
         <TextView
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/y5"
             android:text="金额"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textSize="@dimen/y10" />
 
         <EditText
@@ -145,7 +145,7 @@
             android:hint="请输入金额"
             android:padding="@dimen/y5"
             android:singleLine="true"
-            android:textColor="@color/black_000000"
+            android:textColor="@color/black_252323"
             android:textColorHint="@color/gray_a0a0a0"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/y10" />

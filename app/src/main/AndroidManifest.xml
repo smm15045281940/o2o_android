@@ -52,7 +52,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name="activity.SendJobActivity" />
         <activity android:name="activity.WalletActivity" />
-        <activity android:name="activity.DetailActivity" />
+        <activity android:name="activity.AccountDetailActivity" />
         <activity android:name="activity.InviteActivity" />
         <activity
             android:name="activity.WithDrawActivity"
@@ -80,8 +80,13 @@
         <activity android:name="activity.IdActivity" />
         <activity
             android:name="activity.PhoneBindActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name="activity.DraftActivity" />
+        <activity android:name="activity.RefuseOrderActivity" />
+        <activity
+            android:name="activity.EvaluateActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity android:name="activity.DraftActivity"></activity>
+        <activity android:name="activity.PersonDetailActivity"></activity>
     </application>
 
 </manifest>
