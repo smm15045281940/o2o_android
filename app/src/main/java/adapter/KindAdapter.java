@@ -12,12 +12,7 @@ import java.util.List;
 
 import bean.KindBean;
 
-/**
- * 创建日期：2017/7/31 on 13:46
- * 作者:孙明明
- * 描述:种类适配器
- */
-
+//工种适配器
 public class KindAdapter extends CommonAdapter<KindBean> {
 
     public KindAdapter(Context context, List<KindBean> list) {
@@ -34,10 +29,10 @@ public class KindAdapter extends CommonAdapter<KindBean> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        KindBean job = list.get(position);
-        if (job != null) {
+        KindBean kindBean = list.get(position);
+        if (kindBean != null) {
             holder.imageIv.setImageResource(R.mipmap.person_face_default);
-            holder.nameTv.setText(job.getName());
+            holder.nameTv.setText(kindBean.getName());
         }
         return convertView;
     }
