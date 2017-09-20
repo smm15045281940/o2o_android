@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -221,6 +222,11 @@ public class TalkActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String t_id = intent.getStringExtra("t_id");
+            Log.e("TAG", "t_id:" + t_id);
+        }
         latitude = 39.963175;
         longitude = 116.400244;
         wyzgFragment = new TalkWyzgFragment();

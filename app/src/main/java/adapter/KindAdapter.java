@@ -3,7 +3,6 @@ package adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -31,7 +30,6 @@ public class KindAdapter extends CommonAdapter<KindBean> {
         }
         KindBean kindBean = list.get(position);
         if (kindBean != null) {
-            holder.imageIv.setImageResource(R.mipmap.person_face_default);
             holder.nameTv.setText(kindBean.getName());
         }
         return convertView;
@@ -39,11 +37,9 @@ public class KindAdapter extends CommonAdapter<KindBean> {
 
     private class ViewHolder {
 
-        private ImageView imageIv;
         private TextView nameTv;
 
         public ViewHolder(View itemView) {
-            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_kind_img);
             nameTv = (TextView) itemView.findViewById(R.id.tv_item_kind_name);
         }
     }

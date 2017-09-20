@@ -30,26 +30,22 @@ import config.StateConfig;
 import config.VarConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import service.GetLoginCodeTimerService;
 import utils.Utils;
 import view.CProgressDialog;
 
+//登录
 public class LoginActivity extends CommonActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl, getMovePwdRl;
-    private EditText phoneNumberEt;
-    private TextView getMovePwdTv;
+    private EditText phoneNumberEt, movePwdEt;
+    private TextView getMovePwdTv, loginTv;
     private GradientDrawable getMovePwdGd, loginGd;
-    private EditText movePwdEt;
-    private TextView loginTv;
     private CProgressDialog cpd;
-    private String phoneNumber;
 
     private OkHttpClient okHttpClient;
 
@@ -65,11 +61,6 @@ public class LoginActivity extends CommonActivity implements View.OnClickListene
             }
         }
     };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     protected View getRootView() {
@@ -128,26 +119,46 @@ public class LoginActivity extends CommonActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.rl_login_get_move_pwd:
-                phoneNumber = phoneNumberEt.getText().toString();
-                if (Utils.isPhonenumber(phoneNumber)) {
-                    getMovePwd();
-                } else {
-                    if (TextUtils.isEmpty(phoneNumber)) {
-                        Utils.toast(this, "请输入手机号");
-                    } else {
-                        Utils.toast(this, "手机号码格式不正确");
-                    }
-                }
+                String phoneNumber = phoneNumberEt.getText().toString();
+                if (judgePhoneNumber(phoneNumber))
+                    getVerificationCode(phoneNumber);
                 break;
             case R.id.tv_login_log:
-                login();
+                String phone_number = phoneNumberEt.getText().toString();
+                String verify_code = movePwdEt.getText().toString();
+                if (judgePhoneNumber(phone_number) && judgeVerificationCode(verify_code))
+                    login(phone_number, verify_code);
                 break;
             default:
                 break;
         }
     }
 
-    private void getMovePwd() {
+    //判断手机号
+    private boolean judgePhoneNumber(String phoneNumber) {
+        if (TextUtils.isEmpty(phoneNumber)) {
+            Utils.toast(LoginActivity.this, "手机号不能为空");
+            return false;
+        } else if (!Utils.isPhonenumber(phoneNumber)) {
+            Utils.toast(this, "手机号码格式不正确");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //判断验证码
+    private boolean judgeVerificationCode(String verifyCode) {
+        if (TextUtils.isEmpty(verifyCode)) {
+            Utils.toast(LoginActivity.this, "验证码不能为空");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //获取验证码
+    private void getVerificationCode(String phoneNumber) {
         startService(new Intent(this, GetLoginCodeTimerService.class));
         Request request = new Request.Builder().url(NetConfig.codeUrl + phoneNumber).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -179,9 +190,10 @@ public class LoginActivity extends CommonActivity implements View.OnClickListene
         });
     }
 
-    private void login() {
-        RequestBody body = new FormBody.Builder().add("phone_number", phoneNumber).add("verify_code", movePwdEt.getText().toString()).build();
-        Request request = new Request.Builder().url(NetConfig.loginUrl).post(body).build();
+    //登录
+    private void login(String phone_number, String verify_code) {
+//        RequestBody body = new FormBody.Builder().add("phone_number", phone_number).add("verify_code", verify_code).build();
+        Request request = new Request.Builder().url(NetConfig.loginUrl + "?phone_number=" + phone_number + "&verify_code=" + verify_code).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -192,7 +204,7 @@ public class LoginActivity extends CommonActivity implements View.OnClickListene
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String result = response.body().string();
-                    Log.e("TAG", "result:" + result);
+                    Log.e("TAG", result);
                     parseLoginJson(result);
                 }
             }

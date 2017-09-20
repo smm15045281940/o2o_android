@@ -42,7 +42,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     private TextView emptyNetTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
-    private List<KindBean> list, tempList;
+    private List<KindBean> list;
     private KindAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
     private OkHttpClient okHttpClient;
@@ -113,7 +113,6 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        tempList = new ArrayList<>();
         adapter = new KindAdapter(this, list);
         okHttpClient = new OkHttpClient();
     }
@@ -132,6 +131,10 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
 
     @Override
     protected void loadData() {
+        loadNetData();
+    }
+
+    private void loadNetData() {
         Request request = new Request.Builder().url(NetConfig.kindUrl).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -142,6 +145,8 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    if (state == StateConfig.LOAD_REFRESH)
+                        list.clear();
                     String result = response.body().string();
                     parseJson(result);
                 }
@@ -161,7 +166,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
                             KindBean kb = new KindBean();
                             kb.setId(o.optString("s_id"));
                             kb.setName(o.optString("s_name"));
-                            tempList.add(kb);
+                            list.add(kb);
                         }
                     }
                 }
@@ -193,12 +198,10 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     private void notifyData() {
         switch (state) {
             case StateConfig.LOAD_DONE:
-                if (tempList.size() == 0) {
+                if (list.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     emptyNetView.setVisibility(View.GONE);
                     emptyDataView.setVisibility(View.VISIBLE);
-                } else {
-                    list.addAll(tempList);
                 }
                 break;
             case StateConfig.LOAD_REFRESH:
@@ -228,7 +231,7 @@ public class KindActivity extends CommonActivity implements View.OnClickListener
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
         state = StateConfig.LOAD_REFRESH;
-        loadData();
+        loadNetData();
     }
 
     @Override
