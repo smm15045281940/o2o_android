@@ -23,6 +23,11 @@ public interface NetConfig {
     String collectWorkerUrl = "http://api.gangjianwang.com/Users/favorateUsers?u_id=";
     //收藏的工作
     String collectJobUrl = "http://api.gangjianwang.com/Users/favorateTasks?u_id=";
+    //用户余额
+    String userFundUrl = "http://api.gangjianwang.com/Users/usersFunds?u_id=";
+
+    //明细
+    String accountDetailUrl = "http://api.gangjianwang.com/Users/getUsersFundsLog";
 
 
     //测试用（城市列表）
