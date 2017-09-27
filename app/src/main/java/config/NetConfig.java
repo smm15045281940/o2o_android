@@ -8,6 +8,8 @@ public interface NetConfig {
     String letterCityUrl = "?action=letter";
     //工种
     String kindUrl = "http://api.gangjianwang.com/Skills/index";
+    //工人信息
+    String workerUrl = "http://api.gangjianwang.com/Users/getUsersBySkills";
     //工作
     String jobBaseUrl = "http://api.gangjianwang.com/Tasks/index";
     String jobListUrl = "?action=list";
@@ -28,10 +30,17 @@ public interface NetConfig {
 
     //明细
     String accountDetailUrl = "http://api.gangjianwang.com/Users/getUsersFundsLog";
-
+    //用户详细信息
+    String personDetailUrl = "http://api.gangjianwang.com/Users/usersInfo?u_id=";
 
     //测试用（城市列表）
     public static final String testUrl = "http://www.gangjianwang.com/shop/index.php?act=index&op=getWapAreaCities";
     //服务条款
     public static final String sevClsUrl = "http://zy.persistence.net.cn/";
+
+    //时间戳
+    String timeUrl = "http://api.gangjianwang.com/Tools/index";
+
+    //头像上传
+    String iconUpdateUrl = "http://api_zy.gangjianwang.com/Users/usersHeadEidt";
 }

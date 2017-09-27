@@ -27,7 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import activity.LoginActivity;
+import bean.PositionBean;
 import cache.LruJsonCache;
+import config.NetConfig;
 import view.CProgressDialog;
 
 //工具类
@@ -207,4 +209,26 @@ public class Utils {
         }
         return cityId;
     }
+
+    //工人信息url
+    public static String getWorkerUrl(String workerKindId, PositionBean positionBean) {
+        return NetConfig.workerUrl + "?s_id=" + workerKindId + "&users_posit_x=" + positionBean.getPositionX() + "&users_posit_y=" + positionBean.getPositionY();
+    }
+
+    //头像上传url
+    public static String getIconUpdateUrl(String userId, String imgName) {
+        return NetConfig.iconUpdateUrl + "?u_id=" + userId + "&img_name=" + imgName;
+    }
+
+    //切割出json
+    public static String cutJson(String result) {
+        if (TextUtils.isEmpty(result)) {
+            return null;
+        } else {
+            int first = result.indexOf("{");
+            return result.substring(first);
+        }
+    }
+
+
 }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gjzg"
     android:versionName="1.8">
+    android:versionName="1.0">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="activity.KindActivity" />
+        <activity android:name="activity.WorkerKindActivity" />
         <activity android:name="activity.WorkerActivity" />
         <activity android:name="activity.LeftRightActivity" />
         <activity android:name="activity.CityActivity" />
@@ -74,7 +75,9 @@
             android:name="activity.PhoneProveActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
         <activity android:name="activity.ProjectActivity" />
-        <activity android:name="activity.ResignActivity" />
+        <activity
+            android:name="activity.ResignActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="activity.ComplainActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />

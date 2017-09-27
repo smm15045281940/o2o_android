@@ -22,6 +22,7 @@ import java.util.List;
 
 import adapter.CityAdapter;
 import bean.CityBean;
+import config.CacheConfig;
 import config.IntentConfig;
 import utils.Utils;
 import view.SlideBar;
@@ -37,6 +38,8 @@ public class CityActivity extends CommonActivity implements View.OnClickListener
     private List<CityBean> list;
     private CityAdapter adapter;
     private String[] lowerLetter;
+
+    private String userId = "-100";
 
     private Handler handler = new Handler() {
         @Override
@@ -111,14 +114,14 @@ public class CityActivity extends CommonActivity implements View.OnClickListener
     }
 
     private void loadHotCityData() {
-        String hotCityJson = Utils.readCache(CityActivity.this, "-100", "hotCity");
+        String hotCityJson = Utils.readCache(CityActivity.this, userId, CacheConfig.hotCity);
         if (!TextUtils.isEmpty(hotCityJson)) {
             parseHotJson(hotCityJson);
         }
     }
 
     private void loadComCityData() {
-        String comCityJson = Utils.readCache(CityActivity.this, "-100", "comCity");
+        String comCityJson = Utils.readCache(CityActivity.this, userId, CacheConfig.comCity);
         if (!TextUtils.isEmpty(comCityJson)) {
             parseComJson(comCityJson);
         }

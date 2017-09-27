@@ -27,11 +27,12 @@ import java.util.List;
 
 import activity.CityActivity;
 import activity.JobActivity;
-import activity.KindActivity;
+import activity.WorkerKindActivity;
 import activity.LeftRightActivity;
 import activity.SendJobActivity;
 import bean.CityBean;
 import cache.LruJsonCache;
+import config.CacheConfig;
 import config.IntentConfig;
 import config.NetConfig;
 import config.PermissionConfig;
@@ -61,6 +62,8 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
     private BDLocationListener bdLocationListener;
     private OkHttpClient okHttpClient;
     private LruJsonCache lruJsonCache;
+    private String userId = "-100";
+    private String cacheTime = "60";
     private boolean loadHot = false, loadCom = false;
 
     private Handler handler = new Handler() {
@@ -174,7 +177,7 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
     }
 
     private void loadCityData() {
-        if (TextUtils.isEmpty(Utils.readCache(getActivity(), "-100", "hotCity"))) {
+        if (TextUtils.isEmpty(Utils.readCache(getActivity(), userId, CacheConfig.hotCity))) {
             Request hotRequest = new Request.Builder().url(NetConfig.baseCityUrl + NetConfig.hotCityUrl).get().build();
             okHttpClient.newCall(hotRequest).enqueue(new Callback() {
                 @Override
@@ -186,7 +189,8 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String result = response.body().string();
-                        Utils.writeCache(getActivity(), "-100", "hotCity", result, "60");
+                        Utils.log(getActivity(), "hot=" + result);
+                        Utils.writeCache(getActivity(), userId, CacheConfig.hotCity, result, cacheTime);
                     }
                 }
             });
@@ -194,7 +198,7 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
             loadHot = true;
             handler.sendEmptyMessage(2);
         }
-        if (TextUtils.isEmpty(Utils.readCache(getActivity(), "-100", "comCity"))) {
+        if (TextUtils.isEmpty(Utils.readCache(getActivity(), userId, CacheConfig.comCity))) {
             Request comRequest = new Request.Builder().url(NetConfig.baseCityUrl + NetConfig.letterCityUrl).get().build();
             okHttpClient.newCall(comRequest).enqueue(new Callback() {
                 @Override
@@ -206,7 +210,8 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String result = response.body().string();
-                        Utils.writeCache(getActivity(), "-100", "comCity", result, "60");
+                        Utils.log(getActivity(), "com=" + result);
+                        Utils.writeCache(getActivity(), userId, CacheConfig.comCity, result, cacheTime);
                     }
                 }
             });
@@ -233,7 +238,7 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
                 startActivity(msgIntent);
                 break;
             case R.id.iv_frag_first_page_find_worker:
-                startActivity(new Intent(getActivity(), KindActivity.class));
+                startActivity(new Intent(getActivity(), WorkerKindActivity.class));
                 break;
             case R.id.iv_frag_first_page_find_job:
                 startActivity(new Intent(getActivity(), JobActivity.class));
@@ -247,7 +252,7 @@ public class FpFragment extends CommonFragment implements View.OnClickListener, 
     }
 
     private void toGetCityId() {
-        String json = lruJsonCache.getAsString("-100comCity");
+        String json = lruJsonCache.getAsString(userId + CacheConfig.comCity);
         if (!TextUtils.isEmpty(json)) {
             localCityId = Utils.getLocCityId(getActivity(), localCity, json);
             cpd.dismiss();
