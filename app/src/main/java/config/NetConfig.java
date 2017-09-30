@@ -6,14 +6,15 @@ public interface NetConfig {
     String baseCityUrl = "http://api.gangjianwang.com/Regions/index";
     String hotCityUrl = "?action=hot";
     String letterCityUrl = "?action=letter";
-    //工种
-    String kindUrl = "http://api.gangjianwang.com/Skills/index";
+
+    //工人种类
+    String workerKindUrl = "http://api.gangjianwang.com/Skills/index";
+
     //工人信息
     String workerUrl = "http://api.gangjianwang.com/Users/getUsersBySkills";
-    //工作
-    String jobBaseUrl = "http://api.gangjianwang.com/Tasks/index";
-    String jobListUrl = "?action=list";
-    String jobDetailUrl = "?action=info&t_id=";
+
+    //工作信息
+    String jobInfoUrl = "http://api.gangjianwang.com/Tasks/index";
 
     //获取验证码
     String codeUrl = "http://api.gangjianwang.com/Users/sendVerifyCode?phone_number=";
@@ -43,4 +44,9 @@ public interface NetConfig {
 
     //头像上传
     String iconUpdateUrl = "http://api_zy.gangjianwang.com/Users/usersHeadEidt";
+
+    //红包
+    String redPacketUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=2";
+    //代金券
+    String voucherUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=1";
 }

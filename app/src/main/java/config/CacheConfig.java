@@ -8,5 +8,5 @@ public interface CacheConfig {
     //普通城市
     String comCity = "comCity";
     //工人种类
-    String workerKind = "workerKind";
+    String workerKind = "workerkind";
 }

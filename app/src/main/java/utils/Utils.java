@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import activity.LoginActivity;
+import login.view.LoginActivity;
 import bean.PositionBean;
 import cache.LruJsonCache;
 import config.NetConfig;
@@ -34,6 +37,13 @@ import view.CProgressDialog;
 
 //工具类
 public class Utils {
+
+    public static String Bitmap2StrByBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+        byte[] bytes = bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
 
     //吐司
     public static void toast(Context c, String s) {
@@ -169,9 +179,6 @@ public class Utils {
         Log.e("TAG", "pi:" + pi + "\nradius:" + radius + "\nx:" + x + "\ny:" + y);
     }
 
-    /**
-     * 缓存
-     */
     public static void writeCache(Context context, String id, String key, String value, String time) {
         int t = Integer.parseInt(time);
         LruJsonCache lruJsonCache = LruJsonCache.get(context);
@@ -211,7 +218,7 @@ public class Utils {
     }
 
     //工人信息url
-    public static String getWorkerUrl(String workerKindId, PositionBean positionBean) {
+    public static String getWorkerInfoUrl(String workerKindId, PositionBean positionBean) {
         return NetConfig.workerUrl + "?s_id=" + workerKindId + "&users_posit_x=" + positionBean.getPositionX() + "&users_posit_y=" + positionBean.getPositionY();
     }
 

@@ -45,12 +45,12 @@ public class LruJsonCache {
 
     private OnLoadHotCityListener onLoadHotCityListener;
 
-    public void setOnLoadHotCityListener(OnLoadHotCityListener onLoadHotCityListener) {
+        public void setOnLoadHotCityListener(OnLoadHotCityListener onLoadHotCityListener) {
         this.onLoadHotCityListener = onLoadHotCityListener;
     }
-
+//
     private OnLoadComCityListener onLoadComCityListener;
-
+//
     public void setOnLoadComCityListener(OnLoadComCityListener onLoadComCityListener) {
         this.onLoadComCityListener = onLoadComCityListener;
     }

@@ -29,7 +29,7 @@ public class PersonAdapter extends CommonAdapter<PersonBean> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.item_worker, null);
+            convertView = View.inflate(context, R.layout.item_worker_info, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
