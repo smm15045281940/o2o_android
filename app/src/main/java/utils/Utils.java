@@ -2,6 +2,7 @@ package utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,13 +27,19 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import login.view.LoginActivity;
 import bean.PositionBean;
 import cache.LruJsonCache;
 import config.NetConfig;
+import login.bean.UserBean;
+import login.view.LoginActivity;
+import skills.bean.SkillsBean;
+import taskscreen.bean.TaskScreenBean;
+import usermanage.bean.UserInfoBean;
 import view.CProgressDialog;
 
 //工具类
@@ -140,11 +147,6 @@ public class Utils {
         }
     }
 
-    //是否登录
-    public static boolean isLogin(Context context) {
-        return false;
-    }
-
     //跳到登录
     public static void skipLogin(Context context) {
         if (context != null) {
@@ -177,17 +179,6 @@ public class Utils {
         double x = (180 * distance) / (pi * radius * Math.cos(longitude * pi / 180));
         double y = (180 * distance) / (pi * radius * Math.cos(latitude * pi / 180));
         Log.e("TAG", "pi:" + pi + "\nradius:" + radius + "\nx:" + x + "\ny:" + y);
-    }
-
-    public static void writeCache(Context context, String id, String key, String value, String time) {
-        int t = Integer.parseInt(time);
-        LruJsonCache lruJsonCache = LruJsonCache.get(context);
-        lruJsonCache.put(id + "" + key, value, t);
-    }
-
-    public static String readCache(Context context, String id, String key) {
-        LruJsonCache lruJsonCache = LruJsonCache.get(context);
-        return lruJsonCache.getAsString(id + "" + key);
     }
 
     public static String getLocCityId(Context context, String cityName, String json) {
@@ -241,4 +232,88 @@ public class Utils {
     public static String getUserCplIsUrl(String baseUrl, String typeId) {
         return baseUrl + typeId;
     }
+
+    //任务url
+    public static String getTaskUrl(TaskScreenBean taskScreenBean) {
+        if (taskScreenBean != null) {
+            if (!TextUtils.isEmpty(taskScreenBean.getT_title())) {
+                return NetConfig.taskBaseUrl + "?t_title=" + taskScreenBean.getT_title();
+            }
+        }
+        return NetConfig.taskBaseUrl;
+    }
+
+    //个人信息工种
+    public static String getUserSkillUrl(UserInfoBean userInfoBean) {
+        if (userInfoBean != null) {
+            String str = userInfoBean.getU_skills();
+            int a = str.indexOf(",");
+            int b = str.lastIndexOf(",");
+            String skill = str.substring(a + 1, b);
+            return NetConfig.skillBaseUrl + "?s_id=" + skill;
+        }
+        return null;
+    }
+
+    //获取工种集合
+    public static List<SkillsBean> getSkillBeanList(String json) {
+        if (!TextUtils.isEmpty(json)) {
+            try {
+                JSONObject beanObj = new JSONObject(json);
+                if (beanObj.optInt("code") == 200) {
+                    JSONArray dataArr = beanObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        List<SkillsBean> skillsBeanList = new ArrayList<>();
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject obj = dataArr.optJSONObject(i);
+                            if (obj != null) {
+                                SkillsBean skillsBean = new SkillsBean();
+                                skillsBean.setS_id(obj.optString("s_id"));
+                                skillsBean.setS_name(obj.optString("s_name"));
+                                skillsBean.setS_info(obj.optString("s_info"));
+                                skillsBean.setS_desc(obj.optString("s_desc"));
+                                skillsBean.setS_status(obj.optString("s_status"));
+                                skillsBeanList.add(skillsBean);
+                            }
+                        }
+                        return skillsBeanList;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static String getWorkerManageUrl(Context context, int state) {
+        String url = null;
+        switch (state) {
+            case 0:
+//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId();
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2;
+                break;
+            case 1:
+//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=0&o_confirm=0,2";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=0&o_confirm=0,2";
+                break;
+            case 2:
+//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=0&o_confirm=1";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=0&o_confirm=1";
+                break;
+            case 3:
+//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=1";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=1";
+                break;
+        }
+        return url;
+    }
+
+
+    /**
+     * private void backgroundAlpha(float f) {
+     WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+     layoutParams.alpha = f;
+     getWindow().setAttributes(layoutParams);}
+     * */
 }

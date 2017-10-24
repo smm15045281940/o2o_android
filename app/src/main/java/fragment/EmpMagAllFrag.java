@@ -8,7 +8,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.WorkerMagAdapter;
+import workermanage.adapter.WorkerManageAdapter;
 import bean.PersonBean;
 import config.StateConfig;
 import listener.ListItemClickHelp;
@@ -22,7 +22,7 @@ public class EmpMagAllFrag extends CommonFragment implements PullToRefreshLayout
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private List<PersonBean> list;
-    private WorkerMagAdapter adapter;
+    private WorkerManageAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
 
     @Override
@@ -43,7 +43,7 @@ public class EmpMagAllFrag extends CommonFragment implements PullToRefreshLayout
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        adapter = new WorkerMagAdapter(getActivity(), list, this);
+        adapter = new WorkerManageAdapter(getActivity(), list, this);
         state = StateConfig.LOAD_DONE;
     }
 

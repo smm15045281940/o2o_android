@@ -8,7 +8,6 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.PersonTestAdapter;
 import bean.PersonBean;
 import config.StateConfig;
 import refreshload.PullToRefreshLayout;
@@ -21,7 +20,6 @@ public class EmpMagFinishedFrag extends CommonFragment implements PullToRefreshL
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private List<PersonBean> list;
-    private PersonTestAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
 
     @Override
@@ -42,13 +40,11 @@ public class EmpMagFinishedFrag extends CommonFragment implements PullToRefreshL
     @Override
     protected void initData() {
         list = new ArrayList<>();
-        adapter = new PersonTestAdapter(getActivity(), list);
         state = StateConfig.LOAD_DONE;
     }
 
     @Override
     protected void setData() {
-        plv.setAdapter(adapter);
     }
 
     @Override
@@ -67,7 +63,6 @@ public class EmpMagFinishedFrag extends CommonFragment implements PullToRefreshL
         p2.setCollect(true);
         p2.setDistance("南马路12号");
         list.add(p2);
-        adapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_REFRESH:
                 ptrl.hideHeadView();

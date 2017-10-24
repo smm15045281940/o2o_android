@@ -67,18 +67,16 @@ public class DiscountFragment extends Fragment implements IDiscountFragment, Pul
     }
 
     private void loadData() {
-        DiscountBean d0 = new DiscountBean();
-        d0.setTitle("优惠一");
-        d0.setUrl("http://www.toutiao.com/");
-        DiscountBean d1 = new DiscountBean();
-        d1.setTitle("优惠二");
-        d1.setUrl("http://www.toutiao.com/");
-        DiscountBean d2 = new DiscountBean();
-        d2.setTitle("优惠三");
-        d2.setUrl("http://www.toutiao.com/");
+        DiscountBean d0 = new DiscountBean("优惠一", "http://www.baidu.com/");
+        DiscountBean d1 = new DiscountBean("优惠二", "http://www.baidu.com/");
+        DiscountBean d2 = new DiscountBean("优惠三", "http://www.baidu.com/");
+        DiscountBean d3 = new DiscountBean("优惠四", "http://www.baidu.com/");
+        DiscountBean d4 = new DiscountBean("优惠五", "http://www.baidu.com/");
         list.add(d0);
         list.add(d1);
         list.add(d2);
+        list.add(d3);
+        list.add(d4);
         adapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_REFRESH:
@@ -94,15 +92,12 @@ public class DiscountFragment extends Fragment implements IDiscountFragment, Pul
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        list.clear();
-        state = StateConfig.LOAD_REFRESH;
-        loadData();
+        ptrl.hideHeadView();
     }
 
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
-        state = StateConfig.LOAD_LOAD;
-        loadData();
+        ptrl.hideFootView();
     }
 
     @Override

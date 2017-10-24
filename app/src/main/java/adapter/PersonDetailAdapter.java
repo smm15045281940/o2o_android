@@ -16,7 +16,6 @@ import com.squareup.picasso.Picasso;
 
 import bean.EvaluateBean;
 import bean.PersonDetailBean;
-import utils.Utils;
 import view.CImageView;
 
 public class PersonDetailAdapter extends BaseAdapter {
@@ -150,10 +149,6 @@ public class PersonDetailAdapter extends BaseAdapter {
                 holder2.titleTv.setText("角色选择");
                 holder2.contentTv.setText("");
                 holder2.gv.setVisibility(View.VISIBLE);
-                if (personDetailBean.getRoleBeanList() != null && personDetailBean.getRoleBeanList().size() != 0) {
-                    holder2.gv.setAdapter(new RoleAdapter(context, 0, personDetailBean.getRoleBeanList()));
-                    Utils.setGridViewHeight(holder2.gv, 4);
-                }
                 break;
             case 3:
                 if (convertView == null) {

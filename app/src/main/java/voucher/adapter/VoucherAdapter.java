@@ -46,7 +46,7 @@ public class VoucherAdapter extends BaseAdapter {
     public View getView(int position, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_red_packet, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_voucher, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -76,11 +76,11 @@ public class VoucherAdapter extends BaseAdapter {
         private TextView amountTv, infoTv, startTimeTv, endTimeTv, statusTv;
 
         public ViewHolder(View itemView) {
-            amountTv = (TextView) itemView.findViewById(R.id.tv_item_red_packet_amount);
-            infoTv = (TextView) itemView.findViewById(R.id.tv_item_red_packet_info);
-            startTimeTv = (TextView) itemView.findViewById(R.id.tv_item_red_packet_start_time);
-            endTimeTv = (TextView) itemView.findViewById(R.id.tv_item_red_packet_end_time);
-            statusTv = (TextView) itemView.findViewById(R.id.tv_item_red_packet_status);
+            amountTv = (TextView) itemView.findViewById(R.id.tv_item_voucher_amount);
+            infoTv = (TextView) itemView.findViewById(R.id.tv_item_voucher_info);
+            startTimeTv = (TextView) itemView.findViewById(R.id.tv_item_voucher_start_time);
+            endTimeTv = (TextView) itemView.findViewById(R.id.tv_item_voucher_end_time);
+            statusTv = (TextView) itemView.findViewById(R.id.tv_item_voucher_status);
         }
     }
 }

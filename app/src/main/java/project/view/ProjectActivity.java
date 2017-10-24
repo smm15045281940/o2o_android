@@ -15,7 +15,6 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.ProjectAdapter;
 import bean.ProjectBean;
 import config.StateConfig;
 import listener.ListItemClickHelp;
@@ -30,7 +29,6 @@ public class ProjectActivity extends AppCompatActivity implements View.OnClickLi
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private List<ProjectBean> list;
-    private ProjectAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
 
     @Override
@@ -58,11 +56,9 @@ public class ProjectActivity extends AppCompatActivity implements View.OnClickLi
 
     private void initData() {
         list = new ArrayList<>();
-        adapter = new ProjectAdapter(this, list, this);
     }
 
     private void setData() {
-        plv.setAdapter(adapter);
     }
 
     private void setListener() {
@@ -87,7 +83,6 @@ public class ProjectActivity extends AppCompatActivity implements View.OnClickLi
         p1.setState(StateConfig.WAIT);
         list.add(p0);
         list.add(p1);
-        adapter.notifyDataSetChanged();
         switch (state) {
             case StateConfig.LOAD_REFRESH:
                 ptrl.hideHeadView();

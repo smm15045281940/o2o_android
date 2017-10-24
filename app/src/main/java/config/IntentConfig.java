@@ -19,5 +19,4 @@ public interface IntentConfig {
     String PIC = "PIC";//选取图片意图
     int PIC_REQUEST = 6;//选取图片请求码
     int PIC_RESULT = 7;//选取图片结果码
-    String WORKER_KIND = "WORKER_KIND";//工人种类意图名称
 }

@@ -165,21 +165,21 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
 
     private void loadNetData() {
         cpd.show();
-        Request request = new Request.Builder().url(NetConfig.testUrl).get().build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String result = response.body().string();
-                    parseJson(result);
-                }
-            }
-        });
+//        Request request = new Request.Builder().url(NetConfig.testUrl).get().build();
+//        okHttpClient.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                if (response.isSuccessful()) {
+//                    String result = response.body().string();
+//                    parseJson(result);
+//                }
+//            }
+//        });
     }
 
     private void parseJson(String json) {
@@ -213,7 +213,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                 startActivity(new Intent(this, ComplainActivity.class));
                 break;
             case R.id.ll_evaluate_detail:
-                Utils.toast(this, VarConfig.notyetTip);
                 break;
             case R.id.iv_evaluate_praise_1:
                 praise = 1;

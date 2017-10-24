@@ -28,6 +28,11 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="dN4Fk4zH7UukSYGgGuytm391lB5wqirE" />
 
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"/>
+
         <activity android:name="main.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,17 +40,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="workerkind.view.WorkerKindActivity" />
-        <activity android:name="workerInfo.view.WorkerInfoActivity" />
+        <activity android:name="skills.view.SkillsActivity" />
+        <activity android:name="worker.view.WorkerActivity" />
         <activity android:name="leftright.view.LeftRightActivity" />
         <activity android:name="city.view.CityActivity" />
         <activity android:name="talk.view.TalkActivity" />
         <activity android:name="workermanage.view.WorkerManageActivity" />
-        <activity android:name="employermanage.view.EmpMagActivity" />
+        <activity android:name="employermanage.view.EmployerManageActivity" />
         <activity
-            android:name="personmanage.view.PersonInfoManageActivity"
+            android:name="usermanage.view.UserManageActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name="jobinfo.view.JobInfoActivity" />
+        <activity android:name="task.view.TaskActivity" />
         <activity android:name="set.view.SetActivity" />
         <activity android:name="serviceclause.view.SevClsActivity" />
         <activity android:name="login.view.LoginActivity" />
@@ -57,7 +62,6 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="wallet.view.WalletActivity" />
         <activity android:name="accountdetail.view.AccountDetailActivity" />
-        <activity android:name="invite.view.InviteActivity" />
         <activity
             android:name="withdraw.view.WithDrawActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
@@ -65,7 +69,7 @@
             android:name="workerscreen.view.WorkerScnActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name="jobscreen.view.JobScnActivity"
+            android:name="taskscreen.view.TaskScreenActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name="passwordset.view.SetPwdActivity" />
         <activity
@@ -102,7 +106,7 @@
         <activity android:name="myevaluate.view.MyEvaluateActivity" />
         <activity android:name="aboutus.view.AboutUsActivity" />
         <activity android:name="selectaddress.view.SelectAddressActivity" />
-        <activity android:name="taskconfirm.view.TaskConfirmActivity"></activity>
+        <activity android:name="taskconfirm.view.TaskConfirmActivity" />
     </application>
 
 </manifest>

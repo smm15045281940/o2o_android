@@ -25,7 +25,6 @@ import java.util.List;
 import adapter.PersonDetailAdapter;
 import bean.EvaluateBean;
 import bean.PersonDetailBean;
-import bean.RoleBean;
 import config.NetConfig;
 import config.StateConfig;
 import okhttp3.Call;
@@ -136,7 +135,7 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
 
     private void loadNetData() {
         cpd.show();
-        Request request = new Request.Builder().url(NetConfig.personDetailUrl + userId).get().build();
+        Request request = new Request.Builder().url(NetConfig.userInfoUrl + userId).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -185,17 +184,6 @@ public class PersonDetailActivity extends AppCompatActivity implements View.OnCl
                             personDetailBean.setAddress(objArea.optString("uei_address"));
                             personDetailBean.setHousehold(objArea.optString("user_area_name"));
                         }
-                        List<RoleBean> roleBeanList = new ArrayList<>();
-                        RoleBean rb0 = new RoleBean();
-                        rb0.setContent("水泥工");
-                        RoleBean rb1 = new RoleBean();
-                        rb1.setContent("水暖工");
-                        RoleBean rb2 = new RoleBean();
-                        rb2.setContent("瓦工");
-                        roleBeanList.add(rb0);
-                        roleBeanList.add(rb1);
-                        roleBeanList.add(rb2);
-                        personDetailBean.setRoleBeanList(roleBeanList);
                         personDetailBean.setCount(10);
                         List<EvaluateBean> evaluateBeanList = new ArrayList<>();
                         for (int i = 0; i < 10; i++) {

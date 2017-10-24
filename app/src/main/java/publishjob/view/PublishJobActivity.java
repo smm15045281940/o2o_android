@@ -1,17 +1,23 @@
 package publishjob.view;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,10 +26,12 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapter.ScnDiaAdapter;
 import listener.ListItemClickHelp;
 import publishjob.adapter.PublishKindAdapter;
 import publishjob.bean.PublishJobBean;
 import publishjob.bean.PublishKindBean;
+import selectaddress.bean.SelectAddressBean;
 import selectaddress.view.SelectAddressActivity;
 import taskconfirm.view.TaskConfirmActivity;
 import utils.Utils;
@@ -38,7 +46,15 @@ public class PublishJobActivity extends AppCompatActivity implements View.OnClic
     private PublishKindAdapter adapter;
     private List<PublishKindBean> publishKindBeanList;
 
+    private String areaId;
+
     private PublishJobBean publishJobBean;
+
+    private View typePopView;
+    private PopupWindow typePop;
+    private TextView typeTitleTv;
+    private ImageView typeCloseIv;
+    private ListView typeLv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +71,7 @@ public class PublishJobActivity extends AppCompatActivity implements View.OnClic
     private void initView() {
         initRootView();
         initHeadView();
+        initPopView();
     }
 
     private void initData() {
@@ -91,6 +108,45 @@ public class PublishJobActivity extends AppCompatActivity implements View.OnClic
         lv.addHeaderView(headView);
     }
 
+    private void initPopView() {
+        typePopView = LayoutInflater.from(PublishJobActivity.this).inflate(R.layout.dialog_scn, null);
+        typeTitleTv = (TextView) typePopView.findViewById(R.id.tv_dialog_scn_title);
+        typeTitleTv.setText("项目类型");
+        typeCloseIv = (ImageView) typePopView.findViewById(R.id.iv_dialog_scn_close);
+        typeCloseIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                typePop.dismiss();
+            }
+        });
+        typeLv = (ListView) typePopView.findViewById(R.id.lv_dialog_scn);
+        final List<String> typeList = new ArrayList<>();
+        typeList.add("小型工地");
+        typeList.add("个人家装");
+        typeList.add("大型建筑项目");
+        ScnDiaAdapter scnDiaAdapter = new ScnDiaAdapter(PublishJobActivity.this, typeList);
+        typeLv.setAdapter(scnDiaAdapter);
+        typeLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                publishJobBean.setType(typeList.get(position));
+                typeTv.setText(publishJobBean.getType());
+                typePop.dismiss();
+            }
+        });
+        typePop = new PopupWindow(typePopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        typePop.setFocusable(true);
+        typePop.setTouchable(true);
+        typePop.setOutsideTouchable(true);
+        typePop.setBackgroundDrawable(new BitmapDrawable());
+        typePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
+    }
+
     private void setListener() {
         returnRl.setOnClickListener(this);
         addRl.setOnClickListener(this);
@@ -112,16 +168,15 @@ public class PublishJobActivity extends AppCompatActivity implements View.OnClic
                 Utils.log(PublishJobActivity.this, "增加工种");
                 break;
             case R.id.rl_publish_job_submit:
-                Utils.log(PublishJobActivity.this, "确认提交");
                 Utils.log(PublishJobActivity.this, "PublishJobBean=" + publishJobBean.toString());
                 submit();
                 break;
             case R.id.tv_head_publish_job_type:
-                Utils.log(PublishJobActivity.this, "选择项目类型");
+                backgroundAlpha(0.8f);
+                typePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 break;
             case R.id.tv_head_publish_job_area:
-                Utils.log(PublishJobActivity.this, "选择工作所在区域");
-                startActivity(new Intent(PublishJobActivity.this, SelectAddressActivity.class));
+                startActivityForResult(new Intent(PublishJobActivity.this, SelectAddressActivity.class), 1);
                 break;
         }
     }
@@ -141,9 +196,28 @@ public class PublishJobActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void backgroundAlpha(float f) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = f;
+        getWindow().setAttributes(lp);
+    }
+
     @Override
     public void onClick(View item, View widget, int position, int which, boolean isChecked) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == 1 & data != null) {
+            SelectAddressBean selectAddressBean = (SelectAddressBean) data.getSerializableExtra("sa");
+            if (selectAddressBean != null) {
+                areaId = selectAddressBean.getId();
+                publishJobBean.setArea(selectAddressBean.getName());
+                areaTv.setText(publishJobBean.getArea());
+            }
+        }
     }
 
     TextWatcher titleTw = new TextWatcher() {

@@ -77,12 +77,12 @@ public class CollectWorkerAdapter extends BaseAdapter {
         private TextView nameTv, infoTv, distanceTv;
 
         public ViewHolder(View itemView) {
-            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_person_image);
-            statusIv = (ImageView) itemView.findViewById(R.id.iv_item_person_status);
-            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_person_collect);
-            nameTv = (TextView) itemView.findViewById(R.id.tv_item_person_name);
-            infoTv = (TextView) itemView.findViewById(R.id.tv_item_person_info);
-            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_person_distance);
+            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_icon);
+            statusIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_status);
+            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_collect);
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_mission_name);
+            infoTv = (TextView) itemView.findViewById(R.id.tv_item_mission_info);
+            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_mission_distance);
         }
     }
 }

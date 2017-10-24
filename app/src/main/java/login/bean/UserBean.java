@@ -3,7 +3,7 @@ package login.bean;
 
 import java.io.Serializable;
 
-public class UserBean implements Serializable{
+public class UserBean implements Serializable {
 
     private String id;
     private String name;
@@ -11,6 +11,22 @@ public class UserBean implements Serializable{
     private String online;
     private String icon;
     private String token;
+    private String pass;
+    private String idcard;
+
+    public UserBean() {
+    }
+
+    public UserBean(String id, String name, String sex, String online, String icon, String token, String pass, String idcard) {
+        this.id = id;
+        this.name = name;
+        this.sex = sex;
+        this.online = online;
+        this.icon = icon;
+        this.token = token;
+        this.pass = pass;
+        this.idcard = idcard;
+    }
 
     public String getId() {
         return id;
@@ -60,6 +76,22 @@ public class UserBean implements Serializable{
         this.token = token;
     }
 
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard;
+    }
+
     @Override
     public String toString() {
         return "UserBean{" +
@@ -69,6 +101,8 @@ public class UserBean implements Serializable{
                 ", online='" + online + '\'' +
                 ", icon='" + icon + '\'' +
                 ", token='" + token + '\'' +
+                ", pass='" + pass + '\'' +
+                ", idcard='" + idcard + '\'' +
                 '}';
     }
 }

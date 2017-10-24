@@ -2,12 +2,10 @@ package password.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import config.ShareConfig;
 import config.VarConfig;
 import phoneprove.view.PhoneProveActivity;
 import utils.Utils;
@@ -41,8 +38,6 @@ public class PwdActivity extends AppCompatActivity implements View.OnClickListen
     private String beforePwd;
 
     private int state = VarConfig.PWD_FIRST;
-
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,17 +69,9 @@ public class PwdActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initData() {
-        sharedPreferences = getSharedPreferences(ShareConfig.shareName, Context.MODE_PRIVATE);
-        String payPwd = sharedPreferences.getString(ShareConfig.payPwd, null);
-        if (TextUtils.isEmpty(payPwd)) {
-            state = VarConfig.PWD_FIRST;
-        } else {
-            beforePwd = payPwd;
-            state = VarConfig.PWD_ORIGIN;
-            fgtTv.setVisibility(View.VISIBLE);
-        }
-        refreshView();
-        refreshPoint(0);
+        state = VarConfig.PWD_FIRST;
+        state = VarConfig.PWD_ORIGIN;
+        fgtTv.setVisibility(View.VISIBLE);
     }
 
     private void setListener() {
@@ -96,9 +83,6 @@ public class PwdActivity extends AppCompatActivity implements View.OnClickListen
 
     private void judge() {
         if (firstPwd.equals(secondPwd)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(ShareConfig.payPwd, firstPwd);
-            editor.commit();
             Utils.toast(this, VarConfig.pwdSuccessTip);
             finish();
         } else {
