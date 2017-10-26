@@ -4,13 +4,13 @@ public interface NetConfig {
 
     String hotCityUrl = "http://api.gangjianwang.com/Regions/index?action=hot";
     String comCityUrl = "http://api.gangjianwang.com/Regions/index?action=letter";
-    String setPwdUrl = "api.gangjianwang.com/Users/setPassword";
-    String editPwdUrl = "api.gangjianwang.com/Users/passwordEdit";
-    String fgtPwdCodeUrl = "api.gangjianwang.com/Users/passwordEdit?u_mobile=";
+    String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
+    String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
+    String fgtPwdCodeUrl = "http://api.gangjianwang.com/Users/passwordEdit?u_mobile=";
     String fgtPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String provePhoneUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String proveIdcardUrl = "http://api.gangjianwang.com/Users/passwordEdit";
-    String proveOriPwdUrl = "api.gangjianwang.com/Users/passwordEdit";
+    String proveOriPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String userInfoEditUrl = "http://api.gangjianwang.com/Users/usersInfoEdit";
     String skillBaseUrl = "http://api.gangjianwang.com/Skills/index";
     String workerUrl = "http://api.gangjianwang.com/Users/getUsersBySkills";
@@ -30,4 +30,6 @@ public interface NetConfig {
     String useCplIs = "http://api.gangjianwang.com/Users/complaintsType?ct_type=";
     String selectAddressBaseUrl = "http://api.gangjianwang.com/Regions/index?action=list&r_pid=";
     String usersFundsLogUrl = "http://api_zy.gangjianwang.com/Users/getUsersFundsLog";
+    String favorateAddUrl = "http://api.gangjianwang.com/Users/favorateAdd";
+    String favorateDelUrl = "http://api.gangjianwang.com/Users/favorateDel";
 }

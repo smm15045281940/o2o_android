@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 public class PublishKindBean implements Serializable {
 
+    private String id;
     private String kind;
     private String amount;
     private String salary;
@@ -14,12 +15,21 @@ public class PublishKindBean implements Serializable {
     public PublishKindBean() {
     }
 
-    public PublishKindBean(String kind, String amount, String salary, String startTime, String endTime) {
+    public PublishKindBean(String id, String kind, String amount, String salary, String startTime, String endTime) {
+        this.id = id;
         this.kind = kind;
         this.amount = amount;
         this.salary = salary;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getKind() {
@@ -65,7 +75,8 @@ public class PublishKindBean implements Serializable {
     @Override
     public String toString() {
         return "PublishKindBean{" +
-                "kind='" + kind + '\'' +
+                "id='" + id + '\'' +
+                ", kind='" + kind + '\'' +
                 ", amount='" + amount + '\'' +
                 ", salary='" + salary + '\'' +
                 ", startTime='" + startTime + '\'' +

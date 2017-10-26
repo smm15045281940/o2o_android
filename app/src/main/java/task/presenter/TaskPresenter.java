@@ -6,6 +6,7 @@ import android.os.Handler;
 import java.util.List;
 
 import task.bean.TaskBean;
+import task.listener.TaskCollectListener;
 import task.listener.TaskListener;
 import task.module.ITaskModule;
 import task.module.TaskModule;
@@ -41,6 +42,31 @@ public class TaskPresenter implements ITaskPresenter {
                     @Override
                     public void run() {
                         iTaskActivity.showFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void taskCollect(String url) {
+        iTaskModule.taskCollect(url, new TaskCollectListener() {
+            @Override
+            public void success(String success) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void failure(String failure) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
                     }
                 });
             }

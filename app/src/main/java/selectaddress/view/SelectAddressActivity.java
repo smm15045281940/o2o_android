@@ -41,7 +41,7 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
     private final int PROVINCE = 0, CITY = 1, AREA = 2;
     private int STATE;
 
-    private ISelectAddressPresenter iSelectAddressPresenter;
+    private ISelectAddressPresenter selectAddressPresenter;
 
     private Handler handler = new Handler() {
         @Override
@@ -73,9 +73,9 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (iSelectAddressPresenter != null) {
-            iSelectAddressPresenter.destroy();
-            iSelectAddressPresenter = null;
+        if (selectAddressPresenter != null) {
+            selectAddressPresenter.destroy();
+            selectAddressPresenter = null;
         }
         if (handler != null) {
             handler.removeMessages(1);
@@ -98,7 +98,7 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
         list = new ArrayList<>();
         adapter = new SelectAddressAdapter(SelectAddressActivity.this, list);
         STATE = PROVINCE;
-        iSelectAddressPresenter = new SelectAddressPresenter(this);
+        selectAddressPresenter = new SelectAddressPresenter(this);
     }
 
     private void setData() {
@@ -114,7 +114,7 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
     }
 
     private void loadData() {
-        iSelectAddressPresenter.load("1");
+        selectAddressPresenter.load("1");
     }
 
     @Override
@@ -131,7 +131,7 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
                     cityTv.setText("市");
                     cityTv.setTextColor(ColorConfig.black_252323);
                     STATE = PROVINCE;
-                    iSelectAddressPresenter.load("1");
+                    selectAddressPresenter.load("1");
                 }
                 break;
             case R.id.rl_select_address_city:
@@ -140,11 +140,8 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
                     cityTv.setText("市");
                     cityTv.setTextColor(ColorConfig.black_252323);
                     STATE = CITY;
-                    iSelectAddressPresenter.load(provinceId);
+                    selectAddressPresenter.load(provinceId);
                 }
-                break;
-            case R.id.rl_select_address_area:
-                Utils.log(SelectAddressActivity.this, "区");
                 break;
         }
     }
@@ -161,7 +158,6 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
 
     @Override
     public void showSuccess(List<SelectAddressBean> selectAddressBeanList) {
-        Utils.log(SelectAddressActivity.this, "selectAddressBeanList=" + selectAddressBeanList.toString());
         list.clear();
         list.addAll(selectAddressBeanList);
         handler.sendEmptyMessage(1);
@@ -169,7 +165,6 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
 
     @Override
     public void showFailure(String failure) {
-        Utils.log(SelectAddressActivity.this, "failure=" + failure);
     }
 
     @Override
@@ -181,24 +176,20 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
             switch (STATE) {
                 case PROVINCE:
                     provinceId = selectId;
-                    Utils.log(SelectAddressActivity.this, "provinceId=" + provinceId + ":provinceName=" + selectName);
                     provinceTv.setText(selectName);
                     provinceTv.setTextColor(ColorConfig.red_ff3e50);
                     STATE = CITY;
-                    iSelectAddressPresenter.load(selectId);
+                    selectAddressPresenter.load(selectId);
                     break;
                 case CITY:
                     cityId = selectId;
-                    Utils.log(SelectAddressActivity.this, "cityId=" + cityId + ":cityName=" + selectName);
                     cityTv.setText(selectName);
                     cityTv.setTextColor(ColorConfig.red_ff3e50);
                     STATE = AREA;
-                    iSelectAddressPresenter.load(selectId);
+                    selectAddressPresenter.load(selectId);
                     break;
                 case AREA:
                     areaId = selectId;
-                    Utils.log(SelectAddressActivity.this, "areaId=" + areaId + ":areaName=" + selectName);
-                    Utils.log(SelectAddressActivity.this, provinceTv.getText().toString() + " " + cityTv.getText().toString() + " " + selectName);
                     SelectAddressBean sa = new SelectAddressBean(provinceId + "," + cityId + "," + areaId, provinceTv.getText().toString() + " " + cityTv.getText().toString() + " " + selectName);
                     Intent i = new Intent();
                     i.putExtra("sa", sa);

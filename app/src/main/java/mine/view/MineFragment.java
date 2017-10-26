@@ -228,7 +228,9 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         userBean.setIdcard(userInfoBean.getU_idcard());
         userBean.setOnline(userInfoBean.getU_online());
         userBean.setSex(userInfoBean.getU_sex());
+        userBean.setMobile(userInfoBean.getU_mobile());
         UserUtils.saveUserData(getActivity(), userBean);
+        Log.e("MineFragment", "userBean=" + userBean.toString());
         handler.sendEmptyMessage(REFRESH_DONE);
     }
 

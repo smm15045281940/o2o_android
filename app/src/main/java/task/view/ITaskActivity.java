@@ -10,4 +10,8 @@ public interface ITaskActivity {
     void showSuccess(List<TaskBean> taskBeanList);
 
     void showFailure(String failure);
+
+    void taskCollectSuccess(String success);
+
+    void taskCollectFailure(String failure);
 }

@@ -13,6 +13,7 @@ import java.util.List;
 
 import task.bean.TaskBean;
 import config.VarConfig;
+import task.listener.TaskCollectListener;
 import task.listener.TaskListener;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,7 +24,7 @@ import okhttp3.Response;
 public class TaskModule implements ITaskModule {
 
     private OkHttpClient okHttpClient;
-    private Call call;
+    private Call call, taskCollectCall;
 
     public TaskModule() {
         okHttpClient = new OkHttpClient();
@@ -95,6 +96,28 @@ public class TaskModule implements ITaskModule {
                     }
                 } else {
                     taskListener.failure("response is fail");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void taskCollect(String url, final TaskCollectListener taskCollectListener) {
+        Request taskCollectRequest = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        taskCollectCall = okHttpClient.newCall(taskCollectRequest);
+        taskCollectCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    taskCollectListener.success(response.body().string());
                 }
             }
         });

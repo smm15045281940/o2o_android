@@ -2,7 +2,6 @@ package utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -32,10 +31,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bean.PositionBean;
-import cache.LruJsonCache;
 import config.NetConfig;
-import login.bean.UserBean;
 import login.view.LoginActivity;
 import skills.bean.SkillsBean;
 import taskscreen.bean.TaskScreenBean;
@@ -206,11 +202,6 @@ public class Utils {
             e.printStackTrace();
         }
         return cityId;
-    }
-
-    //工人信息url
-    public static String getWorkerInfoUrl(String workerKindId, PositionBean positionBean) {
-        return NetConfig.workerUrl + "?s_id=" + workerKindId + "&users_posit_x=" + positionBean.getPositionX() + "&users_posit_y=" + positionBean.getPositionY();
     }
 
     //头像上传url

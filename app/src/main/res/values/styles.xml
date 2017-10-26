@@ -259,6 +259,7 @@
     </style>
 
     <style name="tv_pwd">
+        <item name="android:textColor">@color/black_252323</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerInParent">true</item>

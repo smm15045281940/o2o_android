@@ -21,24 +21,15 @@ import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import utils.Utils;
 
-public class DiscountFragment extends Fragment implements IDiscountFragment, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class DiscountFragment extends Fragment implements IDiscountFragment {
 
     private View rootView;
-    private PullToRefreshLayout ptrl;
-    private PullableListView plv;
-    private List<DiscountBean> list;
-    private DcAdapter adapter;
-    private int state = StateConfig.LOAD_DONE;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = LayoutInflater.from(getActivity()).inflate(R.layout.frag_discount, null);
         initView();
-        initData();
-        setData();
-        setListener();
-        loadData();
         return rootView;
     }
 
@@ -48,72 +39,5 @@ public class DiscountFragment extends Fragment implements IDiscountFragment, Pul
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
-        plv = (PullableListView) rootView.findViewById(R.id.plv);
-    }
-
-    private void initData() {
-        list = new ArrayList<>();
-        adapter = new DcAdapter(getActivity(), list);
-    }
-
-    private void setData() {
-        plv.setAdapter(adapter);
-    }
-
-    private void setListener() {
-        ptrl.setOnRefreshListener(this);
-        plv.setOnItemClickListener(this);
-    }
-
-    private void loadData() {
-        DiscountBean d0 = new DiscountBean("优惠一", "http://www.baidu.com/");
-        DiscountBean d1 = new DiscountBean("优惠二", "http://www.baidu.com/");
-        DiscountBean d2 = new DiscountBean("优惠三", "http://www.baidu.com/");
-        DiscountBean d3 = new DiscountBean("优惠四", "http://www.baidu.com/");
-        DiscountBean d4 = new DiscountBean("优惠五", "http://www.baidu.com/");
-        list.add(d0);
-        list.add(d1);
-        list.add(d2);
-        list.add(d3);
-        list.add(d4);
-        adapter.notifyDataSetChanged();
-        switch (state) {
-            case StateConfig.LOAD_REFRESH:
-                ptrl.hideHeadView();
-                break;
-            case StateConfig.LOAD_LOAD:
-                ptrl.hideFootView();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideHeadView();
-    }
-
-    @Override
-    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideFootView();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String url = list.get(position).getUrl();
-        if (!TextUtils.isEmpty(url))
-            Utils.skipBrowser(getActivity(), url);
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
     }
 }

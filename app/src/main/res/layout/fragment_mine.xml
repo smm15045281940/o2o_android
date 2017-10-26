@@ -280,9 +280,9 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout style="@style/rl_main"/>
+                    <RelativeLayout style="@style/rl_main" />
 
-                    <RelativeLayout style="@style/rl_main"/>
+                    <RelativeLayout style="@style/rl_main" />
 
                 </LinearLayout>
 
@@ -300,7 +300,7 @@
 
                     <TextView
                         style="@style/tv_mine_service"
-                        android:text="设置提现密码" />
+                        android:text="设置交易密码" />
 
                 </LinearLayout>
 

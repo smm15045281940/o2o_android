@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/y5"
                 android:layout_weight="1"
-                android:text="设置提现密码"
+                android:text="设置交易密码"
                 android:textSize="@dimen/x15" />
 
             <ImageView

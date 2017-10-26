@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -16,17 +17,18 @@ import java.util.List;
 
 import collectworker.bean.CollectWorkerBean;
 import listener.ListItemClickHelp;
+import worker.listener.WorkerClickHelp;
 
 public class CollectWorkerAdapter extends BaseAdapter {
 
     private Context context;
     private List<CollectWorkerBean> list;
-    private ListItemClickHelp clickHelp;
+    private WorkerClickHelp workerClickHelp;
 
-    public CollectWorkerAdapter(Context context, List<CollectWorkerBean> list, ListItemClickHelp clickHelp) {
+    public CollectWorkerAdapter(Context context, List<CollectWorkerBean> list, WorkerClickHelp workerClickHelp) {
         this.context = context;
         this.list = list;
-        this.clickHelp = clickHelp;
+        this.workerClickHelp = workerClickHelp;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class CollectWorkerAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_person, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_worker, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -66,23 +68,38 @@ public class CollectWorkerAdapter extends BaseAdapter {
             holder.collectIv.setImageResource(R.mipmap.collect_yellow);
             holder.nameTv.setText(collectWorkerBean.getuName());
             holder.infoTv.setText(collectWorkerBean.getUeiInfo());
-            holder.distanceTv.setText("?");
         }
+        final int p = position;
+        final int llId = holder.ll.getId();
+        holder.ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                workerClickHelp.onClick(p, llId);
+            }
+        });
+        final int cancelCollectId = holder.collectIv.getId();
+        holder.collectIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                workerClickHelp.onClick(p, cancelCollectId);
+            }
+        });
         return convertView;
     }
 
     private class ViewHolder {
 
+        private LinearLayout ll;
         private ImageView imageIv, statusIv, collectIv;
-        private TextView nameTv, infoTv, distanceTv;
+        private TextView nameTv, infoTv;
 
         public ViewHolder(View itemView) {
-            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_icon);
-            statusIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_status);
-            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_mission_collect);
-            nameTv = (TextView) itemView.findViewById(R.id.tv_item_mission_name);
-            infoTv = (TextView) itemView.findViewById(R.id.tv_item_mission_info);
-            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_mission_distance);
+            ll = (LinearLayout) itemView.findViewById(R.id.ll_item_worker);
+            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_icon);
+            statusIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_status);
+            collectIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_collect);
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_name);
+            infoTv = (TextView) itemView.findViewById(R.id.tv_item_worker_info);
         }
     }
 }

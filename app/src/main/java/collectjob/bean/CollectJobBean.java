@@ -3,14 +3,14 @@ package collectjob.bean;
 
 import java.io.Serializable;
 
-public class CollectJobBean implements Serializable{
+public class CollectJobBean implements Serializable {
 
     private String title;
     private String amount;
     private String duration;
     private String author;
     private String status;
-
+    private String icon;
 
     public String getTitle() {
         return title;
@@ -52,6 +52,14 @@ public class CollectJobBean implements Serializable{
         this.status = status;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     @Override
     public String toString() {
         return "CollectJobBean{" +
@@ -60,6 +68,7 @@ public class CollectJobBean implements Serializable{
                 ", duration='" + duration + '\'' +
                 ", author='" + author + '\'' +
                 ", status='" + status + '\'' +
+                ", icon='" + icon + '\'' +
                 '}';
     }
 }

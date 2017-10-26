@@ -4,7 +4,6 @@
     android:id="@+id/activity_talk"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="talk.view.TalkActivity">
 

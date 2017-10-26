@@ -20,6 +20,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import listener.IdPosClickHelp;
 import task.adapter.TaskAdapter;
 import task.bean.TaskBean;
 import config.NetConfig;
@@ -35,7 +36,7 @@ import talk.view.TalkActivity;
 import utils.Utils;
 import view.CProgressDialog;
 
-public class TaskActivity extends AppCompatActivity implements ITaskActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class TaskActivity extends AppCompatActivity implements ITaskActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
     private View rootView, emptyView, netView;
     private FrameLayout fl;
@@ -125,7 +126,7 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
 
     private void initData() {
         list = new ArrayList<>();
-        adapter = new TaskAdapter(this, list);
+        adapter = new TaskAdapter(this, list, this);
         taskPresenter = new TaskPresenter(TaskActivity.this);
         STATE = FIRST;
     }
@@ -138,7 +139,6 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
         returnRl.setOnClickListener(this);
         screenRl.setOnClickListener(this);
         ptrl.setOnRefreshListener(this);
-        plv.setOnItemClickListener(this);
     }
 
     private void loadData() {
@@ -195,26 +195,9 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String t_id = list.get(position).getT_id();
-        if (!TextUtils.isEmpty(t_id)) {
-            Intent intent = new Intent(this, TalkActivity.class);
-            intent.putExtra("t_id", t_id);
-            startActivity(intent);
-        }
-    }
-
-    @Override
     public void showSuccess(List<TaskBean> taskBeanList) {
         Utils.log(TaskActivity.this, "任务列表:" + taskBeanList.toString());
-        switch (STATE) {
-            case FIRST:
-                list.clear();
-                break;
-            case REFRESH:
-                list.clear();
-                break;
-        }
+        list.clear();
         list.addAll(taskBeanList);
         handler.sendEmptyMessage(1);
     }
@@ -238,6 +221,16 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
     }
 
     @Override
+    public void taskCollectSuccess(String success) {
+
+    }
+
+    @Override
+    public void taskCollectFailure(String failure) {
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == 1 && data != null) {
@@ -255,5 +248,16 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
             Utils.log(TaskActivity.this, Utils.getTaskUrl(taskScreenBean));
             taskPresenter.load(Utils.getTaskUrl(taskScreenBean));
         }
+    }
+
+    @Override
+    public void onClick(int id, int pos) {
+        /**
+         * String t_id = list.get(position).getT_id();
+         if (!TextUtils.isEmpty(t_id)) {
+         Intent intent = new Intent(this, TalkActivity.class);
+         intent.putExtra("t_id", t_id);
+         startActivity(intent);
+         }*/
     }
 }

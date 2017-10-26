@@ -14,4 +14,8 @@ public interface ICollectWorkerFragment {
     void showLoadSuccess(List<CollectWorkerBean> collectWorkerBeanList);
 
     void showLoadFailure(String failure);
+
+    void cancelCollectSuccess(String success);
+
+    void cancelCollectFailure(String failure);
 }

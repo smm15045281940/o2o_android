@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import collectworker.bean.CollectWorkerBean;
+import collectworker.listener.CancelCollectListener;
 import collectworker.listener.OnLoadCollectWorkerListener;
 import config.NetConfig;
 import okhttp3.Call;
@@ -21,7 +22,7 @@ import okhttp3.Response;
 public class CollectWorkerModule implements ICollectWorkerModule {
 
     private OkHttpClient okHttpClient;
-    private Call call;
+    private Call call, cancelCollectCall;
 
     public CollectWorkerModule() {
         okHttpClient = new OkHttpClient();
@@ -79,10 +80,49 @@ public class CollectWorkerModule implements ICollectWorkerModule {
     }
 
     @Override
+    public void cancelCollect(String url, final CancelCollectListener cancelCollectListener) {
+        Request cancelCollectRequest = new Request.Builder().url(url).get().build();
+        cancelCollectCall = okHttpClient.newCall(cancelCollectRequest);
+        cancelCollectCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        int code = beanObj.optInt("code");
+                        JSONObject dataObj = beanObj.optJSONObject("data");
+                        String msg = dataObj.optString("msg");
+                        switch (code) {
+                            case 0:
+                                cancelCollectListener.failure(msg);
+                                break;
+                            case 1:
+                                cancelCollectListener.success(msg);
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
     public void cancelTask() {
         if (call != null) {
             call.cancel();
             call = null;
+        }
+        if (cancelCollectCall != null) {
+            cancelCollectCall.cancel();
+            cancelCollectCall = null;
         }
         if (okHttpClient != null) {
             okHttpClient = null;

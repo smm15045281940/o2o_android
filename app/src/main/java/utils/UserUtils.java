@@ -24,8 +24,9 @@ public class UserUtils {
             et.putString("online", userBean.getOnline());
             et.putString("icon", userBean.getIcon());
             et.putString("token", userBean.getToken());
-            et.putString("pass,", userBean.getPass());
+            et.putString("pass", userBean.getPass());
             et.putString("idcard", userBean.getIdcard());
+            et.putString("mobile", userBean.getMobile());
             et.commit();
         }
     }
@@ -42,6 +43,7 @@ public class UserUtils {
         userBean.setToken(sp.getString("token", null));
         userBean.setPass(sp.getString("pass", null));
         userBean.setIdcard(sp.getString("idcard", null));
+        userBean.setMobile(sp.getString("mobile", null));
         return userBean;
     }
 
@@ -66,6 +68,7 @@ public class UserUtils {
         et.remove("token");
         et.remove("pass");
         et.remove("idcard");
+        et.remove("mobile");
         et.commit();
     }
 

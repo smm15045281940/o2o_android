@@ -9,10 +9,42 @@ import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
 import employermanage.bean.EmployerManageBean;
+import myevaluate.bean.MyEvaluateBean;
+import skills.bean.SkillsBean;
+import talk.bean.TalkEmployerBean;
+import talk.bean.TalkEmployerWorkerBean;
 import usermanage.bean.UserInfoBean;
 import workermanage.bean.WorkerManageBean;
 
 public class DataUtils {
+
+    public static List<SkillsBean> getSkillBeanList(String json) {
+        List<SkillsBean> resultList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 200) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null) {
+                    for (int i = 0; i < dataArr.length(); i++) {
+                        JSONObject o = dataArr.optJSONObject(i);
+                        if (o != null) {
+                            SkillsBean sb = new SkillsBean();
+                            sb.setS_id(o.optString("s_id"));
+                            sb.setS_name(o.optString("s_name"));
+                            sb.setS_info(o.optString("s_info"));
+                            sb.setS_desc(o.optString("s_desc"));
+                            sb.setS_status(o.optString("s_status"));
+                            sb.setChecked(false);
+                            resultList.add(sb);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
 
     public static List<WorkerManageBean> getWorkerManageBeanList(String json) {
         List<WorkerManageBean> resultList = new ArrayList<>();
@@ -138,6 +170,96 @@ public class DataUtils {
                                 adb.setBalance(obj.optString("balances"));
                                 adb.setDes(obj.optString("amount"));
                                 resultList.add(adb);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+    public static List<MyEvaluateBean> getMyEvaluateBeanList(String json) {
+        List<MyEvaluateBean> resultList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 1) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null) {
+                    for (int i = 0; i < dataArr.length(); i++) {
+                        JSONObject obj = dataArr.optJSONObject(i);
+                        if (obj != null) {
+                            MyEvaluateBean myEvaluateBean = new MyEvaluateBean();
+                            myEvaluateBean.setIcon(obj.optString("u_img"));
+                            myEvaluateBean.setCount(dataArr.length() + "");
+                            myEvaluateBean.setInfo(obj.optString("tce_desc"));
+                            myEvaluateBean.setTime(obj.optString("tc_in_time"));
+                            resultList.add(myEvaluateBean);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+    public static TalkEmployerBean getTalkEmployerBean(String json) {
+        TalkEmployerBean talkEmployerBean = new TalkEmployerBean();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 200) {
+                JSONObject dataObj = beanObj.optJSONObject("data");
+                talkEmployerBean.setIcon(dataObj.optString("u_img"));
+                talkEmployerBean.setMobile(dataObj.optString("u_mobile"));
+                talkEmployerBean.setName(dataObj.optString("u_true_name"));
+                talkEmployerBean.setSex(dataObj.optString("u_sex"));
+                talkEmployerBean.setAddress(dataObj.optString("tew_address"));
+                talkEmployerBean.setDesc(dataObj.optString("t_desc"));
+                talkEmployerBean.setPosX(dataObj.optString("t_posit_x"));
+                talkEmployerBean.setPosY(dataObj.optString("t_posit_y"));
+                JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                if (workerArr != null) {
+                    List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList = new ArrayList<>();
+                    for (int i = 0; i < workerArr.length(); i++) {
+                        JSONObject obj = workerArr.optJSONObject(i);
+                        if (obj != null) {
+                            if (obj.optInt("remaining") == 1) {
+                                TalkEmployerWorkerBean t = new TalkEmployerWorkerBean();
+                                t.setId(obj.optString("tew_skill"));
+                                t.setAmount(obj.optString("tew_worker_num"));
+                                t.setPrice(obj.optString("tew_price"));
+                                t.setStartTime(obj.optString("tew_start_time"));
+                                t.setEndTime(obj.optString("tew_end_time"));
+                                talkEmployerWorkerBeanList.add(t);
+                            }
+                        }
+                    }
+                    talkEmployerBean.setTalkEmployerWorkerBeanList(talkEmployerWorkerBeanList);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return talkEmployerBean;
+    }
+
+    public static List<String> getSkillNameList(String skillJson, List<String> skillIdList) {
+        List<String> resultList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(skillJson);
+            if (beanObj.optInt("code") == 200) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null) {
+                    for (int i = 0; i < skillIdList.size(); i++) {
+                        String id = skillIdList.get(i);
+                        for (int j = 0; j < dataArr.length(); j++) {
+                            JSONObject o = dataArr.optJSONObject(j);
+                            if (id.equals(o.optString("s_id"))) {
+                                resultList.add(o.optString("s_name"));
                             }
                         }
                     }

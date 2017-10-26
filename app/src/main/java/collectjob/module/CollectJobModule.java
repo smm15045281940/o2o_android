@@ -49,7 +49,7 @@ public class CollectJobModule implements ICollectJobModule {
                             if (objData != null) {
                                 JSONArray arrData = objData.optJSONArray("data");
                                 if (arrData != null) {
-                                    List<CollectJobBean> collectJobBeanList = new ArrayList<CollectJobBean>();
+                                    List<CollectJobBean> collectJobBeanList = new ArrayList<>();
                                     for (int i = 0; i < arrData.length(); i++) {
                                         JSONObject o = arrData.optJSONObject(i);
                                         if (o != null) {
@@ -59,6 +59,7 @@ public class CollectJobModule implements ICollectJobModule {
                                             collectJobBean.setDuration(o.optString("t_duration"));
                                             collectJobBean.setAuthor(o.optString("t_author"));
                                             collectJobBean.setStatus(o.optString("t_status"));
+                                            collectJobBean.setIcon(o.optString("u_img"));
                                             collectJobBeanList.add(collectJobBean);
                                         }
                                     }

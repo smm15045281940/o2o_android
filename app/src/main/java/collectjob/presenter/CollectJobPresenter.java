@@ -25,7 +25,6 @@ public class CollectJobPresenter implements ICollectJobPresenter {
 
     @Override
     public void load(String id) {
-        iCollectJobFragment.showLoading();
         iCollectJobModule.load(id, new OnLoadCollectJobListener() {
             @Override
             public void onLoadSuccess(final List<CollectJobBean> collectJobBeanList) {
@@ -33,7 +32,6 @@ public class CollectJobPresenter implements ICollectJobPresenter {
                     @Override
                     public void run() {
                         iCollectJobFragment.showLoadSuccess(collectJobBeanList);
-                        iCollectJobFragment.hideLoading();
                     }
                 });
             }

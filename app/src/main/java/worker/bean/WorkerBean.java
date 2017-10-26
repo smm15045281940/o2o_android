@@ -3,7 +3,7 @@ package worker.bean;
 
 import java.io.Serializable;
 
-public class WorkerBean implements Serializable{
+public class WorkerBean implements Serializable {
 
     private String u_id;
     private String u_name;
@@ -14,6 +14,7 @@ public class WorkerBean implements Serializable{
     private String ucp_posit_x;
     private String ucp_posit_y;
     private String u_img;
+    private int favorite;
 
     public String getU_id() {
         return u_id;
@@ -87,6 +88,14 @@ public class WorkerBean implements Serializable{
         this.u_img = u_img;
     }
 
+    public int getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
+
     @Override
     public String toString() {
         return "WorkerBean{" +
@@ -99,6 +108,7 @@ public class WorkerBean implements Serializable{
                 ", ucp_posit_x='" + ucp_posit_x + '\'' +
                 ", ucp_posit_y='" + ucp_posit_y + '\'' +
                 ", u_img='" + u_img + '\'' +
+                ", favorite=" + favorite +
                 '}';
     }
 }

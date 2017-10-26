@@ -20,13 +20,16 @@ import collectworker.adapter.CollectWorkerAdapter;
 import collectworker.bean.CollectWorkerBean;
 import collectworker.presenter.CollectWorkerPresenter;
 import collectworker.presenter.ICollectWorkerPresenter;
+import config.NetConfig;
 import listener.ListItemClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
+import worker.listener.WorkerClickHelp;
 
-public class CollectWorkerFragment extends Fragment implements ICollectWorkerFragment, ListItemClickHelp, PullToRefreshLayout.OnRefreshListener {
+public class CollectWorkerFragment extends Fragment implements ICollectWorkerFragment, PullToRefreshLayout.OnRefreshListener, WorkerClickHelp {
 
     private View rootView;
     private PullToRefreshLayout ptrl;
@@ -35,15 +38,31 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     private List<CollectWorkerBean> list;
     private CollectWorkerAdapter adapter;
 
-    private ICollectWorkerPresenter iCollectWorkerPresenter;
+    private ICollectWorkerPresenter collectWorkerPresenter;
+    private int cancelCollectPosition;
+
+    private final int DONE = 0;
+    private final int CANCEL_COLLECT_SUCCESS = 1;
+    private final int CANCEL_COLLECT_FAILURE = 2;
+    private String tip;
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg != null) {
-                if (msg.what == 1) {
-                    adapter.notifyDataSetChanged();
+                switch (msg.what) {
+                    case DONE:
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case CANCEL_COLLECT_SUCCESS:
+                        Utils.toast(getActivity(), tip);
+                        list.remove(cancelCollectPosition);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case CANCEL_COLLECT_FAILURE:
+                        Utils.toast(getActivity(), tip);
+                        break;
                 }
             }
         }
@@ -65,9 +84,9 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     public void onDestroy() {
         super.onDestroy();
         handler.removeMessages(1);
-        if (iCollectWorkerPresenter != null) {
-            iCollectWorkerPresenter.destroy();
-            iCollectWorkerPresenter = null;
+        if (collectWorkerPresenter != null) {
+            collectWorkerPresenter.destroy();
+            collectWorkerPresenter = null;
         }
     }
 
@@ -78,7 +97,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     }
 
     private void initData() {
-        iCollectWorkerPresenter = new CollectWorkerPresenter(this);
+        collectWorkerPresenter = new CollectWorkerPresenter(this);
         list = new ArrayList<>();
         adapter = new CollectWorkerAdapter(getActivity(), list, this);
     }
@@ -92,7 +111,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     }
 
     private void loadData() {
-        iCollectWorkerPresenter.load("2");
+        collectWorkerPresenter.load(UserUtils.readUserData(getActivity()).getId());
     }
 
     @Override
@@ -109,7 +128,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     public void showLoadSuccess(List<CollectWorkerBean> collectWorkerBeanList) {
         Log.e("CollectWorker", "collectWorkerBeanList=" + collectWorkerBeanList.toString());
         list.addAll(collectWorkerBeanList);
-        handler.sendEmptyMessage(1);
+        handler.sendEmptyMessage(DONE);
     }
 
     @Override
@@ -118,17 +137,38 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     }
 
     @Override
-    public void onClick(View item, View widget, int position, int which, boolean isChecked) {
+    public void cancelCollectSuccess(String success) {
+        tip = success;
+        handler.sendEmptyMessage(CANCEL_COLLECT_SUCCESS);
+    }
 
+    @Override
+    public void cancelCollectFailure(String failure) {
+        tip = failure;
+        handler.sendEmptyMessage(CANCEL_COLLECT_FAILURE);
     }
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-
+        ptrl.hideHeadView();
     }
 
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        ptrl.hideFootView();
+    }
 
+    @Override
+    public void onClick(int position, int id) {
+        switch (id) {
+            case R.id.ll_item_worker:
+                Log.e("TAG", "jump");
+                break;
+            case R.id.iv_item_worker_collect:
+                Log.e("TAG", "cancel");
+                cancelCollectPosition = position;
+                collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + list.get(cancelCollectPosition).getfId());
+                break;
+        }
     }
 }

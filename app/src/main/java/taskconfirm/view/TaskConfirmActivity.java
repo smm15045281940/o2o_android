@@ -3,6 +3,7 @@ package taskconfirm.view;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,18 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import publishjob.bean.PublishJobBean;
 import publishjob.bean.PublishKindBean;
 import taskconfirm.adapter.InputPasswordAdapter;
@@ -44,8 +54,7 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     private ImageView inputPasswordPoint0Iv, inputPasswordPoint1Iv, inputPasswordPoint2Iv, inputPasswordPoint3Iv, inputPasswordPoint4Iv, inputPasswordPoint5Iv;
 
     private RelativeLayout returnRl, sureRl;
-    private LinearLayout voucherLl;
-    private TextView beforeSumTv, confirmVoucherTv;
+    private TextView beforeSumTv;
     private PopupWindow selectVoucherPop;
     private ListView lv, selectVoucherLv;
     private SelectVoucherAdapter selectVoucherAdapter;
@@ -66,7 +75,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
         initData();
         setData();
         setListener();
-        calculatePrice();
     }
 
     private void initView() {
@@ -76,8 +84,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
 
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_task_confirm_return);
-        voucherLl = (LinearLayout) rootView.findViewById(R.id.ll_task_confirm_voucher);
-        confirmVoucherTv = (TextView) rootView.findViewById(R.id.tv_task_confirm_voucher);
         sureRl = (RelativeLayout) rootView.findViewById(R.id.rl_task_confirm_sure);
         beforeSumTv = (TextView) rootView.findViewById(R.id.tv_task_confirm_sum_before);
         lv = (ListView) rootView.findViewById(R.id.lv_task_confirm);
@@ -125,38 +131,10 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
 
     private void initData() {
         publishJobBean = new PublishJobBean();
-        publishJobBean.setTitle("个人家装招工人");
-        publishJobBean.setDescription("需要搬运水泥，和水泥，贴砖。房屋面积40平，几面墙，厅，和卫生间需要贴砖，详情面谈。");
-        publishJobBean.setType("个人家装");
-        publishJobBean.setArea("哈尔滨-道外区");
-        publishJobBean.setAddress("开源街3号");
-
-        List<PublishKindBean> publishKindBeanList = new ArrayList<>();
-
-        PublishKindBean publishKindBean0 = new PublishKindBean();
-        publishKindBean0.setKind("水泥工");
-        publishKindBean0.setAmount("2");
-        publishKindBean0.setSalary("100");
-        publishKindBean0.setStartTime("2017.10.01");
-        publishKindBean0.setEndTime("2017.10.02");
-
-        PublishKindBean publishKindBean1 = new PublishKindBean();
-        publishKindBean1.setKind("电工");
-        publishKindBean1.setAmount("1");
-        publishKindBean1.setSalary("50");
-        publishKindBean1.setStartTime("2017.10.02");
-        publishKindBean1.setEndTime("2017.10.03");
-
-        publishKindBeanList.add(publishKindBean0);
-        publishKindBeanList.add(publishKindBean1);
-
-        publishJobBean.setPublishKindBeanList(publishKindBeanList);
-
+        publishJobBean = (PublishJobBean) getIntent().getSerializableExtra("publishJobBean");
         adapter = new TaskConfirmAdapter(TaskConfirmActivity.this, publishJobBean);
-
         selectVoucherBeanList = new ArrayList<>();
         selectVoucherAdapter = new SelectVoucherAdapter(TaskConfirmActivity.this, selectVoucherBeanList);
-
         inputPasswordBeanList = new ArrayList<>();
         inputPasswordAdapter = new InputPasswordAdapter(TaskConfirmActivity.this, inputPasswordBeanList);
     }
@@ -170,7 +148,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
 
     private void setListener() {
         returnRl.setOnClickListener(this);
-        voucherLl.setOnClickListener(this);
         sureRl.setOnClickListener(this);
         selectVoucherLv.setOnItemClickListener(this);
         inputPasswordGv.setOnItemClickListener(this);
@@ -184,44 +161,20 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
             case R.id.rl_task_confirm_return:
                 finish();
                 break;
-            case R.id.ll_task_confirm_voucher:
-                backgroundAlpha(0.5f);
-                selectVoucherPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
-
-                SelectVoucherBean selectVoucherBean0 = new SelectVoucherBean();
-                selectVoucherBean0.setTitle("5元优惠券");
-                selectVoucherBean0.setDescription("任务金额满100元可以使用");
-                selectVoucherBean0.setStartTime("2017.09.26");
-                selectVoucherBean0.setEndTime("2017.09.30");
-
-                SelectVoucherBean selectVoucherBean1 = new SelectVoucherBean();
-                selectVoucherBean1.setTitle("10元优惠券");
-                selectVoucherBean1.setDescription("任务金额满100元可以使用");
-                selectVoucherBean1.setStartTime("2017.09.26");
-                selectVoucherBean1.setEndTime("2017.09.30");
-
-                selectVoucherBeanList.add(selectVoucherBean0);
-                selectVoucherBeanList.add(selectVoucherBean1);
-
-                selectVoucherAdapter.notifyDataSetChanged();
-
-                break;
             case R.id.rl_task_confirm_sure:
                 inputPasswordSb = new StringBuilder();
-
-                InputPasswordBean inputPasswordBean0 = new InputPasswordBean(0, 1);
-                InputPasswordBean inputPasswordBean1 = new InputPasswordBean(0, 2);
-                InputPasswordBean inputPasswordBean2 = new InputPasswordBean(0, 3);
-                InputPasswordBean inputPasswordBean3 = new InputPasswordBean(0, 4);
-                InputPasswordBean inputPasswordBean4 = new InputPasswordBean(0, 5);
-                InputPasswordBean inputPasswordBean5 = new InputPasswordBean(0, 6);
-                InputPasswordBean inputPasswordBean6 = new InputPasswordBean(0, 7);
-                InputPasswordBean inputPasswordBean7 = new InputPasswordBean(0, 8);
-                InputPasswordBean inputPasswordBean8 = new InputPasswordBean(0, 9);
-                InputPasswordBean inputPasswordBean9 = new InputPasswordBean(1, 0);
-                InputPasswordBean inputPasswordBean10 = new InputPasswordBean(0, 0);
-                InputPasswordBean inputPasswordBean11 = new InputPasswordBean(2, 0);
-
+                InputPasswordBean inputPasswordBean0 = new InputPasswordBean(0, 1, "");
+                InputPasswordBean inputPasswordBean1 = new InputPasswordBean(0, 2, "ABC");
+                InputPasswordBean inputPasswordBean2 = new InputPasswordBean(0, 3, "DEF");
+                InputPasswordBean inputPasswordBean3 = new InputPasswordBean(0, 4, "GHI");
+                InputPasswordBean inputPasswordBean4 = new InputPasswordBean(0, 5, "JKL");
+                InputPasswordBean inputPasswordBean5 = new InputPasswordBean(0, 6, "MNO");
+                InputPasswordBean inputPasswordBean6 = new InputPasswordBean(0, 7, "PQRS");
+                InputPasswordBean inputPasswordBean7 = new InputPasswordBean(0, 8, "TUV");
+                InputPasswordBean inputPasswordBean8 = new InputPasswordBean(0, 9, "WXYZ");
+                InputPasswordBean inputPasswordBean9 = new InputPasswordBean(1, 0, "");
+                InputPasswordBean inputPasswordBean10 = new InputPasswordBean(0, 0, "");
+                InputPasswordBean inputPasswordBean11 = new InputPasswordBean(2, 0, "");
                 inputPasswordBeanList.add(inputPasswordBean0);
                 inputPasswordBeanList.add(inputPasswordBean1);
                 inputPasswordBeanList.add(inputPasswordBean2);
@@ -234,10 +187,8 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
                 inputPasswordBeanList.add(inputPasswordBean9);
                 inputPasswordBeanList.add(inputPasswordBean10);
                 inputPasswordBeanList.add(inputPasswordBean11);
-
                 inputPasswordAdapter.notifyDataSetChanged();
                 Utils.setGridViewHeight(inputPasswordGv, 3);
-
                 backgroundAlpha(0.5f);
                 inputPasswordPop.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
                 break;
@@ -250,21 +201,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void calculatePrice() {
-        int sum = 0;
-        List<PublishKindBean> publishKindBeanList = publishJobBean.getPublishKindBeanList();
-        if (publishKindBeanList != null) {
-            for (int i = 0; i < publishKindBeanList.size(); i++) {
-                PublishKindBean publishKindBean = publishKindBeanList.get(i);
-                if (publishKindBean != null) {
-                    int s = Integer.parseInt(publishKindBean.getAmount()) * Integer.parseInt(publishKindBean.getSalary());
-                    sum = sum + s;
-                }
-            }
-        }
-        beforeSumTv.setText(sum + "元");
-    }
-
     private void backgroundAlpha(float f) {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = f;
@@ -274,10 +210,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
-            case R.id.lv_pop_select_voucher:
-                confirmVoucherTv.setText(selectVoucherBeanList.get(position).getTitle());
-                selectVoucherPop.dismiss();
-                break;
             case R.id.gv_pop_input_password:
                 InputPasswordBean inputPasswordBean = inputPasswordBeanList.get(position);
                 if (inputPasswordBean != null) {

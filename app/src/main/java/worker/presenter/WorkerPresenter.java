@@ -4,8 +4,9 @@ import android.os.Handler;
 
 import java.util.List;
 
-import bean.PositionBean;
+import listener.JsonListener;
 import worker.bean.WorkerBean;
+import worker.listener.FavoriteAddListener;
 import worker.listener.WorkerListener;
 import worker.module.IWorkerModule;
 import worker.module.WorkerModule;
@@ -23,8 +24,8 @@ public class WorkerPresenter implements IWorkerPresenter {
     }
 
     @Override
-    public void load(String workerKindId, PositionBean positionBean) {
-        iWorkerModule.load(workerKindId, positionBean, new WorkerListener() {
+    public void load(String url) {
+        iWorkerModule.load(url, new WorkerListener() {
             @Override
             public void success(final List<WorkerBean> workerBeanList) {
                 mHandler.post(new Runnable() {
@@ -41,6 +42,56 @@ public class WorkerPresenter implements IWorkerPresenter {
                     @Override
                     public void run() {
                         iWorkerActivity.failure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void favoriteAdd(String url) {
+        iWorkerModule.favoriteAdd(url, new FavoriteAddListener() {
+            @Override
+            public void success(final String success) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iWorkerActivity.collectSuccess(success);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iWorkerActivity.collectFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void favoriteDel(String url) {
+        iWorkerModule.favoriteDel(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iWorkerActivity.cancelCollectSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        iWorkerActivity.cancelCollectFailure(failure);
                     }
                 });
             }
