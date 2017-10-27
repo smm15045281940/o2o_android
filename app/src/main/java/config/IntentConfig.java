@@ -8,6 +8,8 @@ package config;
 
 public interface IntentConfig {
 
+    String skillToWorker = "skill_to_worker";
+
     String intentName = "status";//意图名称
     int COLLECT = 1;//我的收藏意图
     int EVALUATE = 2;//我的评价意图

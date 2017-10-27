@@ -1,17 +1,12 @@
 package task.view;
 
-
-import java.util.List;
-
-import task.bean.TaskBean;
-
 public interface ITaskActivity {
 
-    void showSuccess(List<TaskBean> taskBeanList);
+    void loadSuccess(String taskJson);
 
-    void showFailure(String failure);
+    void loadFailure(String taskFailure);
 
-    void taskCollectSuccess(String success);
+    void collectSuccess(String collectJson);
 
-    void taskCollectFailure(String failure);
+    void collectFailure(String collectFailure);
 }

@@ -1,20 +1,13 @@
 package worker.view;
 
-import java.util.List;
-
-import worker.bean.WorkerBean;
-
 public interface IWorkerActivity {
 
-    void success(List<WorkerBean> workerBeanList);
+    void loadSuccess(String workerJson);
 
-    void failure(String failure);
+    void loadFailure(String loadfailure);
 
-    void collectSuccess(String success);
+    void collectSuccess(String collectJson);
 
-    void collectFailure(String failure);
+    void collectFailure(String collectfailure);
 
-    void cancelCollectSuccess(String success);
-
-    void cancelCollectFailure(String failure);
 }

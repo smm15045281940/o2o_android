@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -142,7 +141,7 @@ public class TalkActivity extends AppCompatActivity implements ITalkActivity, Vi
         mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("19"));
         baiduMap.animateMapStatus(mapStatusUpdate);
         baiduMap.addOverlay(option);
-        talkEmployerPresenter.loadSkill(NetConfig.skillBaseUrl);
+        talkEmployerPresenter.loadSkill(NetConfig.skillUrl);
     }
 
     @Override

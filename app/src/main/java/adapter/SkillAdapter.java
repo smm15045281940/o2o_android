@@ -1,5 +1,4 @@
-package editinfo.adapter;
-
+package adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,19 +13,19 @@ import java.util.List;
 
 import bean.SkillBean;
 
-public class EditSkillAdapter extends BaseAdapter {
+public class SkillAdapter extends BaseAdapter {
 
     private Context context;
     private List<SkillBean> list;
 
-    public EditSkillAdapter(Context context, List<SkillBean> list) {
+    public SkillAdapter(Context context, List<SkillBean> list) {
         this.context = context;
         this.list = list;
     }
 
     @Override
     public int getCount() {
-        return list == null ? 0 : list.size();
+        return list.size();
     }
 
     @Override
@@ -41,27 +40,25 @@ public class EditSkillAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHoler holder;
+        ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_edit_skill, null);
-            holder = new ViewHoler(convertView);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_skills, null);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
-            holder = (ViewHoler) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
         SkillBean skillBean = list.get(position);
-        if (skillBean != null) {
-            holder.textView.setText(skillBean.getName());
-        }
+        holder.nameTv.setText(skillBean.getName());
         return convertView;
     }
 
-    private class ViewHoler {
+    private class ViewHolder {
 
-        private TextView textView;
+        private TextView nameTv;
 
-        public ViewHoler(View itemView) {
-            textView = (TextView) itemView.findViewById(R.id.tv_item_edit_skill);
+        public ViewHolder(View itemView) {
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_skills_name);
         }
     }
 }

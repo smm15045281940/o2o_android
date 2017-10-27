@@ -1,23 +1,22 @@
 package bean;
 
-
 import java.io.Serializable;
 
-public class WorkerBean implements Serializable {
+public class TaskBean implements Serializable {
 
-    private String id;
+    private String taskId;
     private String icon;
     private String title;
     private String info;
     private String status;
     private int favorite;
 
-    public String getId() {
-        return id;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public String getIcon() {
@@ -60,14 +59,4 @@ public class WorkerBean implements Serializable {
         this.favorite = favorite;
     }
 
-    @Override
-    public String toString() {
-        return "WorkerBean{" +
-                "id='" + id + '\'' +
-                ", icon='" + icon + '\'' +
-                ", title='" + title + '\'' +
-                ", status='" + status + '\'' +
-                ", favorite=" + favorite +
-                '}';
-    }
 }

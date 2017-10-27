@@ -20,6 +20,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import usermanage.bean.UserInfoBean;
+import utils.DataUtils;
 import utils.Utils;
 
 public class EditInfoModule implements IEditInfoModule {
@@ -45,7 +46,7 @@ public class EditInfoModule implements IEditInfoModule {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    addSkillListener.success(Utils.getSkillBeanList(json));
+                    addSkillListener.success(DataUtils.getSkillBeanList(json));
                 }
             }
         });

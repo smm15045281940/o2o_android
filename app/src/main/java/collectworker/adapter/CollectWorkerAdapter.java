@@ -16,19 +16,18 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import collectworker.bean.CollectWorkerBean;
-import listener.ListItemClickHelp;
-import worker.listener.WorkerClickHelp;
+import listener.IdPosClickHelp;
 
 public class CollectWorkerAdapter extends BaseAdapter {
 
     private Context context;
     private List<CollectWorkerBean> list;
-    private WorkerClickHelp workerClickHelp;
+    private IdPosClickHelp idPosClickHelp;
 
-    public CollectWorkerAdapter(Context context, List<CollectWorkerBean> list, WorkerClickHelp workerClickHelp) {
+    public CollectWorkerAdapter(Context context, List<CollectWorkerBean> list, IdPosClickHelp idPosClickHelp) {
         this.context = context;
         this.list = list;
-        this.workerClickHelp = workerClickHelp;
+        this.idPosClickHelp = idPosClickHelp;
     }
 
     @Override
@@ -74,14 +73,14 @@ public class CollectWorkerAdapter extends BaseAdapter {
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                workerClickHelp.onClick(p, llId);
+                idPosClickHelp.onClick(p, llId);
             }
         });
         final int cancelCollectId = holder.collectIv.getId();
         holder.collectIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                workerClickHelp.onClick(p, cancelCollectId);
+                idPosClickHelp.onClick(p, cancelCollectId);
             }
         });
         return convertView;
@@ -98,7 +97,7 @@ public class CollectWorkerAdapter extends BaseAdapter {
             imageIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_icon);
             statusIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_status);
             collectIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_collect);
-            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_name);
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_title);
             infoTv = (TextView) itemView.findViewById(R.id.tv_item_worker_info);
         }
     }

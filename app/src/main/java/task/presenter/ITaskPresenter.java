@@ -5,7 +5,7 @@ public interface ITaskPresenter {
 
     void load(String url);
 
-    void taskCollect(String url);
+    void collect(String url);
 
     void destroy();
 }

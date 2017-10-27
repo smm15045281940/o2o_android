@@ -3,11 +3,11 @@ package editinfo.listener;
 
 import java.util.List;
 
-import skills.bean.SkillsBean;
+import bean.SkillBean;
 
 public interface AddSkillListener {
 
-    void success(List<SkillsBean> skillsBeanList);
+    void success(List<SkillBean> skillBeanList);
 
     void failure(String failure);
 }

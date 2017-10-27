@@ -4,7 +4,7 @@ package usermanage.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import skills.bean.SkillsBean;
+import bean.SkillBean;
 
 public class UserInfoBean implements Serializable {
 
@@ -39,7 +39,7 @@ public class UserInfoBean implements Serializable {
     private String area_uei_address;
     private String area_user_area_name;
     private String u_img;
-    private List<SkillsBean> skillsBeanList;
+    private List<SkillBean> skillBeanList;
 
     public String getU_id() {
         return u_id;
@@ -289,12 +289,12 @@ public class UserInfoBean implements Serializable {
         this.u_img = u_img;
     }
 
-    public List<SkillsBean> getSkillsBeanList() {
-        return skillsBeanList;
+    public List<SkillBean> getSkillBeanList() {
+        return skillBeanList;
     }
 
-    public void setSkillsBeanList(List<SkillsBean> skillsBeanList) {
-        this.skillsBeanList = skillsBeanList;
+    public void setSkillBeanList(List<SkillBean> skillBeanList) {
+        this.skillBeanList = skillBeanList;
     }
 
     @Override
@@ -331,7 +331,7 @@ public class UserInfoBean implements Serializable {
                 ", area_uei_address='" + area_uei_address + '\'' +
                 ", area_user_area_name='" + area_user_area_name + '\'' +
                 ", u_img='" + u_img + '\'' +
-                ", skillsBeanList=" + skillsBeanList +
+                ", skillBeanList=" + skillBeanList +
                 '}';
     }
 }

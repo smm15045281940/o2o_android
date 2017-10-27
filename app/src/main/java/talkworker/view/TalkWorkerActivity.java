@@ -2,7 +2,6 @@ package talkworker.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -11,7 +10,7 @@ import android.widget.RelativeLayout;
 import com.gjzg.R;
 
 import utils.Utils;
-import worker.bean.WorkerBean;
+import bean.WorkerBean;
 
 public class TalkWorkerActivity extends AppCompatActivity implements View.OnClickListener {
 

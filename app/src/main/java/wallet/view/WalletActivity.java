@@ -29,6 +29,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import pay.view.PayWayActivity;
+import utils.UserUtils;
 import withdraw.view.WithDrawActivity;
 
 public class WalletActivity extends AppCompatActivity implements View.OnClickListener {
@@ -36,7 +37,7 @@ public class WalletActivity extends AppCompatActivity implements View.OnClickLis
     private View rootView;
     private RelativeLayout returnRl, detailRl, rechargeRl, withDrawRl;
     private TextView overageTv;
-    private String u_id, overage;
+    private String overage;
     private OkHttpClient okHttpClient;
 
     private Handler handler = new Handler() {
@@ -91,12 +92,6 @@ public class WalletActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initData() {
         okHttpClient = new OkHttpClient();
-        Intent intent = getIntent();
-        if (intent != null) {
-            u_id = intent.getStringExtra("u_id");
-            if (TextUtils.isEmpty(u_id))
-                u_id = "1";
-        }
     }
 
     private void setListener() {
@@ -107,24 +102,22 @@ public class WalletActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void loadData() {
-        if (!TextUtils.isEmpty(u_id)) {
-            Request request = new Request.Builder().url(NetConfig.userFundUrl + u_id).get().build();
-            okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
-                }
+        Request request = new Request.Builder().url(NetConfig.userFundUrl + UserUtils.readUserData(WalletActivity.this)).get().build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.sendEmptyMessage(StateConfig.LOAD_NO_NET);
+            }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        String result = response.body().string();
-                        if (!TextUtils.isEmpty(result))
-                            parseJson(result);
-                    }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String result = response.body().string();
+                    if (!TextUtils.isEmpty(result))
+                        parseJson(result);
                 }
-            });
-        }
+            }
+        });
     }
 
     private void parseJson(String json) {

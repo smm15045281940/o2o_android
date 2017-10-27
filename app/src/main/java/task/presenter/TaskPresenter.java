@@ -3,45 +3,42 @@ package task.presenter;
 
 import android.os.Handler;
 
-import java.util.List;
-
-import task.bean.TaskBean;
-import task.listener.TaskCollectListener;
-import task.listener.TaskListener;
+import listener.JsonListener;
 import task.module.ITaskModule;
 import task.module.TaskModule;
 import task.view.ITaskActivity;
 
 public class TaskPresenter implements ITaskPresenter {
 
-    private ITaskActivity iTaskActivity;
-    private ITaskModule iTaskModule;
-    private Handler mHandler = new Handler();
+    private ITaskActivity taskActivity;
+    private ITaskModule taskModule;
+    private Handler handler;
 
-    public TaskPresenter(ITaskActivity iTaskActivity) {
-        this.iTaskActivity = iTaskActivity;
-        iTaskModule = new TaskModule();
+    public TaskPresenter(ITaskActivity taskActivity) {
+        this.taskActivity = taskActivity;
+        taskModule = new TaskModule();
+        handler = new Handler();
     }
 
     @Override
     public void load(String url) {
-        iTaskModule.load(url, new TaskListener() {
+        taskModule.load(url, new JsonListener() {
             @Override
-            public void success(final List<TaskBean> taskBeanList) {
-                mHandler.post(new Runnable() {
+            public void success(final String json) {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iTaskActivity.showSuccess(taskBeanList);
+                        taskActivity.loadSuccess(json);
                     }
                 });
             }
 
             @Override
             public void failure(final String failure) {
-                mHandler.post(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        iTaskActivity.showFailure(failure);
+                        taskActivity.loadFailure(failure);
                     }
                 });
             }
@@ -49,24 +46,24 @@ public class TaskPresenter implements ITaskPresenter {
     }
 
     @Override
-    public void taskCollect(String url) {
-        iTaskModule.taskCollect(url, new TaskCollectListener() {
+    public void collect(String url) {
+        taskModule.collect(url, new JsonListener() {
             @Override
-            public void success(String success) {
-                mHandler.post(new Runnable() {
+            public void success(final String json) {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-
+                        taskActivity.collectSuccess(json);
                     }
                 });
             }
 
             @Override
-            public void failure(String failure) {
-                mHandler.post(new Runnable() {
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-
+                        taskActivity.collectFailure(failure);
                     }
                 });
             }
@@ -75,12 +72,13 @@ public class TaskPresenter implements ITaskPresenter {
 
     @Override
     public void destroy() {
-        iTaskModule.cancelTask();
-        if (iTaskModule != null)
-            iTaskModule = null;
-        if (iTaskActivity != null)
-            iTaskActivity = null;
-        if (mHandler != null)
-            mHandler = null;
+        if (taskModule != null) {
+            taskModule.cancelTask();
+            taskModule = null;
+        }
+        if (taskActivity != null)
+            taskActivity = null;
+        if (handler != null)
+            handler = null;
     }
 }

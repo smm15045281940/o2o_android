@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +19,15 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.gjzg.R;
 
 import java.util.ArrayList;
@@ -33,20 +35,20 @@ import java.util.Calendar;
 import java.util.List;
 
 import adapter.ScnDiaAdapter;
+import bean.PublishWorkerBean;
+import bean.SkillBean;
 import config.NetConfig;
-import listener.ListItemClickHelp;
 import publishjob.adapter.PublishKindAdapter;
 import publishjob.adapter.SelectSkillAdapter;
-import publishjob.bean.PublishJobBean;
-import publishjob.bean.PublishKindBean;
+import bean.PublishBean;
 import publishjob.listener.PublishJobClickHelp;
 import publishjob.presenter.IPublishJobPresenter;
 import publishjob.presenter.PublishJobPresenter;
 import selectaddress.bean.SelectAddressBean;
 import selectaddress.view.SelectAddressActivity;
-import skills.bean.SkillsBean;
 import taskconfirm.view.TaskConfirmActivity;
 import utils.DataUtils;
+import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
@@ -59,9 +61,9 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private ListView lv;
 
     private PublishKindAdapter adapter;
-    private List<PublishKindBean> publishKindBeanList;
+    private List<PublishWorkerBean> publishWorkerBeanList;
     private String areaId;
-    private PublishJobBean publishJobBean;
+    private PublishBean publishBean;
     private View typePopView;
     private PopupWindow typePop;
     private ListView typeLv;
@@ -75,7 +77,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private PopupWindow skillPop;
     private ListView skillLv;
     private SelectSkillAdapter selectSkillAdapter;
-    private List<SkillsBean> skillsBeanList;
+    private List<SkillBean> skillBeanList;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -88,6 +90,10 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private final int TASK_TYPE_FAILURE = 2;
     private final int SKILL_SUCCESS = 3;
     private final int SKILL_FAILURE = 4;
+    private final int LOCATE_SUCCESS = 5;
+
+    private LocationClient locationClient;
+    private BDLocationListener bdLocationListener;
 
     private Handler handler = new Handler() {
         @Override
@@ -104,6 +110,13 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                         selectSkillAdapter.notifyDataSetChanged();
                         break;
                     case SKILL_FAILURE:
+                        break;
+                    case LOCATE_SUCCESS:
+                        locationClient.stop();
+                        cpd.dismiss();
+                        Intent i = new Intent(PublishJobActivity.this, TaskConfirmActivity.class);
+                        i.putExtra("publishBean", publishBean);
+                        startActivity(i);
                         break;
                 }
             }
@@ -123,6 +136,12 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
         loadData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locationClient.unRegisterLocationListener(bdLocationListener);
+    }
+
     private void initView() {
         initRootView();
         initHeadView();
@@ -130,13 +149,15 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     }
 
     private void initData() {
-        publishJobBean = new PublishJobBean();
+        initLocation();
+        publishBean = new PublishBean();
+        publishBean.setAuthorId(UserUtils.readUserData(PublishJobActivity.this).getId());
         publishJobPresenter = new PublishJobPresenter(this);
-        publishKindBeanList = new ArrayList<>();
-        PublishKindBean publishKindBean = new PublishKindBean("", "", "", "", "", "");
-        publishKindBeanList.add(publishKindBean);
-        publishJobBean.setPublishKindBeanList(publishKindBeanList);
-        adapter = new PublishKindAdapter(PublishJobActivity.this, publishKindBeanList, this);
+        publishWorkerBeanList = new ArrayList<>();
+        PublishWorkerBean publishWorkerBean = new PublishWorkerBean("", "", "", "", "", "");
+        publishWorkerBeanList.add(publishWorkerBean);
+        publishBean.setPublishWorkerBeanList(publishWorkerBeanList);
+        adapter = new PublishKindAdapter(PublishJobActivity.this, publishWorkerBeanList, this);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
@@ -147,11 +168,11 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 String timeStr = year + "-" + (month + 1) + "-" + dayOfMonth;
                 switch (pickState) {
                     case START_TIME:
-                        publishKindBeanList.get(pickPosition).setStartTime(timeStr);
+                        publishWorkerBeanList.get(pickPosition).setStartTime(timeStr);
                         adapter.notifyDataSetChanged();
                         break;
                     case END_TIME:
-                        publishKindBeanList.get(pickPosition).setEndTime(timeStr);
+                        publishWorkerBeanList.get(pickPosition).setEndTime(timeStr);
                         adapter.notifyDataSetChanged();
                         break;
                 }
@@ -200,8 +221,9 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
         typeLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                publishJobBean.setType(taskTypeList.get(position));
-                typeTv.setText(publishJobBean.getType());
+                publishBean.setType(taskTypeList.get(position));
+                publishBean.setTypeId(position + "");
+                typeTv.setText(publishBean.getType());
                 typePop.dismiss();
             }
         });
@@ -231,14 +253,14 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
         skillLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                publishKindBeanList.get(pickPosition).setId(skillsBeanList.get(position).getS_id());
-                publishKindBeanList.get(pickPosition).setKind(skillsBeanList.get(position).getS_name());
+                publishWorkerBeanList.get(pickPosition).setId(skillBeanList.get(position).getId());
+                publishWorkerBeanList.get(pickPosition).setKind(skillBeanList.get(position).getName());
                 adapter.notifyDataSetChanged();
                 skillPop.dismiss();
             }
         });
-        skillsBeanList = new ArrayList<>();
-        selectSkillAdapter = new SelectSkillAdapter(PublishJobActivity.this, skillsBeanList);
+        skillBeanList = new ArrayList<>();
+        selectSkillAdapter = new SelectSkillAdapter(PublishJobActivity.this, skillBeanList);
         skillLv.setAdapter(selectSkillAdapter);
         skillPop = new PopupWindow(skillPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         skillPop.setFocusable(true);
@@ -266,78 +288,77 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
     private void loadData() {
         publishJobPresenter.getTaskType("http://api.gangjianwang.com/Tools/taskType");
-        publishJobPresenter.getSkill(NetConfig.skillBaseUrl);
+        publishJobPresenter.getSkill(NetConfig.skillUrl);
     }
 
     private void submit() {
-        if (TextUtils.isEmpty(publishJobBean.getTitle())) {
+        if (TextUtils.isEmpty(publishBean.getTitle())) {
             Utils.toast(PublishJobActivity.this, "标题不能为空！");
-        } else if (TextUtils.isEmpty(publishJobBean.getDescription())) {
+        } else if (TextUtils.isEmpty(publishBean.getInfo())) {
             Utils.toast(PublishJobActivity.this, "描述不能为空！");
-        } else if (TextUtils.isEmpty(publishJobBean.getType())) {
+        } else if (TextUtils.isEmpty(publishBean.getType())) {
             Utils.toast(PublishJobActivity.this, "工程类型不能为空！");
-        } else if (TextUtils.isEmpty(publishJobBean.getArea())) {
+        } else if (TextUtils.isEmpty(publishBean.getArea())) {
             Utils.toast(PublishJobActivity.this, "工作区域不能为空！");
-        } else if (TextUtils.isEmpty(publishJobBean.getAddress())) {
+        } else if (TextUtils.isEmpty(publishBean.getAddress())) {
             Utils.toast(PublishJobActivity.this, "详细地址不能为空！");
         } else {
             int idCount = 0;
-            for (int i = 0; i < publishKindBeanList.size(); i++) {
-                if (!TextUtils.isEmpty(publishKindBeanList.get(i).getId())) {
+            for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getId())) {
                     idCount++;
                 }
             }
-            if (idCount != publishKindBeanList.size()) {
+            if (idCount != publishWorkerBeanList.size()) {
                 Utils.toast(PublishJobActivity.this, "招聘工种不能为空！");
             } else {
                 int amountCount = 0;
-                for (int i = 0; i < publishKindBeanList.size(); i++) {
-                    if (!TextUtils.isEmpty(publishKindBeanList.get(i).getAmount())) {
+                for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                    if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getAmount())) {
                         amountCount++;
                     }
                 }
-                if (amountCount != publishKindBeanList.size()) {
+                if (amountCount != publishWorkerBeanList.size()) {
                     Utils.toast(PublishJobActivity.this, "工人数量不能为空！");
                 } else {
                     int salaryCount = 0;
-                    for (int i = 0; i < publishKindBeanList.size(); i++) {
-                        if (!TextUtils.isEmpty(publishKindBeanList.get(i).getSalary())) {
+                    for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                        if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getSalary())) {
                             salaryCount++;
                         }
                     }
-                    if (salaryCount != publishKindBeanList.size()) {
+                    if (salaryCount != publishWorkerBeanList.size()) {
                         Utils.toast(PublishJobActivity.this, "工人工资不能为空！");
                     } else {
                         int startTimeCount = 0;
-                        for (int i = 0; i < publishKindBeanList.size(); i++) {
-                            if (!TextUtils.isEmpty(publishKindBeanList.get(i).getStartTime())) {
+                        for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                            if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getStartTime())) {
                                 startTimeCount++;
                             }
                         }
-                        if (startTimeCount != publishKindBeanList.size()) {
+                        if (startTimeCount != publishWorkerBeanList.size()) {
                             Utils.toast(PublishJobActivity.this, "开始日期不能为空！");
                         } else {
                             int endTimeCount = 0;
-                            for (int i = 0; i < publishKindBeanList.size(); i++) {
-                                if (!TextUtils.isEmpty(publishKindBeanList.get(i).getEndTime())) {
+                            for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                                if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getEndTime())) {
                                     endTimeCount++;
                                 }
                             }
-                            if (endTimeCount != publishKindBeanList.size()) {
+                            if (endTimeCount != publishWorkerBeanList.size()) {
                                 Utils.toast(PublishJobActivity.this, "结束日期不能为空！");
                             } else {
                                 int timeCount = 0;
-                                for (int i = 0; i < publishKindBeanList.size(); i++) {
-                                    if (judgeTime(publishKindBeanList.get(i).getStartTime(), publishKindBeanList.get(i).getEndTime())) {
+                                for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                                    if (judgeTime(publishWorkerBeanList.get(i).getStartTime(), publishWorkerBeanList.get(i).getEndTime())) {
                                         timeCount++;
                                     }
                                 }
-                                if (timeCount != publishKindBeanList.size()) {
+                                if (timeCount != publishWorkerBeanList.size()) {
                                     Utils.toast(PublishJobActivity.this, "结束日期不能早于开始日期！");
                                 } else {
-                                    Intent i = new Intent(PublishJobActivity.this, TaskConfirmActivity.class);
-                                    i.putExtra("publishJobBean", publishJobBean);
-                                    startActivity(i);
+                                    cpd.show();
+                                    locationClient.start();
                                 }
                             }
                         }
@@ -390,10 +411,10 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 finish();
                 break;
             case R.id.rl_publish_job_add:
-                PublishKindBean publishKindBean = new PublishKindBean("", "", "", "", "", "");
-                publishKindBeanList.add(publishKindBean);
+                PublishWorkerBean publishWorkerBean = new PublishWorkerBean("", "", "", "", "", "");
+                publishWorkerBeanList.add(publishWorkerBean);
                 adapter.notifyDataSetChanged();
-                lv.setSelection(publishKindBeanList.size());
+                lv.setSelection(publishWorkerBeanList.size());
                 break;
             case R.id.rl_publish_job_submit:
                 submit();
@@ -415,8 +436,12 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
             SelectAddressBean selectAddressBean = (SelectAddressBean) data.getSerializableExtra("sa");
             if (selectAddressBean != null) {
                 areaId = selectAddressBean.getId();
-                publishJobBean.setArea(selectAddressBean.getName());
-                areaTv.setText(publishJobBean.getArea());
+                String[] areaArr = areaId.split(",");
+                publishBean.setProvinceId(areaArr[0]);
+                publishBean.setCityId(areaArr[1]);
+                publishBean.setAreaId(areaArr[2]);
+                publishBean.setArea(selectAddressBean.getName());
+                areaTv.setText(publishBean.getArea());
             }
         }
     }
@@ -434,7 +459,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
     @Override
     public void skillSuccess(String json) {
-        skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
+        skillBeanList.addAll(DataUtils.getSkillBeanList(json));
         handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 
@@ -462,7 +487,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 datePickerDialog.show();
                 break;
             case R.id.rl_item_publish_job_delete:
-                publishKindBeanList.remove(viewPosition);
+                publishWorkerBeanList.remove(viewPosition);
                 adapter.notifyDataSetChanged();
                 break;
         }
@@ -481,7 +506,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
         @Override
         public void afterTextChanged(Editable s) {
-            publishJobBean.setTitle(s.toString());
+            publishBean.setTitle(s.toString());
         }
     };
 
@@ -499,7 +524,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
         @Override
         public void afterTextChanged(Editable s) {
-            publishJobBean.setDescription(s.toString());
+            publishBean.setInfo(s.toString());
         }
     };
 
@@ -516,7 +541,42 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
         @Override
         public void afterTextChanged(Editable s) {
-            publishJobBean.setAddress(s.toString());
+            publishBean.setAddress(s.toString());
         }
     };
+
+    private void initLocation() {
+        locationClient = new LocationClient(getApplicationContext());
+        bdLocationListener = new MyLocationListener();
+        locationClient.registerLocationListener(bdLocationListener);
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setCoorType("bd09ll");
+        int span = 0;
+        option.setScanSpan(span);
+        option.setIsNeedAddress(true);
+        option.setOpenGps(true);
+        option.setLocationNotify(true);
+        option.setIsNeedLocationDescribe(true);
+        option.setIsNeedLocationPoiList(true);
+        option.setIgnoreKillProcess(false);
+        option.SetIgnoreCacheException(false);
+        option.setEnableSimulateGps(false);
+        locationClient.setLocOption(option);
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            publishBean.setPositionX(location.getLongitude() + "");
+            publishBean.setPositionY(location.getLatitude() + "");
+            handler.sendEmptyMessage(LOCATE_SUCCESS);
+        }
+
+        @Override
+        public void onConnectHotSpotMessage(String s, int i) {
+
+        }
+    }
 }

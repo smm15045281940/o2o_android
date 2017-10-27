@@ -170,7 +170,7 @@ public class EditInfoAdapter extends BaseAdapter {
         } else {
             ((RadioButton) holder.roleRg.getChildAt(1)).setChecked(true);
             holder.workerLl.setVisibility(View.VISIBLE);
-            holder.gridView.setAdapter(new EditSkillAdapter(context, userInfoBean.getSkillsBeanList()));
+            holder.gridView.setAdapter(new EditSkillAdapter(context, userInfoBean.getSkillBeanList()));
             Utils.setGridViewHeight(holder.gridView, 4);
         }
         final int sexId = holder.sexRg.getId();

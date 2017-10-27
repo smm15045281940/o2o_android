@@ -21,15 +21,14 @@ import collectworker.bean.CollectWorkerBean;
 import collectworker.presenter.CollectWorkerPresenter;
 import collectworker.presenter.ICollectWorkerPresenter;
 import config.NetConfig;
-import listener.ListItemClickHelp;
+import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
-import worker.listener.WorkerClickHelp;
 
-public class CollectWorkerFragment extends Fragment implements ICollectWorkerFragment, PullToRefreshLayout.OnRefreshListener, WorkerClickHelp {
+public class CollectWorkerFragment extends Fragment implements ICollectWorkerFragment, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
     private View rootView;
     private PullToRefreshLayout ptrl;
@@ -133,7 +132,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
 
     @Override
     public void showLoadFailure(String failure) {
-        Log.e("CollectWorker", "failure=" + failure);
+        Log.e("CollectWorker", "skillFailure=" + failure);
     }
 
     @Override
@@ -159,14 +158,14 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     }
 
     @Override
-    public void onClick(int position, int id) {
+    public void onClick(int id, int pos) {
         switch (id) {
             case R.id.ll_item_worker:
                 Log.e("TAG", "jump");
                 break;
             case R.id.iv_item_worker_collect:
                 Log.e("TAG", "cancel");
-                cancelCollectPosition = position;
+                cancelCollectPosition = pos;
                 collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + list.get(cancelCollectPosition).getfId());
                 break;
         }

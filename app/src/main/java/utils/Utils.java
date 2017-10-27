@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import bean.SkillBean;
 import config.NetConfig;
 import login.view.LoginActivity;
-import skills.bean.SkillsBean;
 import taskscreen.bean.TaskScreenBean;
 import usermanage.bean.UserInfoBean;
 import view.CProgressDialog;
@@ -241,38 +241,7 @@ public class Utils {
             int a = str.indexOf(",");
             int b = str.lastIndexOf(",");
             String skill = str.substring(a + 1, b);
-            return NetConfig.skillBaseUrl + "?s_id=" + skill;
-        }
-        return null;
-    }
-
-    //获取工种集合
-    public static List<SkillsBean> getSkillBeanList(String json) {
-        if (!TextUtils.isEmpty(json)) {
-            try {
-                JSONObject beanObj = new JSONObject(json);
-                if (beanObj.optInt("code") == 200) {
-                    JSONArray dataArr = beanObj.optJSONArray("data");
-                    if (dataArr != null) {
-                        List<SkillsBean> skillsBeanList = new ArrayList<>();
-                        for (int i = 0; i < dataArr.length(); i++) {
-                            JSONObject obj = dataArr.optJSONObject(i);
-                            if (obj != null) {
-                                SkillsBean skillsBean = new SkillsBean();
-                                skillsBean.setS_id(obj.optString("s_id"));
-                                skillsBean.setS_name(obj.optString("s_name"));
-                                skillsBean.setS_info(obj.optString("s_info"));
-                                skillsBean.setS_desc(obj.optString("s_desc"));
-                                skillsBean.setS_status(obj.optString("s_status"));
-                                skillsBeanList.add(skillsBean);
-                            }
-                        }
-                        return skillsBeanList;
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            return NetConfig.skillUrl + "?s_id=" + skill;
         }
         return null;
     }

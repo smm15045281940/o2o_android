@@ -2,6 +2,15 @@ package config;
 
 public interface NetConfig {
 
+    //工种
+    String skillUrl = "http://api.gangjianwang.com/Skills/index";
+    //工人
+    String workerUrl = "http://api.gangjianwang.com/Users/getUsers";
+    //添加收藏
+    String addCollectUrl = "http://api.gangjianwang.com/Users/favorateAdd";
+    //取消收藏
+    String delCollectUrl = "http://api.gangjianwang.com/Users/favorateDel";
+
     String hotCityUrl = "http://api.gangjianwang.com/Regions/index?action=hot";
     String comCityUrl = "http://api.gangjianwang.com/Regions/index?action=letter";
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
@@ -12,8 +21,6 @@ public interface NetConfig {
     String proveIdcardUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String proveOriPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String userInfoEditUrl = "http://api.gangjianwang.com/Users/usersInfoEdit";
-    String skillBaseUrl = "http://api.gangjianwang.com/Skills/index";
-    String workerUrl = "http://api.gangjianwang.com/Users/getUsersBySkills";
     String taskBaseUrl = "http://api.gangjianwang.com/Tasks/index";
     String codeUrl = "http://api.gangjianwang.com/Users/sendVerifyCode?phone_number=";
     String loginUrl = "http://api.gangjianwang.com/Users/login";
@@ -32,4 +39,6 @@ public interface NetConfig {
     String usersFundsLogUrl = "http://api_zy.gangjianwang.com/Users/getUsersFundsLog";
     String favorateAddUrl = "http://api.gangjianwang.com/Users/favorateAdd";
     String favorateDelUrl = "http://api.gangjianwang.com/Users/favorateDel";
+    String subTotalUrl = "http://api.gangjianwang.com/Tools/subTotal";
+    String publishUrl = "http://api.gangjianwang.com/Tasks/index?action=publish";
 }

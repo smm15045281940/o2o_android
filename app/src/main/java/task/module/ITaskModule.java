@@ -1,14 +1,13 @@
 package task.module;
 
 
-import task.listener.TaskCollectListener;
-import task.listener.TaskListener;
+import listener.JsonListener;
 
 public interface ITaskModule {
 
-    void load(String url, TaskListener taskListener);
+    void load(String url, JsonListener jsonListener);
 
-    void taskCollect(String url, TaskCollectListener taskCollectListener);
+    void collect(String url, JsonListener jsonListener);
 
     void cancelTask();
 }

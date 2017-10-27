@@ -28,6 +28,7 @@ import usermanage.bean.UserInfoBean;
 import usermanage.listener.UpLoadingIconListener;
 import usermanage.listener.UserInfoListener;
 import usermanage.listener.UserSkillListener;
+import utils.DataUtils;
 import utils.Utils;
 
 public class UserManageModule implements IUserManageModule {
@@ -131,9 +132,9 @@ public class UserManageModule implements IUserManageModule {
                                 String json = response.body().string();
                                 Log.e("UserManageModule", "json=" + json);
                                 if (!TextUtils.isEmpty(json)) {
-                                    userInfoBean.setSkillsBeanList(Utils.getSkillBeanList(json));
-                                    for (int i = 0; i < userInfoBean.getSkillsBeanList().size(); i++) {
-                                        userInfoBean.getSkillsBeanList().get(i).setChecked(true);
+                                    userInfoBean.setSkillBeanList(DataUtils.getSkillBeanList(json));
+                                    for (int i = 0; i < userInfoBean.getSkillBeanList().size(); i++) {
+                                        userInfoBean.getSkillBeanList().get(i).setCheck(true);
                                     }
                                     userSkillListener.success(userInfoBean);
                                 } else {

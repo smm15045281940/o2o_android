@@ -3,7 +3,7 @@ package editinfo.view;
 
 import java.util.List;
 
-import skills.bean.SkillsBean;
+import bean.SkillBean;
 
 public interface IEditInfoFragment {
 
@@ -11,7 +11,7 @@ public interface IEditInfoFragment {
 
     void hideLoading();
 
-    void showAddSkillSuccess(List<SkillsBean> skillsBeanList);
+    void showAddSkillSuccess(List<SkillBean> skillBeanList);
 
     void showAddSkillFailure(String failure);
 

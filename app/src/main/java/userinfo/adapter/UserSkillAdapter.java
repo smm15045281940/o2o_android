@@ -12,14 +12,14 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import skills.bean.SkillsBean;
+import bean.SkillBean;
 
 public class UserSkillAdapter extends BaseAdapter {
 
     private Context context;
-    private List<SkillsBean> list;
+    private List<SkillBean> list;
 
-    public UserSkillAdapter(Context context, List<SkillsBean> list) {
+    public UserSkillAdapter(Context context, List<SkillBean> list) {
         this.context = context;
         this.list = list;
     }
@@ -49,9 +49,9 @@ public class UserSkillAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        SkillsBean skillsBean = list.get(position);
-        if (skillsBean != null) {
-            holder.tv.setText(skillsBean.getS_name());
+        SkillBean skillBean = list.get(position);
+        if (skillBean != null) {
+            holder.tv.setText(skillBean.getName());
         }
         return convertView;
     }

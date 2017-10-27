@@ -110,7 +110,7 @@ public class CollectJobFragment extends Fragment implements ICollectJobFragment,
 
     @Override
     public void showLoadFailure(String failure) {
-        Log.e("CollectJob", "failure=" + failure);
+        Log.e("CollectJob", "skillFailure=" + failure);
         cpd.dismiss();
     }
 

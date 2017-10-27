@@ -5,12 +5,12 @@ import android.os.Handler;
 
 import java.util.List;
 
+import bean.SkillBean;
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
 import editinfo.module.EditInfoModule;
 import editinfo.module.IEditInfoModule;
 import editinfo.view.IEditInfoFragment;
-import skills.bean.SkillsBean;
 import usermanage.bean.UserInfoBean;
 
 public class EditInfoPresenter implements IEditInfoPresenter {
@@ -30,11 +30,11 @@ public class EditInfoPresenter implements IEditInfoPresenter {
         editInfoFragment.showLoading();
         editInfoModule.load(url, new AddSkillListener() {
             @Override
-            public void success(final List<SkillsBean> skillsBeanList) {
+            public void success(final List<SkillBean> skillBeanList) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        editInfoFragment.showAddSkillSuccess(skillsBeanList);
+                        editInfoFragment.showAddSkillSuccess(skillBeanList);
                         editInfoFragment.hideLoading();
                     }
                 });

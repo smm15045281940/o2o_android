@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+import bean.PublishBean;
+import bean.PublishWorkerBean;
+import bean.SkillBean;
+import bean.TaskBean;
+import bean.WorkerBean;
 import employermanage.bean.EmployerManageBean;
 import myevaluate.bean.MyEvaluateBean;
-import skills.bean.SkillsBean;
 import talk.bean.TalkEmployerBean;
 import talk.bean.TalkEmployerWorkerBean;
 import usermanage.bean.UserInfoBean;
@@ -18,8 +22,9 @@ import workermanage.bean.WorkerManageBean;
 
 public class DataUtils {
 
-    public static List<SkillsBean> getSkillBeanList(String json) {
-        List<SkillsBean> resultList = new ArrayList<>();
+    //工种
+    public static List<SkillBean> getSkillBeanList(String json) {
+        List<SkillBean> resultList = new ArrayList<>();
         try {
             JSONObject beanObj = new JSONObject(json);
             if (beanObj.optInt("code") == 200) {
@@ -28,14 +33,10 @@ public class DataUtils {
                     for (int i = 0; i < dataArr.length(); i++) {
                         JSONObject o = dataArr.optJSONObject(i);
                         if (o != null) {
-                            SkillsBean sb = new SkillsBean();
-                            sb.setS_id(o.optString("s_id"));
-                            sb.setS_name(o.optString("s_name"));
-                            sb.setS_info(o.optString("s_info"));
-                            sb.setS_desc(o.optString("s_desc"));
-                            sb.setS_status(o.optString("s_status"));
-                            sb.setChecked(false);
-                            resultList.add(sb);
+                            SkillBean skillBean = new SkillBean();
+                            skillBean.setId(o.optString("s_id"));
+                            skillBean.setName(o.optString("s_name"));
+                            resultList.add(skillBean);
                         }
                     }
                 }
@@ -44,6 +45,41 @@ public class DataUtils {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    //工人
+    public static List<WorkerBean> getWorkerBeanList(String workerJson) {
+        List<WorkerBean> workerBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(workerJson);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 1:
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        JSONArray dataArr = dataObj.optJSONArray("data");
+                        if (dataArr != null) {
+                            for (int i = 0; i < dataArr.length(); i++) {
+                                JSONObject o = dataArr.optJSONObject(i);
+                                if (o != null) {
+                                    WorkerBean workerBean = new WorkerBean();
+                                    workerBean.setId(o.optString("u_id"));
+                                    workerBean.setIcon(o.optString("u_img"));
+                                    workerBean.setTitle(o.optString("u_name"));
+                                    workerBean.setInfo(o.optString("uei_info"));
+                                    workerBean.setStatus(o.optString("u_task_status"));
+                                    workerBean.setFavorite(o.optInt("is_fav"));
+                                    workerBeanList.add(workerBean);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return workerBeanList;
     }
 
     public static List<WorkerManageBean> getWorkerManageBeanList(String json) {
@@ -269,5 +305,71 @@ public class DataUtils {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    public static List<TaskBean> getTaskBeanList(String taskJson) {
+        List<TaskBean> taskBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(taskJson);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 200:
+                    JSONArray dataArr = beanObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject obj = dataArr.optJSONObject(i);
+                            if (obj != null) {
+                                TaskBean taskBean = new TaskBean();
+                                taskBean.setTaskId(obj.optString("t_id"));
+                                taskBean.setIcon(obj.optString("u_img"));
+                                taskBean.setTitle(obj.optString("t_title"));
+                                taskBean.setInfo(obj.optString("t_info"));
+                                taskBean.setStatus(obj.optString("t_status"));
+                                taskBean.setFavorite(obj.optInt("favorate"));
+                                taskBeanList.add(taskBean);
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return taskBeanList;
+    }
+
+    public static String getPublishJson(PublishBean publishBean, boolean havePass) {
+        JSONObject object = new JSONObject();
+        try {
+            if (havePass) {
+                object.put("u_pass", publishBean.getPass());
+            }
+            object.put("t_title", publishBean.getTitle());
+            object.put("t_info", publishBean.getInfo());
+            object.put("t_posit_x", publishBean.getPositionX());
+            object.put("t_posit_y", publishBean.getPositionY());
+            object.put("t_author", publishBean.getAuthorId());
+            object.put("t_type", publishBean.getTypeId());
+            object.put("province", publishBean.getProvinceId());
+            object.put("city", publishBean.getCityId());
+            object.put("area", publishBean.getAreaId());
+            object.put("address", publishBean.getAddress());
+            object.put("t_storage", "0");
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < publishBean.getPublishWorkerBeanList().size(); i++) {
+                PublishWorkerBean publishWorkerBean = publishBean.getPublishWorkerBeanList().get(i);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("skill", publishWorkerBean.getId());
+                jsonObject.put("personNum", publishWorkerBean.getAmount());
+                jsonObject.put("money", publishWorkerBean.getSalary());
+                jsonObject.put("startTime", publishWorkerBean.getStartTime());
+                jsonObject.put("endTime", publishWorkerBean.getEndTime());
+                jsonArray.put(jsonObject);
+            }
+            object.put("worker", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object.toString();
     }
 }

@@ -122,7 +122,7 @@ public class UserInfoAdapter extends BaseAdapter {
                     holder1.gv.setVisibility(View.GONE);
                 } else {
                     holder1.gv.setVisibility(View.VISIBLE);
-                    holder1.gv.setAdapter(new UserSkillAdapter(context, userInfoBean.getSkillsBeanList()));
+                    holder1.gv.setAdapter(new UserSkillAdapter(context, userInfoBean.getSkillBeanList()));
                     Utils.setGridViewHeight(holder1.gv, 4);
                 }
                 break;

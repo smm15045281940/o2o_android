@@ -17,17 +17,16 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import listener.ListItemClickHelp;
-import publishjob.bean.PublishKindBean;
+import bean.PublishWorkerBean;
 import publishjob.listener.PublishJobClickHelp;
 
 public class PublishKindAdapter extends BaseAdapter {
 
     private Context context;
-    private List<PublishKindBean> list;
+    private List<PublishWorkerBean> list;
     private PublishJobClickHelp publishJobClickHelp;
 
-    public PublishKindAdapter(Context context, List<PublishKindBean> list, PublishJobClickHelp publishJobClickHelp) {
+    public PublishKindAdapter(Context context, List<PublishWorkerBean> list, PublishJobClickHelp publishJobClickHelp) {
         this.context = context;
         this.list = list;
         this.publishJobClickHelp = publishJobClickHelp;
@@ -58,21 +57,21 @@ public class PublishKindAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final PublishKindBean publishKindBean = list.get(position);
-        if (TextUtils.isEmpty(publishKindBean.getKind())) {
+        final PublishWorkerBean publishWorkerBean = list.get(position);
+        if (TextUtils.isEmpty(publishWorkerBean.getKind())) {
             holder.kindTv.setText("选择招聘工种");
         } else {
-            holder.kindTv.setText(publishKindBean.getKind());
+            holder.kindTv.setText(publishWorkerBean.getKind());
         }
-        if (TextUtils.isEmpty(publishKindBean.getStartTime())) {
+        if (TextUtils.isEmpty(publishWorkerBean.getStartTime())) {
             holder.startTimeTv.setText("开始时间");
         } else {
-            holder.startTimeTv.setText(publishKindBean.getStartTime());
+            holder.startTimeTv.setText(publishWorkerBean.getStartTime());
         }
-        if (TextUtils.isEmpty(publishKindBean.getEndTime())) {
+        if (TextUtils.isEmpty(publishWorkerBean.getEndTime())) {
             holder.endTimeTv.setText("结束时间");
         } else {
-            holder.endTimeTv.setText(publishKindBean.getEndTime());
+            holder.endTimeTv.setText(publishWorkerBean.getEndTime());
         }
         if (position == 0) {
             holder.deleteRl.setVisibility(View.GONE);
@@ -111,7 +110,7 @@ public class PublishKindAdapter extends BaseAdapter {
         if (holder.amountEt.getTag() instanceof TextWatcher) {
             holder.amountEt.removeTextChangedListener((TextWatcher) holder.amountEt.getTag());
         }
-        holder.amountEt.setText(publishKindBean.getAmount());
+        holder.amountEt.setText(publishWorkerBean.getAmount());
         TextWatcher amountTw = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,7 +124,7 @@ public class PublishKindAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                publishKindBean.setAmount(s.toString());
+                publishWorkerBean.setAmount(s.toString());
             }
         };
         holder.amountEt.addTextChangedListener(amountTw);
@@ -133,7 +132,7 @@ public class PublishKindAdapter extends BaseAdapter {
         if (holder.salaryEt.getTag() instanceof TextWatcher) {
             holder.salaryEt.removeTextChangedListener((TextWatcher) holder.salaryEt.getTag());
         }
-        holder.salaryEt.setText(publishKindBean.getSalary());
+        holder.salaryEt.setText(publishWorkerBean.getSalary());
         TextWatcher salaryTw = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -147,7 +146,7 @@ public class PublishKindAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                publishKindBean.setSalary(s.toString());
+                publishWorkerBean.setSalary(s.toString());
             }
         };
         holder.salaryEt.addTextChangedListener(salaryTw);

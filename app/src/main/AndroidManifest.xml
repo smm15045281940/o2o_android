@@ -40,7 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="skills.view.SkillsActivity" />
+        <activity android:name="skill.view.SkillActivity" />
         <activity android:name="worker.view.WorkerActivity" />
         <activity android:name="leftright.view.LeftRightActivity" />
         <activity android:name="city.view.CityActivity" />

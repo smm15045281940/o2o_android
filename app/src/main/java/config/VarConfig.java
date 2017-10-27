@@ -2,6 +2,15 @@ package config;
 
 public interface VarConfig {
 
+    //收藏成功
+    String collectSuccess = "收藏成功";
+    //收藏失败
+    String collectFailure = "收藏失败";
+    //不能收藏自己
+    String cannotCollectSelf = "不能收藏自己";
+    //无网络提示
+    String noNetTip = "无网络";
+
     String noNet = "noNet";
     String pwdSuccessTip = "设置密码成功";//设置密码成功提示
     String pwdDifferTip = "两次密码不一致";//两次密码不一致提示
