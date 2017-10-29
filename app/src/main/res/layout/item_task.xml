@@ -17,10 +17,8 @@
             android:id="@+id/iv_item_task_icon"
             android:layout_width="@dimen/y35"
             android:layout_height="@dimen/y35"
-            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/x10"
-            android:background="@mipmap/person_face_default"
             android:scaleType="fitXY" />
 
         <LinearLayout
@@ -68,20 +66,18 @@
 
                 <ImageView
                     android:id="@+id/iv_item_task_status"
-                    android:layout_width="@dimen/y29"
-                    android:layout_height="@dimen/y14"
+                    android:layout_width="@dimen/y20"
+                    android:layout_height="@dimen/y10"
                     android:layout_gravity="center_vertical"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/worker_wait" />
+                    android:scaleType="fitXY" />
 
                 <ImageView
                     android:id="@+id/iv_item_task_collect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/y10"
+                    android:layout_height="@dimen/y10"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/y12"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/collect_gray" />
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 

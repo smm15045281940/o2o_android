@@ -191,6 +191,7 @@
     <style name="rl_return">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/sl_press</item>
     </style>
     <!--返回图片样式-->
     <style name="iv_return">

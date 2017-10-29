@@ -42,8 +42,26 @@ public class CollectWorkerModule implements ICollectWorkerModule {
     }
 
     @Override
-    public void cancelCollect(String url, JsonListener jsonListener) {
+    public void cancelCollect(String url, final JsonListener jsonListener) {
+        Request request = new Request
+                .Builder()
+                .url(url)
+                .get()
+                .build();
+        cancelCollectCall = okHttpClient.newCall(request);
+        cancelCollectCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                jsonListener.failure(e.getMessage());
+            }
 
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    jsonListener.success(response.body().string());
+                }
+            }
+        });
     }
 
     @Override

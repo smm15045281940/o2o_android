@@ -6,10 +6,22 @@ public interface NetConfig {
     String skillUrl = "http://api.gangjianwang.com/Skills/index";
     //工人
     String workerUrl = "http://api.gangjianwang.com/Users/getUsers";
+    //收藏的工人
+    String collectWorkerUrl = "http://api.gangjianwang.com/Users/favorateUsers";
+    //收藏的任务
+    String collectTaskUrl = "http://api.gangjianwang.com/Users/favorateTasks";
     //添加收藏
     String addCollectUrl = "http://api.gangjianwang.com/Users/favorateAdd";
     //取消收藏
     String delCollectUrl = "http://api.gangjianwang.com/Users/favorateDel";
+    //修改位置
+    String changePositionUrl = "http://api.gangjianwang.com/Users/updatePosition";
+    //用户详细信息
+    String userInfoUrl = "http://api.gangjianwang.com/Users/usersInfo?u_id=";
+    //他人评价
+    String otherEvaluateUrl = "http://api.gangjianwang.com/Users/otherCommentUser";
+    //评价他人
+    String evaluateOtherUrl = "http://api.gangjianwang.com/Users/userCommentOther";
 
     String hotCityUrl = "http://api.gangjianwang.com/Regions/index?action=hot";
     String comCityUrl = "http://api.gangjianwang.com/Regions/index?action=letter";
@@ -25,11 +37,9 @@ public interface NetConfig {
     String codeUrl = "http://api.gangjianwang.com/Users/sendVerifyCode?phone_number=";
     String loginUrl = "http://api.gangjianwang.com/Users/login";
     String payWayUrl = "http://api.gangjianwang.com/Payments/index";
-    String collectWorkerUrl = "http://api.gangjianwang.com/Users/favorateUsers?u_id=";
-    String collectJobUrl = "http://api.gangjianwang.com/Users/favorateTasks?u_id=";
     String userFundUrl = "http://api.gangjianwang.com/Users/usersFunds?u_id=";
     String accountDetailUrl = "http://api.gangjianwang.com/Users/getUsersFundsLog";
-    String userInfoUrl = "http://api.gangjianwang.com/Users/usersInfo?u_id=";
+
     String iconUpdateUrl = "http://api.gangjianwang.com/Users/usersHeadEidt";
     String redPacketUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=2";
     String voucherUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=1";

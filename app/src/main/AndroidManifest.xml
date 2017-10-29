@@ -44,7 +44,7 @@
         <activity android:name="worker.view.WorkerActivity" />
         <activity android:name="leftright.view.LeftRightActivity" />
         <activity android:name="city.view.CityActivity" />
-        <activity android:name="talk.view.TalkActivity" />
+        <activity android:name="talkemployer.view.TalkEmployerActivity" />
         <activity android:name="workermanage.view.WorkerManageActivity" />
         <activity android:name="employermanage.view.EmployerManageActivity" />
         <activity
@@ -66,7 +66,7 @@
             android:name="withdraw.view.WithDrawActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="workerscreen.view.WorkerScnActivity"
+            android:name="workerscreen.view.WorkerScreenActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="taskscreen.view.TaskScreenActivity"
@@ -99,7 +99,6 @@
         <activity
             android:name="evaluate.view.EvaluateActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity android:name="persondetailinfo.view.PersonDetailActivity" />
         <activity android:name="redpacket.view.RedPacketActivity" />
         <activity android:name="voucher.view.VoucherActivity" />
         <activity android:name="collect.view.CollectActivity" />
@@ -108,7 +107,8 @@
         <activity android:name="selectaddress.view.SelectAddressActivity" />
         <activity android:name="taskconfirm.view.TaskConfirmActivity" />
         <activity android:name="idcard.view.IdCardActivity" />
-        <activity android:name="talkworker.view.TalkWorkerActivity"></activity>
+        <activity android:name="talkworker.view.TalkWorkerActivity" />
+        <activity android:name="persondetail.view.PersonDetailActivity"></activity>
     </application>
 
 </manifest>

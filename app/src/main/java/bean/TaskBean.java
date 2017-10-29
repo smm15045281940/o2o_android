@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class TaskBean implements Serializable {
 
     private String taskId;
+    private String collectId;
+    private String authorId;
     private String icon;
     private String title;
     private String info;
@@ -51,6 +53,14 @@ public class TaskBean implements Serializable {
         this.status = status;
     }
 
+    public String getCollectId() {
+        return collectId;
+    }
+
+    public void setCollectId(String collectId) {
+        this.collectId = collectId;
+    }
+
     public int getFavorite() {
         return favorite;
     }
@@ -59,4 +69,25 @@ public class TaskBean implements Serializable {
         this.favorite = favorite;
     }
 
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskBean{" +
+                "taskId='" + taskId + '\'' +
+                ", collectId='" + collectId + '\'' +
+                ", authorId='" + authorId + '\'' +
+                ", icon='" + icon + '\'' +
+                ", title='" + title + '\'' +
+                ", info='" + info + '\'' +
+                ", status='" + status + '\'' +
+                ", favorite=" + favorite +
+                '}';
+    }
 }

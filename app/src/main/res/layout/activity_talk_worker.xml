@@ -4,7 +4,6 @@
     android:id="@+id/activity_talk_worker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_c4ced3"
     android:orientation="vertical"
     tools:context="talkworker.view.TalkWorkerActivity">
 
@@ -21,6 +20,7 @@
     </RelativeLayout>
 
     <com.baidu.mapapi.map.MapView
+        android:id="@+id/mv_talk_worker"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
@@ -28,16 +28,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="@dimen/y10">
 
             <view.CImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/iv_talk_worker_icon"
+                android:layout_width="@dimen/y35"
+                android:layout_height="@dimen/y35"
                 android:layout_gravity="center_vertical"
                 android:src="@mipmap/person_face_default" />
 
@@ -45,6 +48,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/y5"
+                android:layout_marginRight="@dimen/y5"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -54,40 +59,62 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_talk_worker_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="王小二" />
+                        android:layout_gravity="center_vertical"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textColor="@color/black_252323"
+                        android:textSize="@dimen/y10" />
 
                     <ImageView
+                        android:id="@+id/iv_talk_worker_sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/y5"
                         android:src="@mipmap/male" />
 
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_talk_worker_skill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="水泥工" />
+                    android:layout_marginTop="@dimen/y2"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="skill"
+                    android:textColor="@color/black_252323"
+                    android:textSize="@dimen/y8"
+                    android:textStyle="bold" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/iv_talk_worker_status"
+                    android:layout_width="@dimen/y20"
+                    android:layout_height="@dimen/y10"
+                    android:layout_marginTop="@dimen/y2"
+                    android:scaleType="fitXY"
                     android:src="@mipmap/worker_leisure" />
 
             </LinearLayout>
 
-            <ImageView
+            <view.CImageView
+                android:id="@+id/iv_talk_worker_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/person_face_default" />
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@mipmap/custom_service" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/y10">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,29 +124,45 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:src="@mipmap/point_red" />
 
                 <TextView
+                    android:id="@+id/tv_talk_worker_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="王成刚广东东莞" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/black_252323"
+                    android:textSize="@dimen/y10"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y5"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:src="@mipmap/point_blue" />
 
                 <TextView
+                    android:id="@+id/tv_talk_worker_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="实地是滴是滴" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:text="address"
+                    android:textColor="@color/black_252323"
+                    android:textSize="@dimen/y10"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 

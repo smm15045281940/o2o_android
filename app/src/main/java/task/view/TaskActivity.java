@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.IntentConfig;
 import listener.IdPosClickHelp;
 import adapter.TaskAdapter;
 import bean.TaskBean;
@@ -29,6 +30,7 @@ import config.NetConfig;
 import config.StateConfig;
 import config.VarConfig;
 import login.view.LoginActivity;
+import talkemployer.view.TalkEmployerActivity;
 import taskscreen.bean.TaskScreenBean;
 import taskscreen.view.TaskScreenActivity;
 import task.presenter.ITaskPresenter;
@@ -49,16 +51,16 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
     private RelativeLayout returnRl, screenRl;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
-    private List<TaskBean> list;
+    private List<TaskBean> taskBeanList;
     private TaskAdapter adapter;
-    private final int FIRST = 0, REFRESH = 1, LOAD = 2;
+    private final int FIRST = 0, REFRESH = 1;
     private int STATE;
     private ITaskPresenter taskPresenter;
 
-    private final int DONE = 0;
-    private final int COLLECT_SUCCESS = 1;
-    private final int COLLECT_FAILURE = 2;
-
+    private final int LOAD_SUCCESS = 1;
+    private final int LOAD_FAILURE = 2;
+    private final int COLLECT_SUCCESS = 3;
+    private final int COLLECT_FAILURE = 4;
     private int clickPostion;
 
     private Handler handler = new Handler() {
@@ -67,16 +69,16 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
             super.handleMessage(msg);
             if (msg != null) {
                 switch (msg.what) {
-                    case DONE:
+                    case LOAD_SUCCESS:
                         notifyData();
                         break;
                     case COLLECT_SUCCESS:
-                        list.get(clickPostion).setFavorite(1);
-                        adapter.notifyDataSetChanged();
-                        Utils.toast(TaskActivity.this, "收藏成功");
+                        taskBeanList.get(clickPostion).setFavorite(1);
+                        notifyData();
+                        Utils.toast(TaskActivity.this, VarConfig.collectSuccess);
                         break;
                     case COLLECT_FAILURE:
-                        Utils.toast(TaskActivity.this, "收藏失败");
+                        Utils.toast(TaskActivity.this, VarConfig.collectFailure);
                         break;
                 }
             }
@@ -143,8 +145,8 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
     }
 
     private void initData() {
-        list = new ArrayList<>();
-        adapter = new TaskAdapter(this, list, this);
+        taskBeanList = new ArrayList<>();
+        adapter = new TaskAdapter(this, taskBeanList, this);
         taskPresenter = new TaskPresenter(TaskActivity.this);
         STATE = FIRST;
     }
@@ -176,7 +178,7 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                if (list.size() == 0) {
+                if (taskBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
                     netView.setVisibility(View.GONE);
@@ -207,35 +209,32 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
 
     @Override
     public void onClick(int id, int pos) {
-        clickPostion = pos;
-        TaskBean taskBean = list.get(clickPostion);
-        int favorite = taskBean.getFavorite();
-        String taskId = taskBean.getTaskId();
-        switch (id) {
-            case R.id.ll_item_task:
-                Log.e("TAG", "task-jump");
-                break;
-            case R.id.iv_item_task_collect:
-                switch (favorite) {
-                    case 0:
-                        if (UserUtils.isUserLogin(TaskActivity.this)) {
-                            String collectUrl = NetConfig.favorateAddUrl + "?u_id=" + UserUtils.readUserData(TaskActivity.this).getId() + "&f_type_id=" + taskId + "&f_type=0";
-                            Log.e("TAG", "collectUrl=" + collectUrl);
-                            taskPresenter.collect(collectUrl);
-                        } else {
-                            startActivity(new Intent(TaskActivity.this, LoginActivity.class));
+        if (UserUtils.isUserLogin(TaskActivity.this)) {
+            clickPostion = pos;
+            switch (id) {
+                case R.id.ll_item_task:
+                    Intent intent = new Intent(TaskActivity.this, TalkEmployerActivity.class);
+                    intent.putExtra(IntentConfig.taskToTalk, taskBeanList.get(clickPostion).getTaskId());
+                    startActivity(intent);
+                    break;
+                case R.id.iv_item_task_collect:
+                    if (UserUtils.readUserData(TaskActivity.this).getId().equals(taskBeanList.get(clickPostion).getAuthorId())) {
+                        Utils.toast(TaskActivity.this, VarConfig.cannotCollectSelf);
+                    } else {
+                        switch (taskBeanList.get(clickPostion).getFavorite()) {
+                            case 0:
+                                taskPresenter.collect(NetConfig.favorateAddUrl + "?u_id=" + UserUtils.readUserData(TaskActivity.this).getId() + "&f_type_id=" + taskBeanList.get(clickPostion).getTaskId() + "&f_type=0");
+                                break;
+                            case 1:
+                                Utils.toast(TaskActivity.this, VarConfig.collectDone);
+                                break;
                         }
-                        break;
-                }
-                break;
+                    }
+                    break;
+            }
+        } else {
+            startActivity(new Intent(TaskActivity.this, LoginActivity.class));
         }
-        /**
-         * String t_id = list.get(position).getT_id();
-         if (!TextUtils.isEmpty(t_id)) {
-         Intent intent = new Intent(this, TalkActivity.class);
-         intent.putExtra("t_id", t_id);
-         startActivity(intent);
-         }*/
     }
 
     @Override
@@ -251,9 +250,9 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
 
     @Override
     public void loadSuccess(String taskJson) {
-        list.clear();
-        list.addAll(DataUtils.getTaskBeanList(taskJson));
-        handler.sendEmptyMessage(DONE);
+        taskBeanList.clear();
+        taskBeanList.addAll(DataUtils.getTaskBeanList(taskJson));
+        handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
     @Override
@@ -276,7 +275,6 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
 
     @Override
     public void collectSuccess(String collectJson) {
-        Log.e("TAG", "collectJson=" + collectJson);
         try {
             JSONObject beanObj = new JSONObject(collectJson);
             int code = beanObj.optInt("code");

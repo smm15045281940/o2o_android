@@ -15,10 +15,7 @@
             style="@style/rl_return">
 
             <ImageView
-                android:layout_width="@dimen/y15"
-                android:layout_height="@dimen/y15"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/y5"
+                style="@style/iv_return"
                 android:src="@mipmap/close" />
 
         </RelativeLayout>
@@ -29,10 +26,7 @@
             android:layout_alignParentRight="true">
 
             <ImageView
-                android:layout_width="@dimen/y15"
-                android:layout_height="@dimen/y15"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/y5"
+                style="@style/iv_return"
                 android:src="@mipmap/search" />
 
         </RelativeLayout>
@@ -60,33 +54,6 @@
             android:textColorHint="@color/gray_a0a0a0"
             android:textCursorDrawable="@null"
             android:textSize="@dimen/y10" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/y5"
-            android:layout_marginRight="@dimen/y5"
-            android:layout_marginTop="@dimen/y5"
-            android:clickable="true"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="搜索范围："
-                android:textSize="@dimen/y10" />
-
-            <TextView
-                android:id="@+id/tv_job_scn_distance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/y5"
-                android:singleLine="true"
-                android:text="请选择搜索范围"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/x15" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,33 +131,6 @@
                 android:layout_marginLeft="@dimen/y5"
                 android:singleLine="true"
                 android:text="请选择项目时间"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/x15" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/y5"
-            android:layout_marginRight="@dimen/y5"
-            android:layout_marginTop="@dimen/y5"
-            android:clickable="true"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="项目类型："
-                android:textSize="@dimen/y10" />
-
-            <TextView
-                android:id="@+id/tv_job_scn_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/y5"
-                android:singleLine="true"
-                android:text="请选择项目类型"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/x15" />
 

@@ -1,6 +1,6 @@
 package getevaluate.module;
 
-import getevaluate.listener.GetEvaluateListener;
+import listener.JsonListener;
 
 /**
  * Created by Administrator on 2017/10/25.
@@ -8,7 +8,7 @@ import getevaluate.listener.GetEvaluateListener;
 
 public interface IGetEvaluateModule {
 
-    void load(String url, GetEvaluateListener getEvaluateListener);
+    void load(String url, JsonListener jsonListener);
 
     void cancelTask();
 }

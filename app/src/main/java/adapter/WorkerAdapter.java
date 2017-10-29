@@ -58,7 +58,7 @@ public class WorkerAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         WorkerBean workerBean = list.get(position);
-        Picasso.with(context).load(workerBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.iconIv);
+        Picasso.with(context).load(workerBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
         holder.titleTv.setText(workerBean.getTitle());
         holder.infoTv.setText(workerBean.getInfo());
         String status = workerBean.getStatus();

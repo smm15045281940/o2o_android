@@ -14,4 +14,8 @@ public interface IFirstPageFragment {
     void showLocIdSuccess(String id);
 
     void showLocIdFailure(String failure);
+
+    void changePositionSuccess(String json);
+
+    void changePositionFailure(String failure);
 }

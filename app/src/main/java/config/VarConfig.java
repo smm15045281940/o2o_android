@@ -6,6 +6,8 @@ public interface VarConfig {
     String collectSuccess = "收藏成功";
     //收藏失败
     String collectFailure = "收藏失败";
+    //已收藏过了
+    String collectDone = "已收藏过了";
     //不能收藏自己
     String cannotCollectSelf = "不能收藏自己";
     //无网络提示

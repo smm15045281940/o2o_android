@@ -33,7 +33,7 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
     private ListView scnDialogLv;
     private RelativeLayout returnRl, searchRl;
     private EditText titleEt;
-    private TextView distanceTv, durationTv, priceTv, timeTv, typeTv, kindTv;
+    private TextView durationTv, priceTv, timeTv, typeTv, kindTv;
 
     private ScnDiaAdapter scnDiaAdapter;
     private List<String> scnDialogList, disList, durationList, moneyList, startTimeList, kindList, typeList;
@@ -63,11 +63,9 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_screen_job_return);
         searchRl = (RelativeLayout) rootView.findViewById(R.id.rl_screen_job_search);
         titleEt = (EditText) rootView.findViewById(R.id.et_task_screen_title);
-        distanceTv = (TextView) rootView.findViewById(R.id.tv_job_scn_distance);
         durationTv = (TextView) rootView.findViewById(R.id.tv_job_scn_duration);
         priceTv = (TextView) rootView.findViewById(R.id.tv_job_scn_price);
         timeTv = (TextView) rootView.findViewById(R.id.tv_job_scn_time);
-        typeTv = (TextView) rootView.findViewById(R.id.tv_job_scn_type);
         kindTv = (TextView) rootView.findViewById(R.id.tv_job_scn_kind);
     }
 
@@ -135,7 +133,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
         returnRl.setOnClickListener(this);
         searchRl.setOnClickListener(this);
         titleEt.addTextChangedListener(titleTw);
-        distanceTv.setOnClickListener(this);
         durationTv.setOnClickListener(this);
         priceTv.setOnClickListener(this);
         timeTv.setOnClickListener(this);
@@ -156,10 +153,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
                 setResult(1, i);
                 finish();
                 break;
-            case R.id.tv_job_scn_distance:
-                dialogState = 1;
-                showDialog();
-                break;
             case R.id.tv_job_scn_duration:
                 dialogState = 2;
                 showDialog();
@@ -170,10 +163,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.tv_job_scn_time:
                 dialogState = 4;
-                showDialog();
-                break;
-            case R.id.tv_job_scn_type:
-                dialogState = 5;
                 showDialog();
                 break;
             case R.id.tv_job_scn_kind:
@@ -215,9 +204,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         String result = scnDialogList.get(position);
         switch (dialogState) {
-            case 1:
-                distanceTv.setText(result);
-                break;
             case 2:
                 durationTv.setText(result);
                 break;

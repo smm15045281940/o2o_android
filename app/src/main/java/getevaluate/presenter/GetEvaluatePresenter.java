@@ -4,11 +4,10 @@ import android.os.Handler;
 
 import java.util.List;
 
-import getevaluate.listener.GetEvaluateListener;
 import getevaluate.module.GetEvaluateModule;
 import getevaluate.module.IGetEvaluateModule;
 import getevaluate.view.IGetEvaluateFragment;
-import myevaluate.bean.MyEvaluateBean;
+import listener.JsonListener;
 
 /**
  * Created by Administrator on 2017/10/25.
@@ -28,13 +27,13 @@ public class GetEvaluatePresenter implements IGetEvaluatePresenter {
 
     @Override
     public void load(String url) {
-        getEvaluateModule.load(url, new GetEvaluateListener() {
+        getEvaluateModule.load(url, new JsonListener() {
             @Override
-            public void success(final List<MyEvaluateBean> myEvaluateBeanList) {
+            public void success(final String json) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        getEvaluateFragment.success(myEvaluateBeanList);
+                        getEvaluateFragment.loadSuccess(json);
                     }
                 });
             }
@@ -44,7 +43,7 @@ public class GetEvaluatePresenter implements IGetEvaluatePresenter {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        getEvaluateFragment.failure(failure);
+                        getEvaluateFragment.loadFailure(failure);
                     }
                 });
             }

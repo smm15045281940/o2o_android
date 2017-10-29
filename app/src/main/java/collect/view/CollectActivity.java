@@ -16,11 +16,9 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import collectjob.view.CollectJobFragment;
+import collecttask.view.CollectTaskFragment;
 import collectworker.view.CollectWorkerFragment;
 import config.ColorConfig;
-import utils.Utils;
-import view.CProgressDialog;
 
 public class CollectActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,7 +51,7 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
     private void initData() {
         fragmentManager = getSupportFragmentManager();
         fragmentList = new ArrayList<>();
-        fragmentList.add(new CollectJobFragment());
+        fragmentList.add(new CollectTaskFragment());
         fragmentList.add(new CollectWorkerFragment());
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.ll_collect_sit, fragmentList.get(curState));

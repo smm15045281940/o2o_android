@@ -3,6 +3,7 @@ package firstpage.module;
 import firstpage.listener.ComCityListener;
 import firstpage.listener.HotCityListener;
 import firstpage.listener.LocIdListener;
+import listener.JsonListener;
 
 public interface IFirstPageModule {
 
@@ -11,6 +12,8 @@ public interface IFirstPageModule {
     void loadComCity(String comUrl, ComCityListener comCityListener);
 
     void getLocId(String[] letter, String locCity, String comJson, LocIdListener locIdListener);
+
+    void changePosition(String url, JsonListener jsonListener);
 
     void cancelTask();
 }

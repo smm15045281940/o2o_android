@@ -40,7 +40,7 @@ import adapter.WorkerAdapter;
 import view.CProgressDialog;
 import worker.presenter.IWorkerPresenter;
 import worker.presenter.WorkerPresenter;
-import workerscreen.view.WorkerScnActivity;
+import workerscreen.view.WorkerScreenActivity;
 
 public class WorkerActivity extends AppCompatActivity implements IWorkerActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
@@ -236,7 +236,7 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
                 finish();
                 break;
             case R.id.rl_worker_screen:
-                startActivityForResult(new Intent(this, WorkerScnActivity.class), CodeConfig.screenRequestCode);
+                startActivityForResult(new Intent(this, WorkerScreenActivity.class), CodeConfig.screenRequestCode);
                 break;
         }
     }
@@ -245,7 +245,7 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CodeConfig.screenRequestCode && resultCode == CodeConfig.screenResultCode && data != null) {
-            ScreenBean screenBean = (ScreenBean) data.getSerializableExtra("screenBean");
+            ScreenBean screenBean = (ScreenBean) data.getSerializableExtra(IntentConfig.screenToWorker);
             if (screenBean != null) {
                 cpd.show();
                 STATE = SCREEN;
@@ -271,7 +271,6 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
 
     @Override
     public void loadSuccess(String workerJson) {
-        Utils.log(WorkerActivity.this, "workerJson=" + workerJson);
         switch (STATE) {
             case REFRESH:
                 workerBeanList.clear();
@@ -281,7 +280,6 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
                 break;
         }
         workerBeanList.addAll(DataUtils.getWorkerBeanList(workerJson));
-        Utils.log(WorkerActivity.this, "workerBeanList=" + workerBeanList.toString());
         handler.sendEmptyMessage(SUCCESS);
     }
 
@@ -292,7 +290,6 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
 
     @Override
     public void collectSuccess(String collectJson) {
-        Utils.log(WorkerActivity.this, "collectJson=" + collectJson);
         try {
             JSONObject beanObj = new JSONObject(collectJson);
             int code = beanObj.optInt("code");
@@ -324,20 +321,20 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
             switch (id) {
                 case R.id.ll_item_worker:
                     Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
-                    intent.putExtra("workerBean", workerBeanList.get(pos));
+                    intent.putExtra(IntentConfig.workerToTalk, workerBeanList.get(pos));
                     startActivity(intent);
                     break;
                 case R.id.iv_item_worker_collect:
-                    if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getId())) {
-                        Utils.toast(WorkerActivity.this, "不能收藏自己");
+                    if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getWorkerId())) {
+                        Utils.toast(WorkerActivity.this, VarConfig.cannotCollectSelf);
                     } else {
                         int favorite = workerBean.getFavorite();
                         switch (favorite) {
                             case 0:
-                                workerPresenter.addCollect(NetConfig.addCollectUrl + "?u_id=" + UserUtils.readUserData(WorkerActivity.this).getId() + "&f_type_id=" + workerBean.getId() + "&f_type=1");
+                                workerPresenter.addCollect(NetConfig.addCollectUrl + "?u_id=" + UserUtils.readUserData(WorkerActivity.this).getId() + "&f_type_id=" + workerBean.getWorkerId() + "&f_type=1");
                                 break;
                             case 1:
-                                Utils.toast(WorkerActivity.this, "已经收藏过了");
+                                Utils.toast(WorkerActivity.this, VarConfig.collectDone);
                                 break;
                         }
                     }

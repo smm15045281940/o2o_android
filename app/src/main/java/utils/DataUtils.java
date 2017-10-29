@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+import bean.EvaluateBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.SkillBean;
 import bean.TaskBean;
 import bean.WorkerBean;
 import employermanage.bean.EmployerManageBean;
-import myevaluate.bean.MyEvaluateBean;
-import talk.bean.TalkEmployerBean;
-import talk.bean.TalkEmployerWorkerBean;
+import bean.TalkEmployerBean;
+import bean.TalkEmployerWorkerBean;
 import usermanage.bean.UserInfoBean;
 import workermanage.bean.WorkerManageBean;
 
@@ -63,15 +63,19 @@ public class DataUtils {
                                 JSONObject o = dataArr.optJSONObject(i);
                                 if (o != null) {
                                     WorkerBean workerBean = new WorkerBean();
-                                    workerBean.setId(o.optString("u_id"));
+                                    workerBean.setWorkerId(o.optString("u_id"));
                                     workerBean.setIcon(o.optString("u_img"));
                                     workerBean.setTitle(o.optString("u_name"));
                                     workerBean.setInfo(o.optString("uei_info"));
                                     workerBean.setStatus(o.optString("u_task_status"));
-                                    workerBean.setPositionX(o.optString("ucp_posit_x"));
-                                    workerBean.setPositionY(o.optString("ucp_posit_y"));
                                     workerBean.setCollectId(o.optString("f_id"));
                                     workerBean.setFavorite(o.optInt("is_fav"));
+                                    workerBean.setPositionX(o.optString("ucp_posit_x"));
+                                    workerBean.setPositionY(o.optString("ucp_posit_y"));
+                                    workerBean.setSex(o.optString("u_sex"));
+                                    workerBean.setMobile(o.optString("u_mobile"));
+                                    workerBean.setAddress(o.optString("uei_address"));
+                                    workerBean.setSkill(o.optString("u_skills"));
                                     workerBeanList.add(workerBean);
                                 }
                             }
@@ -83,6 +87,104 @@ public class DataUtils {
             e.printStackTrace();
         }
         return workerBeanList;
+    }
+
+    //任务
+    public static List<TaskBean> getTaskBeanList(String taskJson) {
+        List<TaskBean> taskBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(taskJson);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 200:
+                    JSONArray dataArr = beanObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject obj = dataArr.optJSONObject(i);
+                            if (obj != null) {
+                                TaskBean taskBean = new TaskBean();
+                                taskBean.setTaskId(obj.optString("t_id"));
+                                taskBean.setIcon(obj.optString("u_img"));
+                                taskBean.setTitle(obj.optString("t_title"));
+                                taskBean.setInfo(obj.optString("t_info"));
+                                taskBean.setStatus(obj.optString("t_status"));
+                                taskBean.setFavorite(obj.optInt("favorate"));
+                                taskBean.setAuthorId(obj.optString("t_author"));
+                                taskBeanList.add(taskBean);
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return taskBeanList;
+    }
+
+    //收藏的任务
+    public static List<TaskBean> getCollectTaskList(String json) {
+        List<TaskBean> collectTaskList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 1:
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        JSONArray dataArr = dataObj.optJSONArray("data");
+                        if (dataArr != null) {
+                            for (int i = 0; i < dataArr.length(); i++) {
+                                JSONObject o = dataArr.optJSONObject(i);
+                                if (o != null) {
+                                    TaskBean taskBean = new TaskBean();
+                                    taskBean.setIcon(o.optString("u_img"));
+                                    taskBean.setTitle(o.optString("t_title"));
+                                    taskBean.setStatus(o.optString("t_status"));
+                                    taskBean.setCollectId(o.optString("f_id"));
+                                    collectTaskList.add(taskBean);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return collectTaskList;
+    }
+
+    //收到的评价
+    public static List<EvaluateBean> getEvaluateBeanList(String json) {
+        List<EvaluateBean> evaluateBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 1:
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        JSONArray dataArr = dataObj.optJSONArray("data");
+                        if (dataArr != null) {
+                            for (int i = 0; i < dataArr.length(); i++) {
+                                JSONObject o = dataArr.optJSONObject(i);
+                                if (o != null) {
+                                    EvaluateBean evaluateBean = new EvaluateBean();
+                                    evaluateBean.setIcon(o.optString("u_img"));
+                                    evaluateBean.setInfo(o.optString("tce_desc"));
+                                    evaluateBean.setTime(o.optString("tc_in_time"));
+                                    evaluateBeanList.add(evaluateBean);
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return evaluateBeanList;
     }
 
     public static List<WorkerManageBean> getWorkerManageBeanList(String json) {
@@ -220,32 +322,6 @@ public class DataUtils {
         return resultList;
     }
 
-    public static List<MyEvaluateBean> getMyEvaluateBeanList(String json) {
-        List<MyEvaluateBean> resultList = new ArrayList<>();
-        try {
-            JSONObject beanObj = new JSONObject(json);
-            if (beanObj.optInt("code") == 1) {
-                JSONArray dataArr = beanObj.optJSONArray("data");
-                if (dataArr != null) {
-                    for (int i = 0; i < dataArr.length(); i++) {
-                        JSONObject obj = dataArr.optJSONObject(i);
-                        if (obj != null) {
-                            MyEvaluateBean myEvaluateBean = new MyEvaluateBean();
-                            myEvaluateBean.setIcon(obj.optString("u_img"));
-                            myEvaluateBean.setCount(dataArr.length() + "");
-                            myEvaluateBean.setInfo(obj.optString("tce_desc"));
-                            myEvaluateBean.setTime(obj.optString("tc_in_time"));
-                            resultList.add(myEvaluateBean);
-                        }
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return resultList;
-    }
-
     public static TalkEmployerBean getTalkEmployerBean(String json) {
         TalkEmployerBean talkEmployerBean = new TalkEmployerBean();
         try {
@@ -268,7 +344,7 @@ public class DataUtils {
                         if (obj != null) {
                             if (obj.optInt("remaining") == 1) {
                                 TalkEmployerWorkerBean t = new TalkEmployerWorkerBean();
-                                t.setId(obj.optString("tew_skill"));
+                                t.setId(obj.optString("tew_skills"));
                                 t.setAmount(obj.optString("tew_worker_num"));
                                 t.setPrice(obj.optString("tew_price"));
                                 t.setStartTime(obj.optString("tew_start_time"));
@@ -310,36 +386,6 @@ public class DataUtils {
         return resultList;
     }
 
-    public static List<TaskBean> getTaskBeanList(String taskJson) {
-        List<TaskBean> taskBeanList = new ArrayList<>();
-        try {
-            JSONObject beanObj = new JSONObject(taskJson);
-            int code = beanObj.optInt("code");
-            switch (code) {
-                case 200:
-                    JSONArray dataArr = beanObj.optJSONArray("data");
-                    if (dataArr != null) {
-                        for (int i = 0; i < dataArr.length(); i++) {
-                            JSONObject obj = dataArr.optJSONObject(i);
-                            if (obj != null) {
-                                TaskBean taskBean = new TaskBean();
-                                taskBean.setTaskId(obj.optString("t_id"));
-                                taskBean.setIcon(obj.optString("u_img"));
-                                taskBean.setTitle(obj.optString("t_title"));
-                                taskBean.setInfo(obj.optString("t_info"));
-                                taskBean.setStatus(obj.optString("t_status"));
-                                taskBean.setFavorite(obj.optInt("favorate"));
-                                taskBeanList.add(taskBean);
-                            }
-                        }
-                    }
-                    break;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return taskBeanList;
-    }
 
     public static String getPublishJson(PublishBean publishBean, boolean havePass) {
         JSONObject object = new JSONObject();

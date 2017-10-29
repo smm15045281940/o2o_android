@@ -8,6 +8,7 @@ import firstpage.listener.LocIdListener;
 import firstpage.module.FirstPageModule;
 import firstpage.module.IFirstPageModule;
 import firstpage.view.IFirstPageFragment;
+import listener.JsonListener;
 
 public class FirstPagePresenter implements IFirstPagePresenter {
 
@@ -90,6 +91,31 @@ public class FirstPagePresenter implements IFirstPagePresenter {
                     @Override
                     public void run() {
                         firstPageFragment.showLocIdFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void changePosition(String url) {
+        firstPageModule.changePosition(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        firstPageFragment.changePositionSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        firstPageFragment.changePositionFailure(failure);
                     }
                 });
             }

@@ -50,9 +50,7 @@ public class UserSkillAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         SkillBean skillBean = list.get(position);
-        if (skillBean != null) {
-            holder.tv.setText(skillBean.getName());
-        }
+        holder.tv.setText(skillBean.getName());
         return convertView;
     }
 

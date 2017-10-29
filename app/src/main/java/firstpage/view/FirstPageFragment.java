@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import leftright.view.LeftRightActivity;
 import publishjob.view.PublishJobActivity;
 import skill.view.SkillActivity;
 import task.view.TaskActivity;
+import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
@@ -53,7 +55,11 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     private BDLocationListener bdLocationListener;
     private IFirstPagePresenter firstpagePresenter;
 
+    private double positionX, positionY;
+
     private String hotJson, comJson, locCity, locId;
+
+    //http://api.gangjianwang.com/Users/updatePosition?u_id=8&ucp_posit_x=126.65771686&ucp_posit_y=45.77322463
 
     private final int HOT_DONE = 1, COM_DONE = 2, LOC_DONE = 3, ID_DONE = 4;
 
@@ -75,6 +81,9 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                         break;
                     case ID_DONE:
                         cpd.dismiss();
+                        if (UserUtils.isUserLogin(getActivity())) {
+                            firstpagePresenter.changePosition(NetConfig.changePositionUrl + "?u_id=" + UserUtils.readUserData(getActivity()).getId() + "&ucp_posit_x=" + positionX + "&ucp_posit_y=" + positionY);
+                        }
                         break;
                 }
             }
@@ -128,7 +137,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         option.setCoorType("bd09ll");
-        int span = 0;
+        int span = 10000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         option.setOpenGps(true);
@@ -262,11 +271,22 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     }
 
+    @Override
+    public void changePositionSuccess(String json) {
+        Log.e("FirstPageFragment", json);
+    }
+
+    @Override
+    public void changePositionFailure(String failure) {
+        Log.e("FirstPageFragment", failure);
+    }
+
     public class MyLocationListener implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            Utils.log(getActivity(), "onReceiveLocation");
+            positionX = location.getLongitude();
+            positionY = location.getLatitude();
             //获取定位结果
             StringBuffer sb = new StringBuffer(256);
             sb.append("time : ");
@@ -327,11 +347,9 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 }
             }
             String str = sb.toString();
-            Utils.log(getActivity(), "str=" + str);
             int provinceIndex = str.indexOf("省");
             int cityIndex = str.indexOf("市");
             locCity = str.substring(provinceIndex + 1, cityIndex);
-            Utils.log(getActivity(), "locCity=" + locCity);
             handler.sendEmptyMessage(LOC_DONE);
         }
 

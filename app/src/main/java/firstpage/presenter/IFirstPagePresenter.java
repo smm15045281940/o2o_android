@@ -9,5 +9,7 @@ public interface IFirstPagePresenter {
 
     void getLocId(String[] letter, String locCity, String comJson);
 
+    void changePosition(String url);
+
     void destroy();
 }
