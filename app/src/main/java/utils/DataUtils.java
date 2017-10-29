@@ -68,6 +68,9 @@ public class DataUtils {
                                     workerBean.setTitle(o.optString("u_name"));
                                     workerBean.setInfo(o.optString("uei_info"));
                                     workerBean.setStatus(o.optString("u_task_status"));
+                                    workerBean.setPositionX(o.optString("ucp_posit_x"));
+                                    workerBean.setPositionY(o.optString("ucp_posit_y"));
+                                    workerBean.setCollectId(o.optString("f_id"));
                                     workerBean.setFavorite(o.optInt("is_fav"));
                                     workerBeanList.add(workerBean);
                                 }

@@ -1,4 +1,4 @@
-package worker.adapter;
+package adapter;
 
 
 import android.content.Context;
@@ -15,25 +15,24 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import listener.ListItemClickHelp;
-import worker.bean.WorkerBean;
-import worker.listener.WorkerClickHelp;
+import bean.WorkerBean;
+import listener.IdPosClickHelp;
 
-public class WorkerAdapter extends BaseAdapter {
+public class CollectWorkerAdapter extends BaseAdapter {
 
     private Context context;
     private List<WorkerBean> list;
-    private WorkerClickHelp workerClickHelp;
+    private IdPosClickHelp idPosClickHelp;
 
-    public WorkerAdapter(Context context, List<WorkerBean> list, WorkerClickHelp workerClickHelp) {
+    public CollectWorkerAdapter(Context context, List<WorkerBean> list, IdPosClickHelp idPosClickHelp) {
         this.context = context;
         this.list = list;
-        this.workerClickHelp = workerClickHelp;
+        this.idPosClickHelp = idPosClickHelp;
     }
 
     @Override
     public int getCount() {
-        return list == null ? 0 : list.size();
+        return list.size();
     }
 
     @Override
@@ -57,34 +56,29 @@ public class WorkerAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         WorkerBean workerBean = list.get(position);
-        if (workerBean != null) {
-            Picasso.with(context).load(workerBean.getU_img()).into(holder.iconIv);
-            if (workerBean.getU_task_status().equals("0")) {
-                holder.statusIv.setImageResource(R.mipmap.worker_leisure);
-            } else {
-                holder.statusIv.setImageResource(R.mipmap.worker_mid);
-            }
-            holder.nameTv.setText(workerBean.getU_true_name());
-            holder.infoTv.setText(workerBean.getUei_info());
-            if (workerBean.getFavorite() == 0) {
-                holder.collectIv.setImageResource(R.mipmap.collect_gray);
-            } else if (workerBean.getFavorite() == 1) {
-                holder.collectIv.setImageResource(R.mipmap.collect_yellow);
-            }
+        Picasso.with(context).load(workerBean.getIcon()).into(holder.imageIv);
+        String status = workerBean.getStatus();
+        if (status.equals("0")) {
+            holder.statusIv.setImageResource(R.mipmap.worker_leisure);
+        } else if (status.equals("1")) {
+            holder.statusIv.setImageResource(R.mipmap.worker_mid);
         }
+        holder.collectIv.setImageResource(R.mipmap.collect_yellow);
+        holder.nameTv.setText(workerBean.getTitle());
+        holder.infoTv.setText(workerBean.getInfo());
         final int p = position;
         final int llId = holder.ll.getId();
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                workerClickHelp.onClick(p, llId);
+                idPosClickHelp.onClick(llId, p);
             }
         });
-        final int collectId = holder.collectIv.getId();
+        final int cancelCollectId = holder.collectIv.getId();
         holder.collectIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                workerClickHelp.onClick(p, collectId);
+                idPosClickHelp.onClick(cancelCollectId, p);
             }
         });
         return convertView;
@@ -93,15 +87,15 @@ public class WorkerAdapter extends BaseAdapter {
     private class ViewHolder {
 
         private LinearLayout ll;
-        private ImageView iconIv, statusIv, collectIv;
+        private ImageView imageIv, statusIv, collectIv;
         private TextView nameTv, infoTv;
 
         public ViewHolder(View itemView) {
             ll = (LinearLayout) itemView.findViewById(R.id.ll_item_worker);
-            iconIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_icon);
+            imageIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_icon);
             statusIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_status);
             collectIv = (ImageView) itemView.findViewById(R.id.iv_item_worker_collect);
-            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_name);
+            nameTv = (TextView) itemView.findViewById(R.id.tv_item_worker_title);
             infoTv = (TextView) itemView.findViewById(R.id.tv_item_worker_info);
         }
     }

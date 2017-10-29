@@ -1,6 +1,5 @@
 package collectworker.view;
 
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +15,8 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import collectworker.adapter.CollectWorkerAdapter;
-import collectworker.bean.CollectWorkerBean;
+import adapter.CollectWorkerAdapter;
+import bean.WorkerBean;
 import collectworker.presenter.CollectWorkerPresenter;
 import collectworker.presenter.ICollectWorkerPresenter;
 import config.NetConfig;
@@ -34,7 +33,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-    private List<CollectWorkerBean> list;
+    private List<WorkerBean> list;
     private CollectWorkerAdapter adapter;
 
     private ICollectWorkerPresenter collectWorkerPresenter;
@@ -114,37 +113,23 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     }
 
     @Override
-    public void showLoading() {
-        cpd.show();
+    public void loadSuccess(String loadJson) {
+
     }
 
     @Override
-    public void hideLoading() {
-        cpd.dismiss();
+    public void loadFailure(String failure) {
+
     }
 
     @Override
-    public void showLoadSuccess(List<CollectWorkerBean> collectWorkerBeanList) {
-        Log.e("CollectWorker", "collectWorkerBeanList=" + collectWorkerBeanList.toString());
-        list.addAll(collectWorkerBeanList);
-        handler.sendEmptyMessage(DONE);
-    }
+    public void cancelCollectSuccess(String cancelCollectJson) {
 
-    @Override
-    public void showLoadFailure(String failure) {
-        Log.e("CollectWorker", "skillFailure=" + failure);
-    }
-
-    @Override
-    public void cancelCollectSuccess(String success) {
-        tip = success;
-        handler.sendEmptyMessage(CANCEL_COLLECT_SUCCESS);
     }
 
     @Override
     public void cancelCollectFailure(String failure) {
-        tip = failure;
-        handler.sendEmptyMessage(CANCEL_COLLECT_FAILURE);
+
     }
 
     @Override
@@ -166,7 +151,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
             case R.id.iv_item_worker_collect:
                 Log.e("TAG", "cancel");
                 cancelCollectPosition = pos;
-                collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + list.get(cancelCollectPosition).getfId());
+                collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + list.get(cancelCollectPosition).getCollectId());
                 break;
         }
     }

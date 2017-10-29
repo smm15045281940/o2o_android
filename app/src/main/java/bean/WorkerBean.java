@@ -10,6 +10,9 @@ public class WorkerBean implements Serializable {
     private String title;
     private String info;
     private String status;
+    private String positionX;
+    private String positionY;
+    private String collectId;
     private int favorite;
 
     public String getId() {
@@ -52,6 +55,30 @@ public class WorkerBean implements Serializable {
         this.status = status;
     }
 
+    public String getPositionX() {
+        return positionX;
+    }
+
+    public void setPositionX(String positionX) {
+        this.positionX = positionX;
+    }
+
+    public String getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionY(String positionY) {
+        this.positionY = positionY;
+    }
+
+    public String getCollectId() {
+        return collectId;
+    }
+
+    public void setCollectId(String collectId) {
+        this.collectId = collectId;
+    }
+
     public int getFavorite() {
         return favorite;
     }
@@ -66,7 +93,11 @@ public class WorkerBean implements Serializable {
                 "id='" + id + '\'' +
                 ", icon='" + icon + '\'' +
                 ", title='" + title + '\'' +
+                ", info='" + info + '\'' +
                 ", status='" + status + '\'' +
+                ", positionX='" + positionX + '\'' +
+                ", positionY='" + positionY + '\'' +
+                ", collectId='" + collectId + '\'' +
                 ", favorite=" + favorite +
                 '}';
     }
