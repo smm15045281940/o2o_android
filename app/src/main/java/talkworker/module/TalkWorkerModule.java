@@ -16,7 +16,7 @@ import okhttp3.Response;
 public class TalkWorkerModule implements ITalkWorkerModule {
 
     private OkHttpClient okHttpClient;
-    private Call call, getSkillCall;
+    private Call call, getSkillCall, checkCall;
 
     public TalkWorkerModule() {
         okHttpClient = new OkHttpClient();
@@ -69,6 +69,25 @@ public class TalkWorkerModule implements ITalkWorkerModule {
     }
 
     @Override
+    public void check(String url, final JsonListener jsonListener) {
+        Request checkRequest = new Request.Builder().url(url).get().build();
+        checkCall = okHttpClient.newCall(checkRequest);
+        checkCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                jsonListener.failure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    jsonListener.success(response.body().string());
+                }
+            }
+        });
+    }
+
+    @Override
     public void cancelTask() {
         if (call != null) {
             call.cancel();
@@ -77,6 +96,10 @@ public class TalkWorkerModule implements ITalkWorkerModule {
         if (getSkillCall != null) {
             getSkillCall.cancel();
             getSkillCall = null;
+        }
+        if (checkCall != null) {
+            checkCall.cancel();
+            checkCall = null;
         }
         if (okHttpClient != null) {
             okHttpClient = null;

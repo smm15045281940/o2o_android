@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -31,12 +32,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.TalkToSelect;
 import config.IntentConfig;
 import config.NetConfig;
 import persondetail.view.PersonDetailActivity;
+import selecttask.view.SelectTaskActivity;
 import talkworker.presenter.ITalkWorkerPresenter;
 import talkworker.presenter.TalkWorkerPresenter;
 import utils.DataUtils;
+import utils.UserUtils;
 import utils.Utils;
 import bean.WorkerBean;
 import view.CImageView;
@@ -45,7 +49,7 @@ import view.CProgressDialog;
 public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorkerActivity, View.OnClickListener {
 
     private View rootView;
-    private RelativeLayout returnRl;
+    private RelativeLayout returnRl, waitRl, doingRl;
     private CProgressDialog cpd;
     private CImageView iconIv, phoneIv;
     private ImageView sexIv, statusIv;
@@ -59,6 +63,9 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
+    private final int CHECK_HAVE = 3;
+    private final int CHECK_NONE = 4;
+    private String skill;
 
     private Handler handler = new Handler() {
         @Override
@@ -67,12 +74,20 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
             if (msg != null) {
                 switch (msg.what) {
                     case LOAD_SUCCESS:
-                        cpd.dismiss();
-                        Utils.log(TalkWorkerActivity.this, "workerBean=" + workerBean.toString());
                         notifyData();
                         break;
                     case LOAD_FAILURE:
-                        cpd.dismiss();
+                        break;
+                    case CHECK_HAVE:
+                        Intent intent = new Intent(TalkWorkerActivity.this, SelectTaskActivity.class);
+                        TalkToSelect talkToSelect = new TalkToSelect();
+                        talkToSelect.setWorkerId(workerBean.getWorkerId());
+                        talkToSelect.setSkill(skill);
+                        intent.putExtra(IntentConfig.talkToSelect, talkToSelect);
+                        startActivity(intent);
+                        break;
+                    case CHECK_NONE:
+                        Utils.toast(TalkWorkerActivity.this, "请先去发布工作");
                         break;
                 }
             }
@@ -110,6 +125,8 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         if (handler != null) {
             handler.removeMessages(LOAD_SUCCESS);
             handler.removeMessages(LOAD_FAILURE);
+            handler.removeMessages(CHECK_HAVE);
+            handler.removeMessages(CHECK_NONE);
             handler = null;
         }
     }
@@ -120,6 +137,8 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_worker_return);
+        waitRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_worker_wait);
+        doingRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_worker_doing);
         cpd = Utils.initProgressDialog(TalkWorkerActivity.this, cpd);
         iconIv = (CImageView) rootView.findViewById(R.id.iv_talk_worker_icon);
         phoneIv = (CImageView) rootView.findViewById(R.id.iv_talk_worker_phone);
@@ -142,12 +161,14 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     private void initData() {
         talkWorkerPresenter = new TalkWorkerPresenter(this);
+        skill = getIntent().getStringExtra(IntentConfig.workerToTalkSkill);
     }
 
     private void setListener() {
         returnRl.setOnClickListener(this);
         iconIv.setOnClickListener(this);
         phoneIv.setOnClickListener(this);
+        waitRl.setOnClickListener(this);
     }
 
     private void loadData() {
@@ -166,17 +187,28 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         String status = workerBean.getStatus();
         if (status.equals("0")) {
             statusIv.setImageResource(R.mipmap.worker_leisure);
+            waitRl.setVisibility(View.VISIBLE);
+            doingRl.setVisibility(View.GONE);
         } else {
             statusIv.setImageResource(R.mipmap.worker_mid);
+            waitRl.setVisibility(View.GONE);
+            doingRl.setVisibility(View.VISIBLE);
         }
         nameTv.setText(workerBean.getTitle());
         skillTv.setText(workerBean.getSkillName());
         infoTv.setText(workerBean.getInfo());
         addressTv.setText(workerBean.getAddress());
         loadMap();
+        cpd.dismiss();
     }
 
     private void loadMap() {
+        if (TextUtils.isEmpty(workerBean.getPositionX()) || workerBean.getPositionX().equals("null")) {
+            workerBean.setPositionX("0");
+        }
+        if (TextUtils.isEmpty(workerBean.getPositionY()) || workerBean.getPositionY().equals("null")) {
+            workerBean.setPositionY("0");
+        }
         LatLng latLng = new LatLng(Double.parseDouble(workerBean.getPositionY()), Double.parseDouble(workerBean.getPositionX()));
         OverlayOptions overlayOptions = new MarkerOptions().position(latLng).icon(bitmap);
         MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, Float.parseFloat("19"));
@@ -201,6 +233,9 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                 if (i.resolveActivity(getPackageManager()) != null) {
                     startActivity(i);
                 }
+                break;
+            case R.id.rl_talk_worker_wait:
+                talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0&skills=" + skill);
                 break;
         }
     }
@@ -238,6 +273,21 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     @Override
     public void getSkillFailure(String failure) {
+
+    }
+
+    @Override
+    public void checkSuccess(String json) {
+        Utils.log(TalkWorkerActivity.this, json);
+        if (DataUtils.getTaskBeanList(json).size() == 0) {
+            handler.sendEmptyMessage(CHECK_NONE);
+        } else {
+            handler.sendEmptyMessage(CHECK_HAVE);
+        }
+    }
+
+    @Override
+    public void checkFailure(String failure) {
 
     }
 }

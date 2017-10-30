@@ -17,11 +17,6 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +24,6 @@ import accountdetail.adapter.DetailAdapter;
 import accountdetail.bean.AccountDetailBean;
 import accountdetail.presenter.AccountDetailPresenter;
 import accountdetail.presenter.IAccountDetailPresenter;
-import bean.WithDrawBean;
-import config.NetConfig;
-import config.StateConfig;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import utils.UrlUtils;

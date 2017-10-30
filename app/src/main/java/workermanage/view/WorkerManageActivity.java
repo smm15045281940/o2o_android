@@ -1,6 +1,7 @@
 package workermanage.view;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,17 +20,20 @@ import java.util.List;
 import config.ColorConfig;
 import config.StateConfig;
 import config.VarConfig;
+import listener.IdPosClickHelp;
 import listener.ListItemClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import skill.view.SkillActivity;
+import utils.DataUtils;
 import utils.Utils;
 import view.CProgressDialog;
-import workermanage.adapter.WorkerManageAdapter;
-import workermanage.bean.WorkerManageBean;
+import adapter.WorkerManageAdapter;
+import bean.WorkerManageBean;
 import workermanage.presenter.IWorkerManagePresenter;
 import workermanage.presenter.WorkerManagePresenter;
 
-public class WorkerManageActivity extends AppCompatActivity implements IWorkerManageActivity, View.OnClickListener, ListItemClickHelp, PullToRefreshLayout.OnRefreshListener {
+public class WorkerManageActivity extends AppCompatActivity implements IWorkerManageActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
     private View rootView, emptyView, netView;
     private FrameLayout fl;
@@ -40,23 +44,29 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     private CProgressDialog cpd;
     private PullableListView lv;
     private WorkerManageAdapter workerManageAdapter;
-    private List<WorkerManageBean> list;
-
+    private List<WorkerManageBean> workerManageBeanList = new ArrayList<>();
     private final int ALL = 0, TALK = 1, DOING = 2, DONE = 3;
     private int curState = ALL, tarState = -1;
-
-    private final int FIRST = 0, REFRESH = 1, LOAD = 2;
+    private final int FIRST = 0, REFRESH = 1;
     private int STATE = FIRST;
+    private final int LOAD_SUCCESS = 4;
+    private final int LOAD_FAILURE = 5;
+    private int clickPosition;
 
     private IWorkerManagePresenter workerManagePresenter;
 
-    private android.os.Handler handler = new android.os.Handler() {
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg != null) {
-                if (msg.what == 1) {
-                    notifyData();
+                switch (msg.what) {
+                    case LOAD_SUCCESS:
+                        notifyData();
+                        break;
+                    case LOAD_FAILURE:
+                        notifyNet();
+                        break;
                 }
             }
         }
@@ -79,7 +89,8 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     protected void onDestroy() {
         super.onDestroy();
         if (handler != null) {
-            handler.removeMessages(1);
+            handler.removeMessages(LOAD_SUCCESS);
+            handler.removeMessages(LOAD_FAILURE);
             handler = null;
         }
     }
@@ -127,8 +138,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     private void initData() {
         curState = ALL;
         workerManagePresenter = new WorkerManagePresenter(this);
-        list = new ArrayList<>();
-        workerManageAdapter = new WorkerManageAdapter(WorkerManageActivity.this, list, this);
+        workerManageAdapter = new WorkerManageAdapter(WorkerManageActivity.this, workerManageBeanList, this);
     }
 
     private void setData() {
@@ -155,7 +165,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                if (list.size() == 0) {
+                if (workerManageBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
@@ -170,6 +180,21 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                 break;
         }
         workerManageAdapter.notifyDataSetChanged();
+    }
+
+    private void notifyNet() {
+        switch (STATE) {
+            case FIRST:
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyView.setVisibility(View.GONE);
+                netView.setVisibility(View.VISIBLE);
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(WorkerManageActivity.this, VarConfig.noNetTip);
+                break;
+        }
     }
 
     @Override
@@ -226,51 +251,29 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                     break;
             }
             curState = tarState;
-            Utils.log(WorkerManageActivity.this, "url=" + Utils.getWorkerManageUrl(WorkerManageActivity.this, curState));
             STATE = FIRST;
             loadData();
         }
     }
 
     @Override
-    public void showWorkerManageSuccess(List<WorkerManageBean> workerManageBeanList) {
+    public void loadSuccess(String json) {
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                list.clear();
+                workerManageBeanList.clear();
                 break;
             case REFRESH:
-                list.clear();
-                break;
-            case LOAD:
+                workerManageBeanList.clear();
                 break;
         }
-        Utils.log(WorkerManageActivity.this, "workerManageBeanList=" + workerManageBeanList.toString());
-        list.addAll(workerManageBeanList);
-        handler.sendEmptyMessage(1);
+        workerManageBeanList.addAll(DataUtils.getWorkerManageBeanList(json));
+        handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
     @Override
-    public void showWorkerManageFailure(String failure) {
-        if (failure.equals(VarConfig.noNet)) {
-            switch (STATE) {
-                case FIRST:
-                    cpd.dismiss();
-                    ptrl.setVisibility(View.GONE);
-                    netView.setVisibility(View.VISIBLE);
-                    emptyView.setVisibility(View.GONE);
-                    break;
-                case REFRESH:
-                    ptrl.hideHeadView();
-                    Utils.toast(WorkerManageActivity.this, StateConfig.loadNonet);
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onClick(View item, View widget, int position, int which, boolean isChecked) {
-
+    public void loadFailure(String failure) {
+        handler.sendEmptyMessage(LOAD_FAILURE);
     }
 
     @Override
@@ -282,5 +285,25 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         ptrl.hideFootView();
+    }
+
+    @Override
+    public void onClick(int id, int pos) {
+        clickPosition = pos;
+        switch (id) {
+            case R.id.ll_item_worker_manage:
+                String status = workerManageBeanList.get(clickPosition).getO_status();
+                String confirm = workerManageBeanList.get(clickPosition).getO_confirm();
+                if (status.equals("0")) {
+                    if (confirm.equals("0") || confirm.equals("2")) {
+                        Utils.log(WorkerManageActivity.this, "洽谈");
+                    } else if (confirm.equals("1")) {
+                        Utils.log(WorkerManageActivity.this, "进行");
+                    }
+                } else if (status.equals("1")) {
+                    Utils.log(WorkerManageActivity.this, "结束");
+                }
+                break;
+        }
     }
 }

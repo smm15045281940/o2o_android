@@ -1,11 +1,11 @@
 package workermanage.module;
 
 
-import workermanage.listener.WorkerManageListener;
+import listener.JsonListener;
 
 public interface IWorkerManageModule {
 
-    void load(String url, WorkerManageListener workerManageListener);
+    void load(String url, JsonListener jsonListener);
 
     void cancelTask();
 }

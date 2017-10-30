@@ -13,4 +13,8 @@ public interface ITalkWorkerActivity {
     void getSkillSuccess(String json);
 
     void getSkillFailure(String failure);
+
+    void checkSuccess(String json);
+
+    void checkFailure(String failure);
 }

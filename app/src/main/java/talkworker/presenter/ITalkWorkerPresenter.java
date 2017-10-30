@@ -10,5 +10,7 @@ public interface ITalkWorkerPresenter {
 
     void getSkillJson(String url);
 
+    void check(String url);
+
     void destroy();
 }

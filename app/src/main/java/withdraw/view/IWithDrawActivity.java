@@ -6,11 +6,7 @@ package withdraw.view;
 
 public interface IWithDrawActivity {
 
-    void showLoading();
+    void loadSuccess(String json);
 
-    void hideLoading();
-
-    void showSuccess(String success);
-
-    void showFailure(String failure);
+    void loadFailure(String failure);
 }

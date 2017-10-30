@@ -1,17 +1,28 @@
 package bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TaskBean implements Serializable {
 
     private String taskId;
     private String collectId;
     private String authorId;
+    private String tewId;
     private String icon;
     private String title;
     private String info;
     private String status;
     private int favorite;
+    private List<TaskWorkerBean> taskWorkerBeanList;
+
+    public String getTewId() {
+        return tewId;
+    }
+
+    public void setTewId(String tewId) {
+        this.tewId = tewId;
+    }
 
     public String getTaskId() {
         return taskId;
@@ -77,17 +88,27 @@ public class TaskBean implements Serializable {
         this.authorId = authorId;
     }
 
+    public List<TaskWorkerBean> getTaskWorkerBeanList() {
+        return taskWorkerBeanList;
+    }
+
+    public void setTaskWorkerBeanList(List<TaskWorkerBean> taskWorkerBeanList) {
+        this.taskWorkerBeanList = taskWorkerBeanList;
+    }
+
     @Override
     public String toString() {
         return "TaskBean{" +
                 "taskId='" + taskId + '\'' +
                 ", collectId='" + collectId + '\'' +
                 ", authorId='" + authorId + '\'' +
+                ", tewId='" + tewId + '\'' +
                 ", icon='" + icon + '\'' +
                 ", title='" + title + '\'' +
                 ", info='" + info + '\'' +
                 ", status='" + status + '\'' +
                 ", favorite=" + favorite +
+                ", taskWorkerBeanList=" + taskWorkerBeanList +
                 '}';
     }
 }

@@ -33,7 +33,9 @@
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name="main.view.MainActivity">
+        <activity
+            android:name="main.view.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,7 +80,7 @@
         <activity
             android:name="phoneprove.view.PhoneProveActivity"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
-        <activity android:name="project.view.ProjectActivity" />
+        <activity android:name="selecttask.view.SelectTaskActivity" />
         <activity
             android:name="resign.view.ResignActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
@@ -94,7 +96,6 @@
         <activity
             android:name="phonebind.view.PhoneBindActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name="draft.view.DraftActivity" />
         <activity android:name="refuseorder.view.RefuseOrderActivity" />
         <activity
             android:name="evaluate.view.EvaluateActivity"
@@ -108,7 +109,7 @@
         <activity android:name="taskconfirm.view.TaskConfirmActivity" />
         <activity android:name="idcard.view.IdCardActivity" />
         <activity android:name="talkworker.view.TalkWorkerActivity" />
-        <activity android:name="persondetail.view.PersonDetailActivity"></activity>
+        <activity android:name="persondetail.view.PersonDetailActivity" />
     </application>
 
 </manifest>

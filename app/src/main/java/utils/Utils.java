@@ -250,20 +250,16 @@ public class Utils {
         String url = null;
         switch (state) {
             case 0:
-//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId();
-                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2;
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (UserUtils.readUserData(context)).getId();
                 break;
             case 1:
-//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=0&o_confirm=0,2";
-                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=0&o_confirm=0,2";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (UserUtils.readUserData(context)).getId() + "&o_status=0&o_confirm=0,2";
                 break;
             case 2:
-//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=0&o_confirm=1";
-                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=0&o_confirm=1";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (UserUtils.readUserData(context)).getId() + "&o_status=0&o_confirm=1";
                 break;
             case 3:
-//                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (Utils.readUserData(context)).getId() + "&o_status=1";
-                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + 2 + "&o_status=1";
+                url = NetConfig.taskBaseUrl + "?action=worked&o_worker=" + (UserUtils.readUserData(context)).getId() + "&o_status=1";
                 break;
         }
         return url;

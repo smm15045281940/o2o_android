@@ -33,7 +33,7 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
     private ListView scnDialogLv;
     private RelativeLayout returnRl, searchRl;
     private EditText titleEt;
-    private TextView durationTv, priceTv, timeTv, typeTv, kindTv;
+    private TextView durationTv, priceTv, timeTv, kindTv;
 
     private ScnDiaAdapter scnDiaAdapter;
     private List<String> scnDialogList, disList, durationList, moneyList, startTimeList, kindList, typeList;
@@ -120,9 +120,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
         kindList.add("搬运工");
         kindList.add("焊接工");
         kindList.add("其他工种");
-        typeList.add("小型工地");
-        typeList.add("个人家装");
-        typeList.add("大型建筑项目");
     }
 
     private void setData() {
@@ -136,7 +133,6 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
         durationTv.setOnClickListener(this);
         priceTv.setOnClickListener(this);
         timeTv.setOnClickListener(this);
-        typeTv.setOnClickListener(this);
         kindTv.setOnClickListener(this);
         scnDialogLv.setOnItemClickListener(this);
     }
@@ -213,13 +209,8 @@ public class TaskScreenActivity extends AppCompatActivity implements View.OnClic
             case 4:
                 timeTv.setText(result);
                 break;
-            case 5:
-                typeTv.setText(result);
-                break;
             case 6:
                 kindTv.setText(result);
-                break;
-            default:
                 break;
         }
         dialogState = 0;

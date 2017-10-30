@@ -1,16 +1,16 @@
 package employermanage.view;
 
-import java.util.List;
-
-import employermanage.bean.EmployerManageBean;
-
 /**
  * Created by Administrator on 2017/10/23.
  */
 
 public interface IEmployerManageActivity {
 
-    void showSuccess(List<EmployerManageBean> employerManageBeanList);
+    void loadSuccess(String json);
 
-    void showFailure(String failure);
+    void loadFailure(String failure);
+
+    void cancelSuccess(String json);
+
+    void cancelFailure(String failure);
 }

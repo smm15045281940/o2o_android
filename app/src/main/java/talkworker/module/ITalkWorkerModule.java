@@ -12,5 +12,7 @@ public interface ITalkWorkerModule {
 
     void getSkillJson(String url, JsonListener jsonListener);
 
+    void check(String url,JsonListener jsonListener);
+
     void cancelTask();
 }

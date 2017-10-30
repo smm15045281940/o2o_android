@@ -14,24 +14,19 @@ public class UrlUtils {
         String url = null;
         switch (state) {
             case 0:
-//                url = NetConfig.taskBaseUrl + "?t_author=" + (Utils.readUserData(context)).getId() + "&t_storage=0";
-                url = NetConfig.taskBaseUrl + "?t_author=" + 2 + "&t_storage=0";
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0";
                 break;
             case 1:
-//                url = NetConfig.taskBaseUrl + "?t_author=" + (Utils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 0;
-                url = NetConfig.taskBaseUrl + "?t_author=" + 2 + "&t_storage=0&t_status=" + 0;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 0;
                 break;
             case 2:
-//                url = NetConfig.taskBaseUrl + "?t_author=" + (Utils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 1;
-                url = NetConfig.taskBaseUrl + "?t_author=" + 2 + "&t_storage=0&t_status=" + 1;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 1;
                 break;
             case 3:
-//                url = NetConfig.taskBaseUrl + "?t_author=" + (Utils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 2;
-                url = NetConfig.taskBaseUrl + "?t_author=" + 2 + "&t_storage=0&t_status=" + 2;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 2;
                 break;
             case 4:
-//                url = NetConfig.taskBaseUrl + "?t_author=" + (Utils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 3;
-                url = NetConfig.taskBaseUrl + "?t_author=" + 2 + "&t_storage=0&t_status=" + 3;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 3;
                 break;
         }
         return url;

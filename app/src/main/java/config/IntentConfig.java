@@ -11,9 +11,11 @@ public interface IntentConfig {
     String skillToWorker = "skill_to_worker";
     String screenToWorker = "screen_to_worker";
     String workerToTalk = "worker_to_talk";
+    String workerToTalkSkill = "worker_to_talk_skill";
+    String talkToSelect = "talk_to_select_skill";
+
     String taskToTalk = "task_to_talk";
     String talkToDetail = "talk_to_detail";
-
     String intentName = "status";//意图名称
     int COLLECT = 1;//我的收藏意图
     int EVALUATE = 2;//我的评价意图

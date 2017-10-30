@@ -2,8 +2,8 @@ package withdraw.presenter;
 
 import android.os.Handler;
 
-import withdraw.bean.WithDrawBean;
-import withdraw.listener.WithDrawListener;
+import bean.WithDrawBean;
+import listener.JsonListener;
 import withdraw.module.IWithDrawModule;
 import withdraw.module.WithDrawModule;
 import withdraw.view.IWithDrawActivity;
@@ -26,15 +26,13 @@ public class WithDrawPresenter implements IWithDrawPresenter {
 
     @Override
     public void withdraw(WithDrawBean withDrawBean) {
-        withDrawActivity.showLoading();
-        withDrawModule.withdraw(withDrawBean, new WithDrawListener() {
+        withDrawModule.withdraw(withDrawBean, new JsonListener() {
             @Override
-            public void success(final String success) {
+            public void success(final String json) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        withDrawActivity.showSuccess(success);
-                        withDrawActivity.hideLoading();
+                        withDrawActivity.loadSuccess(json);
                     }
                 });
             }
@@ -44,8 +42,7 @@ public class WithDrawPresenter implements IWithDrawPresenter {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        withDrawActivity.showFailure(failure);
-                        withDrawActivity.hideLoading();
+                        withDrawActivity.loadFailure(failure);
                     }
                 });
             }

@@ -12,6 +12,11 @@ public interface VarConfig {
     String cannotCollectSelf = "不能收藏自己";
     //无网络提示
     String noNetTip = "无网络";
+    //发布失败
+    String publishSuccess = "发布成功";
+    String publishFailure = "发布失败";
+    String publishNoMoney = "资金不足";
+    String publishNoPass = "密码错误";
 
     String noNet = "noNet";
     String pwdSuccessTip = "设置密码成功";//设置密码成功提示

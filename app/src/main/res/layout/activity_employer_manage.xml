@@ -22,25 +22,6 @@
             style="@style/tv_top_title"
             android:text="雇主工作管理" />
 
-        <RelativeLayout
-            android:id="@+id/rl_employer_manage_draft"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:clickable="true">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:text="草稿箱"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/x15" />
-
-        </RelativeLayout>
-
     </RelativeLayout>
 
     <LinearLayout

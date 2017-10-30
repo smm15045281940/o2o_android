@@ -1,6 +1,6 @@
 package employermanage.module;
 
-import employermanage.listener.EmployerManageListener;
+import listener.JsonListener;
 
 /**
  * Created by Administrator on 2017/10/23.
@@ -8,7 +8,9 @@ import employermanage.listener.EmployerManageListener;
 
 public interface IEmployerManageModule {
 
-    void load(String url, EmployerManageListener employerManageListener);
+    void load(String url, JsonListener jsonListener);
+
+    void cancel(String url,JsonListener jsonListener);
 
     void cancelTask();
 }

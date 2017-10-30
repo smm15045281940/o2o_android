@@ -4,11 +4,11 @@ import android.os.Handler;
 
 import java.util.List;
 
-import employermanage.bean.EmployerManageBean;
-import employermanage.listener.EmployerManageListener;
+import bean.EmployerManageBean;
 import employermanage.module.EmployerManageModule;
 import employermanage.module.IEmployerManageModule;
 import employermanage.view.IEmployerManageActivity;
+import listener.JsonListener;
 
 /**
  * Created by Administrator on 2017/10/23.
@@ -28,13 +28,13 @@ public class EmployerManagePresenter implements IEmployerManagePresenter {
 
     @Override
     public void load(String url) {
-        employerManageModule.load(url, new EmployerManageListener() {
+        employerManageModule.load(url, new JsonListener() {
             @Override
-            public void success(final List<EmployerManageBean> employerManageBeanList) {
+            public void success(final String json) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        employerManageActivity.showSuccess(employerManageBeanList);
+                        employerManageActivity.loadSuccess(json);
                     }
                 });
             }
@@ -44,7 +44,37 @@ public class EmployerManagePresenter implements IEmployerManagePresenter {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        employerManageActivity.showFailure(failure);
+                        employerManageActivity.loadFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void cancel(String url) {
+        employerManageModule.cancel(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        employerManageActivity.cancelSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                employerManageActivity.cancelFailure(failure);
+                            }
+                        });
                     }
                 });
             }

@@ -1,5 +1,6 @@
 package talkemployer.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,10 +29,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
 import adapter.TalkEmployerAdapter;
 import bean.TalkEmployerBean;
+import evaluate.view.EvaluateActivity;
 import talkemployer.presenter.TalkEmployerPresenter;
 import utils.DataUtils;
 import utils.UserUtils;
@@ -42,7 +45,7 @@ import view.CProgressDialog;
 public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener {
 
     private View rootView;
-    private RelativeLayout returnRl;
+    private RelativeLayout returnRl, complainRl;
     private View headMapView;
     private CImageView iconIv, phoneIv;
     private ImageView sexIv;
@@ -87,7 +90,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = View.inflate(this, R.layout.activity_talk, null);
+        rootView = View.inflate(this, R.layout.activity_talk_employer, null);
         setContentView(rootView);
         initView();
         initData();
@@ -126,8 +129,9 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_return);
-        talkLv = (ListView) rootView.findViewById(R.id.lv_talk);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_return);
+        complainRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_complain);
+        talkLv = (ListView) rootView.findViewById(R.id.lv_talk_employer);
         cpd = Utils.initProgressDialog(TalkEmployerActivity.this, cpd);
     }
 
@@ -158,6 +162,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void setListener() {
         returnRl.setOnClickListener(this);
+        complainRl.setOnClickListener(this);
     }
 
     private void loadData() {
@@ -187,8 +192,11 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_talk_return:
+            case R.id.rl_talk_employer_return:
                 finish();
+                break;
+            case R.id.rl_talk_employer_complain:
+                startActivity(new Intent(TalkEmployerActivity.this, EvaluateActivity.class));
                 break;
         }
     }

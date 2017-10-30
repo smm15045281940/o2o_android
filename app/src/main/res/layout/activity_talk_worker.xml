@@ -73,8 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/y5"
-                        android:src="@mipmap/male" />
+                        android:layout_marginLeft="@dimen/y5" />
 
                 </LinearLayout>
 
@@ -85,7 +84,6 @@
                     android:layout_marginTop="@dimen/y2"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="skill"
                     android:textColor="@color/black_252323"
                     android:textSize="@dimen/y8"
                     android:textStyle="bold" />
@@ -95,8 +93,7 @@
                     android:layout_width="@dimen/y20"
                     android:layout_height="@dimen/y10"
                     android:layout_marginTop="@dimen/y2"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/worker_leisure" />
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 
@@ -159,7 +156,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/y5"
-                    android:text="address"
                     android:textColor="@color/black_252323"
                     android:textSize="@dimen/y10"
                     android:textStyle="bold" />
@@ -170,12 +166,50 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
+        <RelativeLayout
+            android:id="@+id/rl_talk_worker_wait"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/y5"
+            android:background="@drawable/sl_talk_worker_0"
+            android:visibility="gone">
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/y5"
+                android:layout_marginTop="@dimen/y5"
+                android:text="我要招工"
+                android:textColor="@color/white_ffffff"
+                android:textSize="@dimen/y10" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_talk_worker_doing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/y5"
+            android:background="@drawable/sl_talk_worker_1"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/y5"
+                android:layout_marginTop="@dimen/y5"
+                android:text="此工人正在工作中"
+                android:textColor="@color/white_ffffff"
+                android:textSize="@dimen/y10" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

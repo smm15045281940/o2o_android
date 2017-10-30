@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_item_worker_manage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/y5"
@@ -20,8 +21,8 @@
 
             <view.CImageView
                 android:id="@+id/iv_item_worker_manage_icon"
-                android:layout_width="@dimen/y50"
-                android:layout_height="@dimen/y50"
+                android:layout_width="@dimen/y35"
+                android:layout_height="@dimen/y35"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/y5"
                 android:scaleType="fitXY"

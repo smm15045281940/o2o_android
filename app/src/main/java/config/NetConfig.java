@@ -22,9 +22,17 @@ public interface NetConfig {
     String otherEvaluateUrl = "http://api.gangjianwang.com/Users/otherCommentUser";
     //评价他人
     String evaluateOtherUrl = "http://api.gangjianwang.com/Users/userCommentOther";
-
+    //用户余额
+    String userFundUrl = "http://api.gangjianwang.com/Users/usersFunds";
+    //红包、代金券
+    String redBagUrl = "http://api.gangjianwang.com/Bouns/index";
+    //热门城市
     String hotCityUrl = "http://api.gangjianwang.com/Regions/index?action=hot";
+    //城市列表
     String comCityUrl = "http://api.gangjianwang.com/Regions/index?action=letter";
+    //订单
+    String orderUrl = "http://api.gangjianwang.com/Orders/index";
+
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String fgtPwdCodeUrl = "http://api.gangjianwang.com/Users/passwordEdit?u_mobile=";
@@ -37,12 +45,7 @@ public interface NetConfig {
     String codeUrl = "http://api.gangjianwang.com/Users/sendVerifyCode?phone_number=";
     String loginUrl = "http://api.gangjianwang.com/Users/login";
     String payWayUrl = "http://api.gangjianwang.com/Payments/index";
-    String userFundUrl = "http://api.gangjianwang.com/Users/usersFunds?u_id=";
-    String accountDetailUrl = "http://api.gangjianwang.com/Users/getUsersFundsLog";
-
     String iconUpdateUrl = "http://api.gangjianwang.com/Users/usersHeadEidt";
-    String redPacketUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=2";
-    String voucherUrl = "http://api.gangjianwang.com/Bouns/index?action=list&bt_id=1";
     String applyWithdrawUrl = "http://api.gangjianwang.com/Users/applyWithdraw";
     String useCplIs = "http://api.gangjianwang.com/Users/complaintsType?ct_type=";
     String selectAddressBaseUrl = "http://api.gangjianwang.com/Regions/index?action=list&r_pid=";

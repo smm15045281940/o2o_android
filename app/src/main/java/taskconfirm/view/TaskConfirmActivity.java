@@ -1,12 +1,12 @@
 package taskconfirm.view;
 
+import android.content.Intent;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.PublishBean;
-import bean.PublishWorkerBean;
 import config.NetConfig;
+import config.VarConfig;
+import employermanage.view.EmployerManageActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -41,18 +41,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import taskconfirm.adapter.InputPasswordAdapter;
-import taskconfirm.adapter.SelectVoucherAdapter;
 import taskconfirm.adapter.TaskConfirmAdapter;
 import taskconfirm.bean.InputPasswordBean;
-import taskconfirm.bean.SelectVoucherBean;
 import utils.DataUtils;
-import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
 public class TaskConfirmActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private View rootView, selectVoucherView;
+    private View rootView;
 
     private View inputPasswordView;
     private GridView inputPasswordGv;
@@ -61,24 +58,18 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     private PopupWindow inputPasswordPop;
     private TextView inputPasswordCloseTv, inputPasswordForgetTv;
     private ImageView inputPasswordPoint0Iv, inputPasswordPoint1Iv, inputPasswordPoint2Iv, inputPasswordPoint3Iv, inputPasswordPoint4Iv, inputPasswordPoint5Iv;
-
     private RelativeLayout returnRl, sureRl;
     private TextView beforeSumTv;
-    private PopupWindow selectVoucherPop;
-    private ListView lv, selectVoucherLv;
-    private SelectVoucherAdapter selectVoucherAdapter;
+    private ListView lv;
     private TaskConfirmAdapter adapter;
-    private List<SelectVoucherBean> selectVoucherBeanList;
-
     private StringBuilder inputPasswordSb;
-
     private PublishBean publishBean;
-
     private String sumTotal;
-
     private CProgressDialog cpd;
-
+    private String tip;
     private final int SUM_TOTAL_SUCCESS = 1;
+    private final int PUBLISH_SUCCESS = 2;
+    private final int PUBLISH_FAILURE = 3;
 
     private Handler handler = new Handler() {
         @Override
@@ -88,7 +79,18 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
                 switch (msg.what) {
                     case SUM_TOTAL_SUCCESS:
                         cpd.dismiss();
-                        beforeSumTv.setText(sumTotal);
+                        beforeSumTv.setText(sumTotal + "元");
+                        break;
+                    case PUBLISH_SUCCESS:
+                        cpd.dismiss();
+                        Utils.toast(TaskConfirmActivity.this, tip);
+                        startActivity(new Intent(TaskConfirmActivity.this, EmployerManageActivity.class));
+                        finish();
+                        break;
+                    case PUBLISH_FAILURE:
+                        cpd.dismiss();
+                        inputPasswordPop.dismiss();
+                        Utils.toast(TaskConfirmActivity.this, tip);
                         break;
                 }
             }
@@ -108,6 +110,17 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
         loadData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeMessages(SUM_TOTAL_SUCCESS);
+            handler.removeMessages(PUBLISH_SUCCESS);
+            handler.removeMessages(PUBLISH_FAILURE);
+            handler = null;
+        }
+    }
+
     private void initView() {
         initRootView();
         initPopView();
@@ -122,20 +135,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initPopView() {
-        selectVoucherView = LayoutInflater.from(TaskConfirmActivity.this).inflate(R.layout.pop_select_voucher, null);
-        selectVoucherLv = (ListView) selectVoucherView.findViewById(R.id.lv_pop_select_voucher);
-        selectVoucherPop = new PopupWindow(selectVoucherView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        selectVoucherPop.setFocusable(true);
-        selectVoucherPop.setTouchable(true);
-        selectVoucherPop.setOutsideTouchable(true);
-        selectVoucherPop.setBackgroundDrawable(new PaintDrawable());
-        selectVoucherPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                backgroundAlpha(1.0f);
-                selectVoucherBeanList.clear();
-            }
-        });
         inputPasswordView = LayoutInflater.from(TaskConfirmActivity.this).inflate(R.layout.pop_input_password, null);
         inputPasswordGv = (GridView) inputPasswordView.findViewById(R.id.gv_pop_input_password);
         inputPasswordCloseTv = (TextView) inputPasswordView.findViewById(R.id.tv_pop_input_password_close);
@@ -155,6 +154,8 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onDismiss() {
                 backgroundAlpha(1.0f);
+                inputPasswordSb.delete(0, inputPasswordSb.length());
+                notifyPoints(inputPasswordSb.length());
                 inputPasswordBeanList.clear();
             }
         });
@@ -164,15 +165,12 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
         publishBean = new PublishBean();
         publishBean = (PublishBean) getIntent().getSerializableExtra("publishBean");
         adapter = new TaskConfirmAdapter(TaskConfirmActivity.this, publishBean);
-        selectVoucherBeanList = new ArrayList<>();
-        selectVoucherAdapter = new SelectVoucherAdapter(TaskConfirmActivity.this, selectVoucherBeanList);
         inputPasswordBeanList = new ArrayList<>();
         inputPasswordAdapter = new InputPasswordAdapter(TaskConfirmActivity.this, inputPasswordBeanList);
     }
 
     private void setData() {
         lv.setAdapter(adapter);
-        selectVoucherLv.setAdapter(selectVoucherAdapter);
         inputPasswordGv.setAdapter(inputPasswordAdapter);
         inputPasswordGv.setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
@@ -180,7 +178,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     private void setListener() {
         returnRl.setOnClickListener(this);
         sureRl.setOnClickListener(this);
-        selectVoucherLv.setOnItemClickListener(this);
         inputPasswordGv.setOnItemClickListener(this);
         inputPasswordCloseTv.setOnClickListener(this);
         inputPasswordForgetTv.setOnClickListener(this);
@@ -189,9 +186,7 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     private void loadData() {
         cpd.show();
         String testStr = DataUtils.getPublishJson(publishBean, false);
-        Log.e("TAG", "testStr=" + testStr);
         String base64Str = Base64.encodeToString(testStr.getBytes(), Base64.DEFAULT);
-        Log.e("TAG", "base64Str" + base64Str);
         OkHttpClient okhttpClient = new OkHttpClient();
         RequestBody body = new FormBody.Builder()
                 .add("data", base64Str)
@@ -225,6 +220,7 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void submitOrder() {
+        cpd.show();
         String str = DataUtils.getPublishJson(publishBean, true);
         String baseStr = Base64.encodeToString(str.getBytes(), Base64.DEFAULT);
         OkHttpClient okhttpClient = new OkHttpClient();
@@ -245,7 +241,51 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Log.e("TAG", "submitOrder=" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        int code = beanObj.optInt("code");
+                        switch (code) {
+                            case 200:
+                                JSONObject dataObj = beanObj.optJSONObject("data");
+                                if (dataObj != null) {
+                                    tip = dataObj.optString("msg");
+                                    int status = dataObj.optInt("status");
+                                    switch (status) {
+                                        case -2:
+                                            tip = VarConfig.publishFailure;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                        case -1:
+                                            tip = VarConfig.publishFailure;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                        case 0:
+                                            tip = VarConfig.publishSuccess;
+                                            handler.sendEmptyMessage(PUBLISH_SUCCESS);
+                                            break;
+                                        case 1:
+                                            tip = VarConfig.publishFailure;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                        case 2:
+                                            tip = VarConfig.publishNoMoney;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                        case 3:
+                                            tip = VarConfig.publishNoPass;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                        case 4:
+                                            tip = VarConfig.publishFailure;
+                                            handler.sendEmptyMessage(PUBLISH_FAILURE);
+                                            break;
+                                    }
+                                }
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -292,7 +332,6 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
                 inputPasswordPop.dismiss();
                 break;
             case R.id.tv_pop_input_password_forget:
-                Utils.log(TaskConfirmActivity.this, "forget");
                 break;
         }
     }
@@ -314,21 +353,16 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
                             if (inputPasswordSb.length() < 6) {
                                 inputPasswordSb.append(inputPasswordBean.getNumber());
                                 notifyPoints(inputPasswordSb.length());
-                                Utils.log(TaskConfirmActivity.this, "password=" + inputPasswordSb.toString());
                             }
                             if (inputPasswordSb.length() == 6) {
                                 publishBean.setPass(inputPasswordSb.toString());
                                 submitOrder();
                             }
                             break;
-                        case 1:
-                            Utils.log(TaskConfirmActivity.this, "null");
-                            break;
                         case 2:
                             if (inputPasswordSb.length() != 0) {
                                 inputPasswordSb.deleteCharAt(inputPasswordSb.length() - 1);
                                 notifyPoints(inputPasswordSb.length());
-                                Utils.log(TaskConfirmActivity.this, "password=" + inputPasswordSb.toString());
                             }
                             break;
                     }

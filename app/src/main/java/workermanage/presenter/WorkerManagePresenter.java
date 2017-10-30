@@ -3,10 +3,7 @@ package workermanage.presenter;
 
 import android.os.Handler;
 
-import java.util.List;
-
-import workermanage.bean.WorkerManageBean;
-import workermanage.listener.WorkerManageListener;
+import listener.JsonListener;
 import workermanage.module.IWorkerManageModule;
 import workermanage.module.WorkerManageModule;
 import workermanage.view.IWorkerManageActivity;
@@ -25,13 +22,13 @@ public class WorkerManagePresenter implements IWorkerManagePresenter {
 
     @Override
     public void load(String url) {
-        workerManageModule.load(url, new WorkerManageListener() {
+        workerManageModule.load(url, new JsonListener() {
             @Override
-            public void success(final List<WorkerManageBean> workerManageBeanList) {
+            public void success(final String json) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        workerManageActivity.showWorkerManageSuccess(workerManageBeanList);
+                        workerManageActivity.loadSuccess(json);
                     }
                 });
             }
@@ -41,7 +38,7 @@ public class WorkerManagePresenter implements IWorkerManagePresenter {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        workerManageActivity.showWorkerManageFailure(failure);
+                        workerManageActivity.loadFailure(failure);
                     }
                 });
             }
