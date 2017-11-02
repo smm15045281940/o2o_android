@@ -25,7 +25,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.ToEmployerToDoingBean;
+import bean.ToEmployerToTalkBean;
 import config.ColorConfig;
+import config.IntentConfig;
 import config.NetConfig;
 import config.StateConfig;
 import config.VarConfig;
@@ -33,6 +36,8 @@ import adapter.EmployerManageAdapter;
 import bean.EmployerManageBean;
 import employermanage.presenter.EmployerManagePresenter;
 import employermanage.presenter.IEmployerManagePresenter;
+import employertodoing.view.EmployerToDoingActivity;
+import employertotalk.view.EmployerToTalkActivity;
 import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
@@ -54,19 +59,15 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
     private RelativeLayout returnRl;
     private RelativeLayout allRl, waitRl, talkRl, doingRl, doneRl;
     private TextView allTv, waitTv, talkTv, doingTv, doneTv;
-
     private View popView;
     private PopupWindow pop;
-
     private EmployerManageAdapter employerManageAdapter;
     private List<EmployerManageBean> employerManageBeanList = new ArrayList<>();
-
     private final int ALL = 0, WAIT = 1, TALK = 2, DOING = 3, DONE = 4;
     private int curState = ALL, tarState = -1;
     private final int FIRST = 0, REFRESH = 1, LOAD = 2;
     private int STATE = FIRST;
     private IEmployerManagePresenter employerManagePresenter;
-
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
     private final int CANCEL_SUCCESS = 3;
@@ -404,11 +405,19 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                         pop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                     }
                 } else if (status.equals("1")) {
-
+                    Intent talkIntent = new Intent(EmployerManageActivity.this, EmployerToTalkActivity.class);
+                    ToEmployerToTalkBean toEmployerToTalkBean = new ToEmployerToTalkBean();
+                    toEmployerToTalkBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
+                    talkIntent.putExtra(IntentConfig.toEmployerToTalk, toEmployerToTalkBean);
+                    startActivity(talkIntent);
                 } else if (status.equals("2")) {
-
+                    Intent doingIntent = new Intent(EmployerManageActivity.this, EmployerToDoingActivity.class);
+                    ToEmployerToDoingBean toEmployerToDoingBean = new ToEmployerToDoingBean();
+                    toEmployerToDoingBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
+                    doingIntent.putExtra(IntentConfig.toEmployerToDoing, toEmployerToDoingBean);
+                    startActivity(doingIntent);
                 } else if (status.equals("3")) {
-
+                    Utils.log(EmployerManageActivity.this, "已结束");
                 }
                 break;
             case R.id.tv_item_employer_manage_wait_cancel:

@@ -1,5 +1,6 @@
 package workermanage.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,18 +15,27 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.ToJumpEmployerBean;
 import config.ColorConfig;
-import config.StateConfig;
+import config.IntentConfig;
+import config.NetConfig;
 import config.VarConfig;
+import jumpemployer.view.JumpEmployerActivity;
 import listener.IdPosClickHelp;
-import listener.ListItemClickHelp;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import skill.view.SkillActivity;
+import talkemployer.view.TalkEmployerActivity;
 import utils.DataUtils;
+import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 import adapter.WorkerManageAdapter;
@@ -53,6 +63,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     private final int LOAD_FAILURE = 5;
     private int clickPosition;
 
+    private OkHttpClient okHttpClient;
     private IWorkerManagePresenter workerManagePresenter;
 
     private Handler handler = new Handler() {
@@ -66,6 +77,10 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                         break;
                     case LOAD_FAILURE:
                         notifyNet();
+                        break;
+                    case 666:
+                        workerManageBeanList.remove(clickPosition);
+                        workerManageAdapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -82,6 +97,11 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         initData();
         setData();
         setListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -136,6 +156,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     }
 
     private void initData() {
+        okHttpClient = new OkHttpClient();
         curState = ALL;
         workerManagePresenter = new WorkerManagePresenter(this);
         workerManageAdapter = new WorkerManageAdapter(WorkerManageActivity.this, workerManageBeanList, this);
@@ -267,6 +288,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                 workerManageBeanList.clear();
                 break;
         }
+        Utils.log(WorkerManageActivity.this, json);
         workerManageBeanList.addAll(DataUtils.getWorkerManageBeanList(json));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
@@ -292,18 +314,40 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         clickPosition = pos;
         switch (id) {
             case R.id.ll_item_worker_manage:
-                String status = workerManageBeanList.get(clickPosition).getO_status();
-                String confirm = workerManageBeanList.get(clickPosition).getO_confirm();
-                if (status.equals("0")) {
-                    if (confirm.equals("0") || confirm.equals("2")) {
-                        Utils.log(WorkerManageActivity.this, "洽谈");
-                    } else if (confirm.equals("1")) {
-                        Utils.log(WorkerManageActivity.this, "进行");
-                    }
-                } else if (status.equals("1")) {
-                    Utils.log(WorkerManageActivity.this, "结束");
+                if (workerManageBeanList.get(clickPosition).getO_status().equals("0")) {
+                    Intent talkIntent = new Intent(WorkerManageActivity.this, JumpEmployerActivity.class);
+                    ToJumpEmployerBean toJumpEmployerBean = new ToJumpEmployerBean();
+                    toJumpEmployerBean.setTaskId(workerManageBeanList.get(clickPosition).getTaskId());
+                    talkIntent.putExtra(IntentConfig.toJumpEmployer, toJumpEmployerBean);
+                    startActivity(talkIntent);
+                } else if (workerManageBeanList.get(clickPosition).getO_status().equals("1")) {
+                    Utils.log(WorkerManageActivity.this, "over");
                 }
                 break;
+            case R.id.tv_item_worker_manage_delete:
+                delete();
+                break;
         }
+    }
+
+    private void delete() {
+        //?action=del2&o_worker=4&o_id=2
+        String url = NetConfig.orderUrl + "?action=del2&o_worker=" + UserUtils.readUserData(WorkerManageActivity.this).getId() + "&o_id=" + workerManageBeanList.get(clickPosition).getOrderId();
+        Request delRequest = new Request.Builder().url(url).get().build();
+        okHttpClient.newCall(delRequest).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(WorkerManageActivity.this, json);
+                    handler.sendEmptyMessage(666);
+                }
+            }
+        });
     }
 }

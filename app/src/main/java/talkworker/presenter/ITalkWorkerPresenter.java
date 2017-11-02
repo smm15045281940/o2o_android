@@ -12,5 +12,9 @@ public interface ITalkWorkerPresenter {
 
     void check(String url);
 
+    void cancelWorker(String url);
+
+    void authorSure(String url);
+
     void destroy();
 }

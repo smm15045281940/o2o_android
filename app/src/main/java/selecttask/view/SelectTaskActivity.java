@@ -14,12 +14,15 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.SelectTaskAdapter;
-import bean.TalkToSelect;
 import bean.TaskBean;
+import bean.ToSelectTaskBean;
 import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
@@ -28,7 +31,6 @@ import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import selecttask.presenter.ISelectTaskPresenter;
 import selecttask.presenter.SelectTaskPresenter;
-import skill.view.SkillActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
@@ -56,7 +58,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     private final int REFRESH = 6;
     private int STATE = FIRST;
 
-    private TalkToSelect talkToSelect;
+    private ToSelectTaskBean toSelectTaskBean;
 
     private Handler handler = new Handler() {
         @Override
@@ -71,8 +73,13 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                         notifyNet();
                         break;
                     case INVITE_SUCCESS:
+                        cpd.dismiss();
+                        Utils.toast(SelectTaskActivity.this, "邀请成功");
+                        finish();
                         break;
                     case INVITE_FAILURE:
+                        cpd.dismiss();
+                        Utils.toast(SelectTaskActivity.this, "邀请失败");
                         break;
                 }
             }
@@ -140,7 +147,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     private void initData() {
         selectTaskPresenter = new SelectTaskPresenter(this);
         selectTaskAdapter = new SelectTaskAdapter(SelectTaskActivity.this, taskBeanList, this);
-        talkToSelect = (TalkToSelect) getIntent().getSerializableExtra(IntentConfig.talkToSelect);
+        toSelectTaskBean = (ToSelectTaskBean) getIntent().getSerializableExtra(IntentConfig.toSelectTask);
     }
 
     private void setData() {
@@ -158,7 +165,9 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                 cpd.show();
                 break;
         }
-        selectTaskPresenter.load(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(SelectTaskActivity.this).getId() + "&t_storage=0&t_status=0&skills=" + talkToSelect.getSkill());
+        String url = NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(SelectTaskActivity.this).getId() + "&t_storage=0&t_status=0&skills=" + toSelectTaskBean.getSkillId();
+        Utils.log(SelectTaskActivity.this, url);
+        selectTaskPresenter.load(url);
     }
 
     private void notifyData() {
@@ -225,6 +234,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                 break;
         }
         taskBeanList.addAll(DataUtils.getTaskBeanList(json));
+        Utils.log(SelectTaskActivity.this, "taskBeanList=" + taskBeanList.toString());
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
@@ -236,11 +246,27 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     @Override
     public void inviteSuccess(String json) {
         Utils.log(SelectTaskActivity.this, json);
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 200:
+                    String msg = beanObj.optString("data");
+                    if (msg.equals("failure")) {
+                        handler.sendEmptyMessage(INVITE_FAILURE);
+                    } else {
+                        handler.sendEmptyMessage(INVITE_SUCCESS);
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void inviteFailure(String failure) {
-
+        handler.sendEmptyMessage(INVITE_FAILURE);
     }
 
     @Override
@@ -248,7 +274,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
         switch (id) {
             case R.id.tv_item_select_task_choose:
                 cpd.show();
-                String url = "http://api.gangjianwang.com/Orders/index" + "?action=create" + "&tew_id=" + taskBeanList.get(pos).getTewId() + "&t_id=" + taskBeanList.get(pos).getTaskId() + "&o_worker=" + talkToSelect.getWorkerId() + "&o_sponsor=" + UserUtils.readUserData(SelectTaskActivity.this).getId();
+                String url = "http://api.gangjianwang.com/Orders/index" + "?action=create" + "&tew_id=" + taskBeanList.get(pos).getTewId() + "&t_id=" + taskBeanList.get(pos).getTaskId() + "&o_worker=" + toSelectTaskBean.getWorkerId() + "&o_sponsor=" + UserUtils.readUserData(SelectTaskActivity.this).getId();
                 Utils.log(SelectTaskActivity.this, url);
                 selectTaskPresenter.invite(url);
                 break;

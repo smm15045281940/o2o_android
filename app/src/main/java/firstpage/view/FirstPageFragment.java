@@ -59,8 +59,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     private String hotJson, comJson, locCity, locId;
 
-    //http://api.gangjianwang.com/Users/updatePosition?u_id=8&ucp_posit_x=126.65771686&ucp_posit_y=45.77322463
-
     private final int HOT_DONE = 1, COM_DONE = 2, LOC_DONE = 3, ID_DONE = 4;
 
     private Handler handler = new Handler() {
@@ -137,7 +135,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         option.setCoorType("bd09ll");
-        int span = 10000;
+        int span = 300000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         option.setOpenGps(true);

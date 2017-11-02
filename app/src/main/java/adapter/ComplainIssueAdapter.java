@@ -1,4 +1,4 @@
-package complain.adapter;
+package adapter;
 
 
 import android.content.Context;
@@ -12,14 +12,14 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import complain.bean.ComplainIssueBean;
+import bean.ComplainIssueBean;
 
-public class CplIsAdapter extends BaseAdapter {
+public class ComplainIssueAdapter extends BaseAdapter {
 
     private Context context;
     private List<ComplainIssueBean> list;
 
-    public CplIsAdapter(Context context, List<ComplainIssueBean> list) {
+    public ComplainIssueAdapter(Context context, List<ComplainIssueBean> list) {
         this.context = context;
         this.list = list;
     }

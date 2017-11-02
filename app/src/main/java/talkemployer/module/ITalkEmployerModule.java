@@ -12,5 +12,7 @@ public interface ITalkEmployerModule {
 
     void loadSkill(String url, JsonListener jsonListener);
 
+    void invite(String url,JsonListener jsonListener);
+
     void cancelTask();
 }

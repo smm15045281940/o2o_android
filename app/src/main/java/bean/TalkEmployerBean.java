@@ -17,6 +17,9 @@ public class TalkEmployerBean implements Serializable {
     private String desc;
     private String posX;
     private String posY;
+    private String authorId;
+    private int relation;
+    private int relationType;
     private List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList;
 
     public String getIcon() {
@@ -91,6 +94,30 @@ public class TalkEmployerBean implements Serializable {
         this.posY = posY;
     }
 
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
+
+    public int getRelationType() {
+        return relationType;
+    }
+
+    public void setRelationType(int relationType) {
+        this.relationType = relationType;
+    }
+
     @Override
     public String toString() {
         return "TalkEmployerBean{" +
@@ -102,6 +129,9 @@ public class TalkEmployerBean implements Serializable {
                 ", desc='" + desc + '\'' +
                 ", posX='" + posX + '\'' +
                 ", posY='" + posY + '\'' +
+                ", authorId='" + authorId + '\'' +
+                ", relation=" + relation +
+                ", relationType=" + relationType +
                 ", talkEmployerWorkerBeanList=" + talkEmployerWorkerBeanList +
                 '}';
     }

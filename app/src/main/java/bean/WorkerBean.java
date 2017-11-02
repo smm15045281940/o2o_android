@@ -19,6 +19,8 @@ public class WorkerBean implements Serializable {
     private String address;
     private String skill;
     private String skillName;
+    private int relation;
+    private int relation_type;
 
     public String getWorkerId() {
         return workerId;
@@ -132,6 +134,22 @@ public class WorkerBean implements Serializable {
         this.skillName = skillName;
     }
 
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
+
+    public int getRelation_type() {
+        return relation_type;
+    }
+
+    public void setRelation_type(int relation_type) {
+        this.relation_type = relation_type;
+    }
+
     @Override
     public String toString() {
         return "WorkerBean{" +
@@ -149,6 +167,8 @@ public class WorkerBean implements Serializable {
                 ", address='" + address + '\'' +
                 ", skill='" + skill + '\'' +
                 ", skillName='" + skillName + '\'' +
+                ", relation=" + relation +
+                ", relation_type=" + relation_type +
                 '}';
     }
 }

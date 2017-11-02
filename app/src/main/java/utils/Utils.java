@@ -26,16 +26,13 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import bean.SkillBean;
 import config.NetConfig;
 import login.view.LoginActivity;
 import taskscreen.bean.TaskScreenBean;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import view.CProgressDialog;
 
 //工具类

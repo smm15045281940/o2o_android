@@ -14,6 +14,8 @@ public class TalkEmployerWorkerBean implements Serializable {
     private String price;
     private String startTime;
     private String endTime;
+    private boolean select;
+    private String tewId;
 
     public String getId() {
         return id;
@@ -63,6 +65,22 @@ public class TalkEmployerWorkerBean implements Serializable {
         this.endTime = endTime;
     }
 
+    public boolean isSelect() {
+        return select;
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
+    }
+
+    public String getTewId() {
+        return tewId;
+    }
+
+    public void setTewId(String tewId) {
+        this.tewId = tewId;
+    }
+
     @Override
     public String toString() {
         return "TalkEmployerWorkerBean{" +
@@ -72,6 +90,8 @@ public class TalkEmployerWorkerBean implements Serializable {
                 ", price='" + price + '\'' +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
+                ", select=" + select +
+                ", tewId='" + tewId + '\'' +
                 '}';
     }
 }

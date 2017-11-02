@@ -4,10 +4,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+import bean.ComplainIssueBean;
+import bean.EmployerToDoingBean;
+import bean.EmployerToTalkBean;
 import bean.EvaluateBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
@@ -21,7 +26,7 @@ import bean.WorkerBean;
 import bean.EmployerManageBean;
 import bean.TalkEmployerBean;
 import bean.TalkEmployerWorkerBean;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import bean.WorkerManageBean;
 
 public class DataUtils {
@@ -80,6 +85,8 @@ public class DataUtils {
                                     workerBean.setMobile(o.optString("u_mobile"));
                                     workerBean.setAddress(o.optString("uei_address"));
                                     workerBean.setSkill(o.optString("u_skills"));
+                                    workerBean.setRelation(o.optInt("relation"));
+                                    workerBean.setRelation_type(o.optInt("relation_type"));
                                     workerBeanList.add(workerBean);
                                 }
                             }
@@ -288,6 +295,132 @@ public class DataUtils {
         return voucherBeanList;
     }
 
+    //雇主管理点击洽谈
+    public static List<EmployerToTalkBean> getEmployerToTalkBeanList(String json) {
+        List<EmployerToTalkBean> employerToTalkBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 200:
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                        if (workerArr != null) {
+                            for (int i = 0; i < workerArr.length(); i++) {
+                                JSONObject workerObj = workerArr.optJSONObject(i);
+                                if (workerObj != null) {
+                                    EmployerToTalkBean workerEttb = new EmployerToTalkBean();
+                                    workerEttb.setType(0);
+                                    workerEttb.setSkillId(workerObj.optString("tew_skills"));
+                                    workerEttb.setAmount(workerObj.optString("tew_worker_num"));
+                                    workerEttb.setPrice(workerObj.optString("tew_price"));
+                                    workerEttb.setStartTime(getDateToString(Long.parseLong(workerObj.optString("tew_start_time"))));
+                                    workerEttb.setEndTime(getDateToString(Long.parseLong(workerObj.optString("tew_end_time"))));
+                                    JSONArray orderArr = workerObj.optJSONArray("orders");
+                                    if (orderArr != null) {
+                                        if (orderArr.length() != 0) {
+                                            employerToTalkBeanList.add(workerEttb);
+                                        }
+                                        for (int j = 0; j < orderArr.length(); j++) {
+                                            JSONObject orderObj = orderArr.optJSONObject(j);
+                                            if (orderObj != null) {
+                                                EmployerToTalkBean orderEttb = new EmployerToTalkBean();
+                                                orderEttb.setType(1);
+                                                orderEttb.setSkillId(workerEttb.getSkillId());
+                                                orderEttb.setWorkerIcon(orderObj.optString("u_img"));
+                                                orderEttb.setWorkerName(orderObj.optString("u_true_name"));
+                                                orderEttb.setWorkerSex(orderObj.optString("u_sex"));
+                                                orderEttb.setWorkerStatus(orderObj.optString("u_task_status"));
+                                                orderEttb.setMobile(orderObj.optString("u_mobile"));
+                                                orderEttb.setWorkerId(orderObj.optString("o_worker"));
+                                                orderEttb.setOrderId(orderObj.optString("o_id"));
+                                                orderEttb.setTewId(orderObj.optString("tew_id"));
+                                                orderEttb.setTaskId(orderObj.optString("t_id"));
+                                                orderEttb.setAmount(workerEttb.getAmount());
+                                                orderEttb.setPrice(workerEttb.getPrice());
+                                                orderEttb.setStartTime(workerEttb.getStartTime());
+                                                orderEttb.setEndTime(workerEttb.getEndTime());
+                                                employerToTalkBeanList.add(orderEttb);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return employerToTalkBeanList;
+    }
+
+    //雇主管理点击进行
+    public static List<EmployerToDoingBean> getEmployerToDoingBeanList(String json) {
+        List<EmployerToDoingBean> employerToDoingBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 200:
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                        if (workerArr != null) {
+                            for (int i = 0; i < workerArr.length(); i++) {
+                                JSONObject obj = workerArr.optJSONObject(i);
+                                if (obj != null) {
+                                    JSONArray arr = obj.optJSONArray("orders");
+                                    if (arr != null) {
+                                        if (arr.length() != 0) {
+                                            EmployerToDoingBean e0 = new EmployerToDoingBean();
+                                            e0.setType(0);
+                                            e0.setSkillId(obj.optString("tew_skills"));
+                                            e0.setStartTime(obj.optString("tew_start_time"));
+                                            e0.setEndTime(obj.optString("tew_end_time"));
+                                            employerToDoingBeanList.add(e0);
+                                            for (int j = 0; j < arr.length(); j++) {
+                                                JSONObject o = arr.optJSONObject(j);
+                                                if (o != null) {
+                                                    EmployerToDoingBean e1 = new EmployerToDoingBean();
+                                                    e1.setType(1);
+                                                    e1.setIcon(o.optString("u_img"));
+                                                    e1.setName(o.optString("u_true_name"));
+                                                    e1.setSkillId(e0.getSkillId());
+                                                    e1.setStatus(o.optString("u_task_status"));
+                                                    e1.setSex(o.optString("u_sex"));
+                                                    e1.setWorkerId(o.optString("o_worker"));
+                                                    e1.setOrderId(o.optString("o_id"));
+                                                    e1.setTaskId(o.optString("t_id"));
+                                                    e1.setTewId(o.optString("tew_id"));
+                                                    employerToDoingBeanList.add(e1);
+                                                }
+                                            }
+                                            EmployerToDoingBean e2 = new EmployerToDoingBean();
+                                            e2.setType(2);
+                                            employerToDoingBeanList.add(e2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return employerToDoingBeanList;
+    }
+
+    public static String getDateToString(long milSecond) {
+        Date date = new Date(milSecond);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+        return format.format(date);
+    }
+
     public static List<WorkerManageBean> getWorkerManageBeanList(String json) {
         List<WorkerManageBean> resultList = new ArrayList<>();
         try {
@@ -298,13 +431,18 @@ public class DataUtils {
                     for (int i = 0; i < dataArr.length(); i++) {
                         JSONObject obj = dataArr.optJSONObject(i);
                         if (obj != null) {
-                            WorkerManageBean workerManageBean = new WorkerManageBean();
-                            workerManageBean.setIcon(obj.optString("u_img"));
-                            workerManageBean.setTitle(obj.optString("t_title"));
-                            workerManageBean.setInfo(obj.optString("t_info"));
-                            workerManageBean.setO_status(obj.optString("o_status"));
-                            workerManageBean.setO_confirm(obj.optString("o_confirm"));
-                            resultList.add(workerManageBean);
+                            String status = obj.optString("o_status");
+                            if (status.equals("0") || status.equals("1")) {
+                                WorkerManageBean workerManageBean = new WorkerManageBean();
+                                workerManageBean.setIcon(obj.optString("u_img"));
+                                workerManageBean.setTitle(obj.optString("t_title"));
+                                workerManageBean.setInfo(obj.optString("t_info"));
+                                workerManageBean.setO_status(status);
+                                workerManageBean.setO_confirm(obj.optString("o_confirm"));
+                                workerManageBean.setTaskId(obj.optString("t_id"));
+                                workerManageBean.setOrderId(obj.optString("o_id"));
+                                resultList.add(workerManageBean);
+                            }
                         }
                     }
                 }
@@ -342,6 +480,7 @@ public class DataUtils {
         return resultList;
     }
 
+    //用户详细信息
     public static UserInfoBean getUserInfoBean(String json) {
         UserInfoBean userInfoBean = null;
         try {
@@ -379,11 +518,11 @@ public class DataUtils {
                         userInfoBean.setU_info(obj.optString("u_info"));
                         JSONObject objArea = obj.optJSONObject("area");
                         if (objArea != null) {
-                            userInfoBean.setArea_uei_province(objArea.optString("uei_province"));
-                            userInfoBean.setArea_uei_city(objArea.optString("uei_city"));
-                            userInfoBean.setArea_uei_area(objArea.optString("uei_area"));
-                            userInfoBean.setArea_uei_address(objArea.optString("uei_address"));
-                            userInfoBean.setArea_user_area_name(objArea.optString("user_area_name"));
+                            userInfoBean.setUei_province(objArea.optString("uei_province"));
+                            userInfoBean.setUei_city(objArea.optString("uei_city"));
+                            userInfoBean.setUei_area(objArea.optString("uei_area"));
+                            userInfoBean.setUei_address(objArea.optString("uei_address"));
+                            userInfoBean.setUser_area_name(objArea.optString("user_area_name"));
                         }
                         userInfoBean.setU_img(obj.optString("u_img"));
                     }
@@ -393,6 +532,40 @@ public class DataUtils {
             e.printStackTrace();
         }
         return userInfoBean;
+    }
+
+    //投诉问题
+    public static List<ComplainIssueBean> getComplainIssueBeanList(String json) {
+        List<ComplainIssueBean> complainIssueBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            int code = beanObj.optInt("code");
+            switch (code) {
+                case 1:
+                    JSONArray dataArr = beanObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        JSONObject dataObj = dataArr.optJSONObject(0);
+                        if (dataObj != null) {
+                            JSONArray arr = dataObj.optJSONArray("data");
+                            if (arr != null) {
+                                for (int i = 0; i < arr.length(); i++) {
+                                    JSONObject ob = arr.optJSONObject(i);
+                                    if (ob != null) {
+                                        ComplainIssueBean cib = new ComplainIssueBean();
+                                        cib.setId(ob.optString("ct_id"));
+                                        cib.setName(ob.optString("ct_name"));
+                                        complainIssueBeanList.add(cib);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return complainIssueBeanList;
     }
 
     public static List<AccountDetailBean> getAccountDetailBeanList(String json) {
@@ -438,6 +611,9 @@ public class DataUtils {
                 talkEmployerBean.setDesc(dataObj.optString("t_desc"));
                 talkEmployerBean.setPosX(dataObj.optString("t_posit_x"));
                 talkEmployerBean.setPosY(dataObj.optString("t_posit_y"));
+                talkEmployerBean.setAuthorId(dataObj.optString("t_author"));
+                talkEmployerBean.setRelation(dataObj.optInt("relation"));
+                talkEmployerBean.setRelationType(dataObj.optInt("relation_type"));
                 JSONArray workerArr = dataObj.optJSONArray("t_workers");
                 if (workerArr != null) {
                     List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList = new ArrayList<>();
@@ -451,6 +627,7 @@ public class DataUtils {
                                 t.setPrice(obj.optString("tew_price"));
                                 t.setStartTime(obj.optString("tew_start_time"));
                                 t.setEndTime(obj.optString("tew_end_time"));
+                                t.setTewId(obj.optString("tew_id"));
                                 talkEmployerWorkerBeanList.add(t);
                             }
                         }

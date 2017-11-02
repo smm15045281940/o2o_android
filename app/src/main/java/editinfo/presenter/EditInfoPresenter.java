@@ -11,7 +11,8 @@ import editinfo.listener.SubmitListener;
 import editinfo.module.EditInfoModule;
 import editinfo.module.IEditInfoModule;
 import editinfo.view.IEditInfoFragment;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
+import listener.JsonListener;
 
 public class EditInfoPresenter implements IEditInfoPresenter {
 
@@ -26,8 +27,32 @@ public class EditInfoPresenter implements IEditInfoPresenter {
     }
 
     @Override
+    public void skill(String url) {
+        editInfoModule.skill(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        editInfoFragment.skillSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        editInfoFragment.skillFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void load(String url) {
-        editInfoFragment.showLoading();
         editInfoModule.load(url, new AddSkillListener() {
             @Override
             public void success(final List<SkillBean> skillBeanList) {
@@ -35,7 +60,6 @@ public class EditInfoPresenter implements IEditInfoPresenter {
                     @Override
                     public void run() {
                         editInfoFragment.showAddSkillSuccess(skillBeanList);
-                        editInfoFragment.hideLoading();
                     }
                 });
             }
@@ -46,7 +70,6 @@ public class EditInfoPresenter implements IEditInfoPresenter {
                     @Override
                     public void run() {
                         editInfoFragment.showAddSkillFailure(failure);
-                        editInfoFragment.hideLoading();
                     }
                 });
             }
@@ -55,7 +78,6 @@ public class EditInfoPresenter implements IEditInfoPresenter {
 
     @Override
     public void submit(UserInfoBean userInfoBean) {
-        editInfoFragment.showLoading();
         editInfoModule.submit(userInfoBean, new SubmitListener() {
             @Override
             public void success(final String success) {
@@ -63,7 +85,6 @@ public class EditInfoPresenter implements IEditInfoPresenter {
                     @Override
                     public void run() {
                         editInfoFragment.showSubmitSuccess(success);
-                        editInfoFragment.hideLoading();
                     }
                 });
             }
@@ -74,7 +95,6 @@ public class EditInfoPresenter implements IEditInfoPresenter {
                     @Override
                     public void run() {
                         editInfoFragment.showSubmitFailure(failure);
-                        editInfoFragment.hideLoading();
                     }
                 });
             }

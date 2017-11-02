@@ -32,7 +32,7 @@ import myevaluate.view.MyEvaluateActivity;
 import passwordset.view.SetPwdActivity;
 import redpacket.view.RedPacketActivity;
 import set.view.SetActivity;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import utils.UserUtils;
 import voucher.view.VoucherActivity;
 import wallet.view.WalletActivity;

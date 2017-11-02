@@ -104,6 +104,56 @@ public class TalkWorkerPresenter implements ITalkWorkerPresenter {
     }
 
     @Override
+    public void cancelWorker(String url) {
+        talkWorkerModule.cancelWorker(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        talkWorkerActivity.cancelWorkerSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        talkWorkerActivity.cancelWorkerFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void authorSure(String url) {
+        talkWorkerModule.authorSure(url, new JsonListener() {
+            @Override
+            public void success(final String json) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        talkWorkerActivity.authorSureSuccess(json);
+                    }
+                });
+            }
+
+            @Override
+            public void failure(final String failure) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        talkWorkerActivity.authorSureFailure(failure);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void destroy() {
         if (talkWorkerModule != null) {
             talkWorkerModule.cancelTask();

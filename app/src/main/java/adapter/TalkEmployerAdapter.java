@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.gjzg.R;
@@ -15,6 +16,9 @@ import java.util.List;
 
 import bean.TalkEmployerBean;
 import bean.TalkEmployerWorkerBean;
+import listener.IdPosClickHelp;
+import utils.DataUtils;
+import utils.Utils;
 import view.CImageView;
 
 /**
@@ -25,10 +29,12 @@ public class TalkEmployerAdapter extends BaseAdapter {
 
     private Context context;
     private List<TalkEmployerWorkerBean> list;
+    private IdPosClickHelp idPosClickHelp;
 
-    public TalkEmployerAdapter(Context context, List<TalkEmployerWorkerBean> list) {
+    public TalkEmployerAdapter(Context context, List<TalkEmployerWorkerBean> list, IdPosClickHelp idPosClickHelp) {
         this.context = context;
         this.list = list;
+        this.idPosClickHelp = idPosClickHelp;
     }
 
     @Override
@@ -59,18 +65,29 @@ public class TalkEmployerAdapter extends BaseAdapter {
         TalkEmployerWorkerBean talkEmployerWorkerBean = list.get(position);
         holder.skillTv.setText("招" + talkEmployerWorkerBean.getSkill() + talkEmployerWorkerBean.getAmount() + "人");
         holder.priceTv.setText("工资" + talkEmployerWorkerBean.getPrice() + "元/天");
-        holder.timeTv.setText(talkEmployerWorkerBean.getStartTime() + "-" + talkEmployerWorkerBean.getEndTime());
+        holder.timeTv.setText(DataUtils.getDateToString(Long.parseLong(talkEmployerWorkerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(talkEmployerWorkerBean.getEndTime())));
+        holder.selectRb.setChecked(talkEmployerWorkerBean.isSelect());
+        final int p = position;
+        final int selectId = holder.selectRb.getId();
+        holder.selectRb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                idPosClickHelp.onClick(selectId, p);
+            }
+        });
         return convertView;
     }
 
     private class ViewHolder {
 
         private TextView skillTv, priceTv, timeTv;
+        private RadioButton selectRb;
 
         public ViewHolder(View itemView) {
             skillTv = (TextView) itemView.findViewById(R.id.tv_item_talk_employer_skill);
             priceTv = (TextView) itemView.findViewById(R.id.tv_item_talk_employer_price);
             timeTv = (TextView) itemView.findViewById(R.id.tv_item_talk_employer_time);
+            selectRb = (RadioButton) itemView.findViewById(R.id.rb_item_talk_employer);
         }
     }
 }

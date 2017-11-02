@@ -1,4 +1,4 @@
-package usermanage.bean;
+package bean;
 
 
 import java.io.Serializable;
@@ -33,13 +33,12 @@ public class UserInfoBean implements Serializable {
     private String u_true_name;
     private String u_idcard;
     private String u_info;
-    private String area_uei_province;
-    private String area_uei_city;
-    private String area_uei_area;
-    private String area_uei_address;
-    private String area_user_area_name;
+    private String uei_province;
+    private String uei_city;
+    private String uei_area;
+    private String uei_address;
+    private String user_area_name;
     private String u_img;
-    private List<SkillBean> skillBeanList;
 
     public String getU_id() {
         return u_id;
@@ -241,44 +240,44 @@ public class UserInfoBean implements Serializable {
         this.u_info = u_info;
     }
 
-    public String getArea_uei_province() {
-        return area_uei_province;
+    public String getUei_province() {
+        return uei_province;
     }
 
-    public void setArea_uei_province(String area_uei_province) {
-        this.area_uei_province = area_uei_province;
+    public void setUei_province(String uei_province) {
+        this.uei_province = uei_province;
     }
 
-    public String getArea_uei_city() {
-        return area_uei_city;
+    public String getUei_city() {
+        return uei_city;
     }
 
-    public void setArea_uei_city(String area_uei_city) {
-        this.area_uei_city = area_uei_city;
+    public void setUei_city(String uei_city) {
+        this.uei_city = uei_city;
     }
 
-    public String getArea_uei_area() {
-        return area_uei_area;
+    public String getUei_area() {
+        return uei_area;
     }
 
-    public void setArea_uei_area(String area_uei_area) {
-        this.area_uei_area = area_uei_area;
+    public void setUei_area(String uei_area) {
+        this.uei_area = uei_area;
     }
 
-    public String getArea_uei_address() {
-        return area_uei_address;
+    public String getUei_address() {
+        return uei_address;
     }
 
-    public void setArea_uei_address(String area_uei_address) {
-        this.area_uei_address = area_uei_address;
+    public void setUei_address(String uei_address) {
+        this.uei_address = uei_address;
     }
 
-    public String getArea_user_area_name() {
-        return area_user_area_name;
+    public String getUser_area_name() {
+        return user_area_name;
     }
 
-    public void setArea_user_area_name(String area_user_area_name) {
-        this.area_user_area_name = area_user_area_name;
+    public void setUser_area_name(String user_area_name) {
+        this.user_area_name = user_area_name;
     }
 
     public String getU_img() {
@@ -287,14 +286,6 @@ public class UserInfoBean implements Serializable {
 
     public void setU_img(String u_img) {
         this.u_img = u_img;
-    }
-
-    public List<SkillBean> getSkillBeanList() {
-        return skillBeanList;
-    }
-
-    public void setSkillBeanList(List<SkillBean> skillBeanList) {
-        this.skillBeanList = skillBeanList;
     }
 
     @Override
@@ -325,13 +316,12 @@ public class UserInfoBean implements Serializable {
                 ", u_true_name='" + u_true_name + '\'' +
                 ", u_idcard='" + u_idcard + '\'' +
                 ", u_info='" + u_info + '\'' +
-                ", area_uei_province='" + area_uei_province + '\'' +
-                ", area_uei_city='" + area_uei_city + '\'' +
-                ", area_uei_area='" + area_uei_area + '\'' +
-                ", area_uei_address='" + area_uei_address + '\'' +
-                ", area_user_area_name='" + area_user_area_name + '\'' +
+                ", uei_province='" + uei_province + '\'' +
+                ", uei_city='" + uei_city + '\'' +
+                ", uei_area='" + uei_area + '\'' +
+                ", uei_address='" + uei_address + '\'' +
+                ", user_area_name='" + user_area_name + '\'' +
                 ", u_img='" + u_img + '\'' +
-                ", skillBeanList=" + skillBeanList +
                 '}';
     }
 }

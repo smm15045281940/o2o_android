@@ -1,9 +1,11 @@
 package editinfo.presenter;
 
 
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 
 public interface IEditInfoPresenter {
+
+    void skill(String url);
 
     void load(String url);
 

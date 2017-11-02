@@ -34,7 +34,6 @@ public class SelectAddressModule implements ISelectAddressModule {
     @Override
     public void load(String id, final OnLoadSelAddListener onLoadSelAddListener) {
         String url = NetConfig.selectAddressBaseUrl + id;
-        Log.e("SelectAddressActivity", "url=" + url);
         Request request = new Request.Builder().url(url).get().build();
         call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {

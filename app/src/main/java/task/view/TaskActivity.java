@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import bean.ToJumpEmployerBean;
 import config.IntentConfig;
 import listener.IdPosClickHelp;
 import adapter.TaskAdapter;
@@ -214,7 +214,9 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
             switch (id) {
                 case R.id.ll_item_task:
                     Intent intent = new Intent(TaskActivity.this, TalkEmployerActivity.class);
-                    intent.putExtra(IntentConfig.taskToTalk, taskBeanList.get(clickPostion).getTaskId());
+                    ToJumpEmployerBean toJumpEmployerBean = new ToJumpEmployerBean();
+                    toJumpEmployerBean.setTaskId(taskBeanList.get(clickPostion).getTaskId());
+                    intent.putExtra(IntentConfig.toJumpEmployer, toJumpEmployerBean);
                     startActivity(intent);
                     break;
                 case R.id.iv_item_task_collect:

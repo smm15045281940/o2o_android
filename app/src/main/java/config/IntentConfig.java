@@ -1,18 +1,19 @@
 package config;
 
-/**
- * 创建日期：2017/8/25 on 9:29
- * 作者:孙明明
- * 描述:意图配置
- */
-
 public interface IntentConfig {
 
     String skillToWorker = "skill_to_worker";
     String screenToWorker = "screen_to_worker";
-    String workerToTalk = "worker_to_talk";
+    String toTalkWorker = "to_talk_worker";
+    String toJumpEmployer = "to_jump_employer";
     String workerToTalkSkill = "worker_to_talk_skill";
-    String talkToSelect = "talk_to_select_skill";
+    String toSelectTask = "to_select_skill";
+    String toEmployerToTalk = "to_employer_to_talk";
+    String toEmployerToDoing = "to_employer_to_doing";
+    String toChangePrice = "to_change_price";
+    String toComplain = "to_complain";
+    String toJumpWorker = "to_jump_worker";
+    String toResign = "to_Resign";
 
     String taskToTalk = "task_to_talk";
     String talkToDetail = "talk_to_detail";

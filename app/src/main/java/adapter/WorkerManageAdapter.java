@@ -60,14 +60,15 @@ public class WorkerManageAdapter extends BaseAdapter {
         }
         WorkerManageBean workerManageBean = list.get(position);
         Picasso.with(context).load(workerManageBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
-        if (workerManageBean.getO_status().equals("0")) {
+        String o_status = workerManageBean.getO_status();
+        if (o_status.equals("0")) {
             if (workerManageBean.getO_confirm().equals("0") || workerManageBean.getO_confirm().equals("2")) {
                 holder.statusIv.setImageResource(R.mipmap.worker_talk);
             } else if (workerManageBean.getO_confirm().equals("1")) {
                 holder.statusIv.setImageResource(R.mipmap.worker_mid);
             }
             holder.deleteTv.setVisibility(View.INVISIBLE);
-        } else {
+        } else if (o_status.equals("1")) {
             holder.statusIv.setImageResource(R.mipmap.worker_over);
             holder.deleteTv.setVisibility(View.VISIBLE);
         }
@@ -75,10 +76,17 @@ public class WorkerManageAdapter extends BaseAdapter {
         holder.infoTv.setText(workerManageBean.getInfo());
         final int p = position;
         final int llId = holder.ll.getId();
+        final int delId = holder.deleteTv.getId();
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 idPosClickHelp.onClick(llId, p);
+            }
+        });
+        holder.deleteTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                idPosClickHelp.onClick(delId, p);
             }
         });
         return convertView;

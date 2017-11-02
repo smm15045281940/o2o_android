@@ -11,17 +11,22 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import usermanage.bean.UserInfoBean;
+import java.util.List;
+
+import bean.SkillBean;
+import bean.UserInfoBean;
 import utils.Utils;
 
 public class UserInfoAdapter extends BaseAdapter {
 
     private Context context;
     private UserInfoBean userInfoBean;
+    private List<SkillBean> skillBeanList;
 
-    public UserInfoAdapter(Context context, UserInfoBean userInfoBean) {
+    public UserInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillBean> skillBeanList) {
         this.context = context;
         this.userInfoBean = userInfoBean;
+        this.skillBeanList = skillBeanList;
     }
 
     @Override
@@ -86,11 +91,11 @@ public class UserInfoAdapter extends BaseAdapter {
                         break;
                     case 3:
                         holder0.titleTv.setText("现居地");
-                        holder0.contentTv.setText(userInfoBean.getArea_user_area_name());
+                        holder0.contentTv.setText(userInfoBean.getUser_area_name());
                         break;
                     case 4:
                         holder0.titleTv.setText("详细地址");
-                        holder0.contentTv.setText(userInfoBean.getArea_uei_address());
+                        holder0.contentTv.setText(userInfoBean.getUei_address());
                         break;
                     case 5:
                         holder0.titleTv.setText("个人简介");
@@ -122,7 +127,7 @@ public class UserInfoAdapter extends BaseAdapter {
                     holder1.gv.setVisibility(View.GONE);
                 } else {
                     holder1.gv.setVisibility(View.VISIBLE);
-                    holder1.gv.setAdapter(new UserSkillAdapter(context, userInfoBean.getSkillBeanList()));
+                    holder1.gv.setAdapter(new UserSkillAdapter(context, skillBeanList));
                     Utils.setGridViewHeight(holder1.gv, 4);
                 }
                 break;

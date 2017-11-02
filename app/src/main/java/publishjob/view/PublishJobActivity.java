@@ -187,7 +187,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_publish_job_return);
         addRl = (RelativeLayout) rootView.findViewById(R.id.rl_publish_job_add);
-        submitRl = (RelativeLayout) rootView.findViewById(R.id.rl_publish_job_submit);
+        submitRl = (RelativeLayout) rootView.findViewById(R.id.rl_change_price_submit);
         lv = (ListView) rootView.findViewById(R.id.lv_publish_job);
         cpd = Utils.initProgressDialog(PublishJobActivity.this, cpd);
     }
@@ -416,7 +416,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 adapter.notifyDataSetChanged();
                 lv.setSelection(publishWorkerBeanList.size());
                 break;
-            case R.id.rl_publish_job_submit:
+            case R.id.rl_change_price_submit:
                 submit();
                 break;
             case R.id.tv_head_publish_job_type:

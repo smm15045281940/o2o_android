@@ -10,6 +10,16 @@ public class WorkerManageBean implements Serializable {
     private String info;
     private String o_status;
     private String o_confirm;
+    private String taskId;
+    private String orderId;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     public String getIcon() {
         return icon;
@@ -51,6 +61,14 @@ public class WorkerManageBean implements Serializable {
         this.o_confirm = o_confirm;
     }
 
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
     @Override
     public String toString() {
         return "WorkerManageBean{" +
@@ -59,6 +77,8 @@ public class WorkerManageBean implements Serializable {
                 ", info='" + info + '\'' +
                 ", o_status='" + o_status + '\'' +
                 ", o_confirm='" + o_confirm + '\'' +
+                ", taskId='" + taskId + '\'' +
+                ", orderId='" + orderId + '\'' +
                 '}';
     }
 }

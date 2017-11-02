@@ -32,6 +32,10 @@ public interface NetConfig {
     String comCityUrl = "http://api.gangjianwang.com/Regions/index?action=letter";
     //订单
     String orderUrl = "http://api.gangjianwang.com/Orders/index";
+    //投诉问题
+    String complainTypeUrl = "http://api.gangjianwang.com/Users/complaintsType";
+    //投诉提交
+    String complainSubmitUrl = "http://api.gangjianwang.com/Users/complaintsAdd";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";

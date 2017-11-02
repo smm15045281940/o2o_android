@@ -92,7 +92,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
 
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_evaluate_return);
-        fl = (FrameLayout) rootView.findViewById(R.id.fl_resign);
         conLl = (LinearLayout) rootView.findViewById(R.id.ll_resign_con);
         nameTv = (TextView) rootView.findViewById(R.id.tv_evaluate_name);
         identityTv = (TextView) rootView.findViewById(R.id.tv_evaluate_skill);

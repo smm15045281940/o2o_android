@@ -14,5 +14,9 @@ public interface ITalkWorkerModule {
 
     void check(String url,JsonListener jsonListener);
 
+    void cancelWorker(String url,JsonListener jsonListener);
+
+    void authorSure(String url,JsonListener jsonListener);
+
     void cancelTask();
 }

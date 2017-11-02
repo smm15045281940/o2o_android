@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import bean.EvaluateBean;
+import utils.DataUtils;
 import view.CImageView;
 
 public class EvaluateAdapter extends BaseAdapter {
@@ -53,7 +54,7 @@ public class EvaluateAdapter extends BaseAdapter {
         EvaluateBean evaluateBean = list.get(position);
         Picasso.with(context).load(evaluateBean.getIcon()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
         holder.infoTv.setText(evaluateBean.getInfo());
-        holder.timeTv.setText(evaluateBean.getTime());
+        holder.timeTv.setText(DataUtils.getDateToString(Long.parseLong(evaluateBean.getTime())));
         return convertView;
     }
 

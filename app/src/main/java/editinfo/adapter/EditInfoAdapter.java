@@ -19,19 +19,24 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import java.util.List;
+
+import bean.SkillBean;
 import editinfo.listener.EditInfoClickHelp;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import utils.Utils;
 
 public class EditInfoAdapter extends BaseAdapter {
 
     private Context context;
     private UserInfoBean userInfoBean;
+    private List<SkillBean> skillBeanList;
     private EditInfoClickHelp editInfoClickHelp;
 
-    public EditInfoAdapter(Context context, UserInfoBean userInfoBean, EditInfoClickHelp editInfoClickHelp) {
+    public EditInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillBean> skillBeanList, EditInfoClickHelp editInfoClickHelp) {
         this.context = context;
         this.userInfoBean = userInfoBean;
+        this.skillBeanList = skillBeanList;
         this.editInfoClickHelp = editInfoClickHelp;
     }
 
@@ -111,7 +116,7 @@ public class EditInfoAdapter extends BaseAdapter {
         };
         holder.idCardEt.addTextChangedListener(idCardTw);
         holder.idCardEt.setTag(idCardTw);
-        holder.areaTv.setText(userInfoBean.getArea_user_area_name());
+        holder.areaTv.setText(userInfoBean.getUser_area_name());
         final int areaId = holder.areaTv.getId();
         holder.areaTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +127,7 @@ public class EditInfoAdapter extends BaseAdapter {
         if (holder.addressEt.getTag() instanceof TextWatcher) {
             holder.addressEt.removeTextChangedListener((TextWatcher) holder.addressEt.getTag());
         }
-        holder.addressEt.setText(userInfoBean.getArea_uei_address());
+        holder.addressEt.setText(userInfoBean.getUei_address());
         TextWatcher addressTw = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -136,7 +141,7 @@ public class EditInfoAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                userInfoBean.setArea_uei_address(s.toString());
+                userInfoBean.setUser_area_name(s.toString());
             }
         };
         holder.addressEt.addTextChangedListener(addressTw);
@@ -170,7 +175,7 @@ public class EditInfoAdapter extends BaseAdapter {
         } else {
             ((RadioButton) holder.roleRg.getChildAt(1)).setChecked(true);
             holder.workerLl.setVisibility(View.VISIBLE);
-            holder.gridView.setAdapter(new EditSkillAdapter(context, userInfoBean.getSkillBeanList()));
+            holder.gridView.setAdapter(new EditSkillAdapter(context, skillBeanList));
             Utils.setGridViewHeight(holder.gridView, 4);
         }
         final int sexId = holder.sexRg.getId();

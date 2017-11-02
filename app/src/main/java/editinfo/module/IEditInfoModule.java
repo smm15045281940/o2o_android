@@ -3,9 +3,12 @@ package editinfo.module;
 
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
+import listener.JsonListener;
 
 public interface IEditInfoModule {
+
+    void skill(String url, JsonListener jsonListener);
 
     void load(String url, AddSkillListener addSkillListener);
 

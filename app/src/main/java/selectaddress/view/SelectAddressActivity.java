@@ -135,7 +135,6 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
                 }
                 break;
             case R.id.rl_select_address_city:
-                Utils.log(SelectAddressActivity.this, "市");
                 if (STATE == AREA) {
                     cityTv.setText("市");
                     cityTv.setTextColor(ColorConfig.black_252323);

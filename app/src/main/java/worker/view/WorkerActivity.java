@@ -23,6 +23,7 @@ import java.util.List;
 
 import bean.ScreenBean;
 import bean.SkillBean;
+import bean.ToTalkWorkerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
@@ -320,14 +321,13 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
         if (UserUtils.isUserLogin(WorkerActivity.this)) {
             switch (id) {
                 case R.id.ll_item_worker:
-                    if (workerBean.getWorkerId().equals(UserUtils.readUserData(WorkerActivity.this).getId())) {
-                        Utils.toast(WorkerActivity.this, "不能招自己");
-                    } else {
-                        Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
-                        intent.putExtra(IntentConfig.workerToTalk, workerBeanList.get(pos));
-                        intent.putExtra(IntentConfig.workerToTalkSkill, skillBean.getId());
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
+                    ToTalkWorkerBean toTalkWorkerBean = new ToTalkWorkerBean();
+                    toTalkWorkerBean.setToTalkState(0);
+                    toTalkWorkerBean.setWorkerId(workerBeanList.get(pos).getWorkerId());
+                    toTalkWorkerBean.setSkillId(skillBean.getId());
+                    intent.putExtra(IntentConfig.toTalkWorker, toTalkWorkerBean);
+                    startActivity(intent);
                     break;
                 case R.id.iv_item_worker_collect:
                     if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getWorkerId())) {

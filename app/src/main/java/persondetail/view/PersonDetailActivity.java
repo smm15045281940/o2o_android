@@ -21,13 +21,12 @@ import java.util.List;
 import adapter.EvaluateAdapter;
 import bean.EvaluateBean;
 import bean.SkillBean;
-import bean.WorkerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import persondetail.presenter.IPersonDetailPresenter;
 import persondetail.presenter.PersonDetailPresenter;
 import userinfo.adapter.UserSkillAdapter;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import utils.DataUtils;
 import utils.Utils;
 import view.CImageView;
@@ -137,7 +136,7 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
     private void initData() {
         evaluateAdapter = new EvaluateAdapter(PersonDetailActivity.this, evaluateBeanList);
         userSkillAdapter = new UserSkillAdapter(PersonDetailActivity.this, skillBeanList);
-        detailId = (String) getIntent().getSerializableExtra(IntentConfig.talkToDetail);
+        detailId = getIntent().getStringExtra(IntentConfig.talkToDetail);
         personDetailPresenter = new PersonDetailPresenter(this);
     }
 
@@ -166,8 +165,8 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
         } else if (sex.equals("1")) {
             sexTv.setText("男");
         }
-        areaTv.setText(userInfoBean.getArea_user_area_name());
-        addressTv.setText(userInfoBean.getArea_uei_address());
+        areaTv.setText(userInfoBean.getUser_area_name());
+        addressTv.setText(userInfoBean.getUei_address());
         infoTv.setText(userInfoBean.getU_info());
         String skill = userInfoBean.getU_skills();
         if (skill.equals("0")) {

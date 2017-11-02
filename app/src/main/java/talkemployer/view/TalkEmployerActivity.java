@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -29,12 +30,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import complain.view.ComplainActivity;
+import bean.TalkEmployerWorkerBean;
+import bean.ToJumpEmployerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import adapter.TalkEmployerAdapter;
 import bean.TalkEmployerBean;
 import evaluate.view.EvaluateActivity;
+import listener.IdPosClickHelp;
+import persondetail.view.PersonDetailActivity;
 import talkemployer.presenter.TalkEmployerPresenter;
 import utils.DataUtils;
 import utils.UserUtils;
@@ -42,7 +46,7 @@ import utils.Utils;
 import view.CImageView;
 import view.CProgressDialog;
 
-public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener {
+public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener, IdPosClickHelp {
 
     private View rootView;
     private RelativeLayout returnRl, complainRl;
@@ -55,14 +59,23 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     private BaiduMap baiduMap;
     private BitmapDescriptor bitmap;
     private CProgressDialog cpd;
-    private String taskId;
     private TalkEmployerPresenter talkEmployerPresenter;
     private TalkEmployerBean talkEmployerBean;
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
     private final int SKILL_SUCCESS = 3;
     private final int SKILL_FAILURE = 4;
+    private final int INVITE_SUCCESS = 5;
+    private final int INVITE_FAILURE = 6;
     private List<String> idList = new ArrayList<>();
+    private List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList = new ArrayList<>();
+    private TalkEmployerAdapter talkEmployerAdapter;
+    private int clickPosition;
+    private ToJumpEmployerBean toJumpEmployerBean;
+
+    private RelativeLayout waitRl, noYourselfRl, talkToyouRl, doingForyouRl;
+    private final int EMPLOYER_WIAT = 1, NO_YOURSELF = 2, TALK_TO_YOU = 3, DOING_FOR_YOU = 4;
+    private int SHOW_STATE;
 
     private Handler handler = new Handler() {
         @Override
@@ -81,6 +94,12 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
                         break;
                     case SKILL_FAILURE:
                         break;
+                    case INVITE_SUCCESS:
+                        cpd.dismiss();
+                        Utils.toast(TalkEmployerActivity.this, "邀约请求已发送");
+                        break;
+                    case INVITE_FAILURE:
+                        break;
                 }
             }
         }
@@ -94,6 +113,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         setContentView(rootView);
         initView();
         initData();
+        setData();
         setListener();
         loadData();
     }
@@ -119,6 +139,8 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             handler.removeMessages(LOAD_FAILURE);
             handler.removeMessages(SKILL_SUCCESS);
             handler.removeMessages(SKILL_FAILURE);
+            handler.removeMessages(INVITE_SUCCESS);
+            handler.removeMessages(INVITE_FAILURE);
             handler = null;
         }
     }
@@ -133,6 +155,11 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         complainRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_complain);
         talkLv = (ListView) rootView.findViewById(R.id.lv_talk_employer);
         cpd = Utils.initProgressDialog(TalkEmployerActivity.this, cpd);
+
+        waitRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_wait);
+        noYourselfRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_no_yourself);
+        talkToyouRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_talk_to_you);
+        doingForyouRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_doing_for_you);
     }
 
     private void initHeadView() {
@@ -157,17 +184,26 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void initData() {
         talkEmployerPresenter = new TalkEmployerPresenter(this);
-        taskId = getIntent().getStringExtra(IntentConfig.taskToTalk);
+        toJumpEmployerBean = (ToJumpEmployerBean) getIntent().getSerializableExtra(IntentConfig.toJumpEmployer);
+        talkEmployerAdapter = new TalkEmployerAdapter(TalkEmployerActivity.this, talkEmployerWorkerBeanList, this);
+    }
+
+    private void setData() {
+        talkLv.setAdapter(talkEmployerAdapter);
     }
 
     private void setListener() {
         returnRl.setOnClickListener(this);
         complainRl.setOnClickListener(this);
+        waitRl.setOnClickListener(this);
+        iconIv.setOnClickListener(this);
     }
 
     private void loadData() {
         cpd.show();
-        talkEmployerPresenter.load(NetConfig.taskBaseUrl + "?action=info&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId() + "&t_id=" + taskId);
+        String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toJumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+        Utils.log(TalkEmployerActivity.this,url);
+        talkEmployerPresenter.load(url);
     }
 
     private void notifyData() {
@@ -186,7 +222,26 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         nameTv.setText(talkEmployerBean.getName());
         infoTv.setText(talkEmployerBean.getDesc());
         addressTv.setText(talkEmployerBean.getAddress());
-        talkLv.setAdapter(new TalkEmployerAdapter(TalkEmployerActivity.this, talkEmployerBean.getTalkEmployerWorkerBeanList()));
+        talkEmployerWorkerBeanList.clear();
+        talkEmployerWorkerBeanList.addAll(talkEmployerBean.getTalkEmployerWorkerBeanList());
+        talkEmployerAdapter.notifyDataSetChanged();
+
+        if (talkEmployerBean.getAuthorId().equals(UserUtils.readUserData(TalkEmployerActivity.this).getId())) {
+            SHOW_STATE = NO_YOURSELF;
+        } else {
+            int relation = talkEmployerBean.getRelation();
+            if (relation == 1) {
+                int relationType = talkEmployerBean.getRelationType();
+                if (relationType == 1) {
+                    SHOW_STATE = DOING_FOR_YOU;
+                } else if (relationType == 0) {
+                    SHOW_STATE = TALK_TO_YOU;
+                }
+            } else if (relation == 0) {
+                SHOW_STATE = EMPLOYER_WIAT;
+            }
+        }
+        refreshState();
     }
 
     @Override
@@ -198,11 +253,37 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             case R.id.rl_talk_employer_complain:
                 startActivity(new Intent(TalkEmployerActivity.this, EvaluateActivity.class));
                 break;
+            case R.id.rl_talk_employer_wait:
+                inviteJudge();
+                break;
+            case R.id.iv_head_talk_employer_icon:
+                Intent intent = new Intent(TalkEmployerActivity.this, PersonDetailActivity.class);
+                intent.putExtra(IntentConfig.talkToDetail, talkEmployerBean.getAuthorId());
+                startActivity(intent);
+                break;
+        }
+    }
+
+    private void inviteJudge() {
+        String tewId = "";
+        for (int i = 0; i < talkEmployerWorkerBeanList.size(); i++) {
+            if (talkEmployerWorkerBeanList.get(i).isSelect()) {
+                tewId = talkEmployerWorkerBeanList.get(i).getTewId();
+            }
+        }
+        if (TextUtils.isEmpty(tewId)) {
+            Utils.toast(TalkEmployerActivity.this, "请选择任务");
+        } else {
+            String url = NetConfig.orderUrl + "?action=create&tew_id=" + tewId + "&t_id=" + toJumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId() + "&o_sponsor=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+            Utils.log(TalkEmployerActivity.this, url);
+            cpd.show();
+            talkEmployerPresenter.invite(url);
         }
     }
 
     @Override
     public void success(String json) {
+
         talkEmployerBean = DataUtils.getTalkEmployerBean(json);
         for (int i = 0; i < talkEmployerBean.getTalkEmployerWorkerBeanList().size(); i++) {
             idList.add(talkEmployerBean.getTalkEmployerWorkerBeanList().get(i).getId());
@@ -212,6 +293,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     @Override
     public void failure(String failure) {
+
     }
 
     @Override
@@ -228,5 +310,63 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     @Override
     public void skillFailure(String failure) {
 
+    }
+
+    @Override
+    public void inviteSuccess(String json) {
+        Utils.log(TalkEmployerActivity.this, "invite=" + json);
+        handler.sendEmptyMessage(INVITE_SUCCESS);
+    }
+
+    @Override
+    public void inviteFailure(String json) {
+        handler.sendEmptyMessage(INVITE_FAILURE);
+    }
+
+    @Override
+    public void onClick(int id, int pos) {
+        clickPosition = pos;
+        switch (id) {
+            case R.id.rb_item_talk_employer:
+                Utils.log(TalkEmployerActivity.this, "clickPosition=" + pos);
+                for (int i = 0; i < talkEmployerWorkerBeanList.size(); i++) {
+                    if (i == clickPosition) {
+                        talkEmployerWorkerBeanList.get(i).setSelect(true);
+                    } else {
+                        talkEmployerWorkerBeanList.get(i).setSelect(false);
+                    }
+                }
+                talkEmployerAdapter.notifyDataSetChanged();
+                break;
+        }
+    }
+
+    private void refreshState() {
+        switch (SHOW_STATE) {
+            case EMPLOYER_WIAT:
+                waitRl.setVisibility(View.VISIBLE);
+                noYourselfRl.setVisibility(View.GONE);
+                talkToyouRl.setVisibility(View.GONE);
+                doingForyouRl.setVisibility(View.GONE);
+                break;
+            case NO_YOURSELF:
+                waitRl.setVisibility(View.GONE);
+                noYourselfRl.setVisibility(View.VISIBLE);
+                talkToyouRl.setVisibility(View.GONE);
+                doingForyouRl.setVisibility(View.GONE);
+                break;
+            case TALK_TO_YOU:
+                waitRl.setVisibility(View.GONE);
+                noYourselfRl.setVisibility(View.GONE);
+                talkToyouRl.setVisibility(View.VISIBLE);
+                doingForyouRl.setVisibility(View.GONE);
+                break;
+            case DOING_FOR_YOU:
+                waitRl.setVisibility(View.GONE);
+                noYourselfRl.setVisibility(View.GONE);
+                talkToyouRl.setVisibility(View.GONE);
+                doingForyouRl.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

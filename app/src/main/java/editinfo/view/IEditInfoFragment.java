@@ -7,9 +7,9 @@ import bean.SkillBean;
 
 public interface IEditInfoFragment {
 
-    void showLoading();
+    void skillSuccess(String json);
 
-    void hideLoading();
+    void skillFailure(String failure);
 
     void showAddSkillSuccess(List<SkillBean> skillBeanList);
 

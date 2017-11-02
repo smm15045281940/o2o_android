@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import login.bean.UserBean;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 
 /**
  * Created by Administrator on 2017/10/23.

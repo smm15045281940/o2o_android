@@ -17,4 +17,12 @@ public interface ITalkWorkerActivity {
     void checkSuccess(String json);
 
     void checkFailure(String failure);
+
+    void cancelWorkerSuccess(String json);
+
+    void cancelWorkerFailure(String failure);
+
+    void authorSureSuccess(String json);
+
+    void authorSureFailure(String failure);
 }

@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,9 +35,10 @@ import config.PermissionConfig;
 import editinfo.view.EditInfoFragment;
 import login.bean.UserBean;
 import userinfo.view.UserInfoFragment;
-import usermanage.bean.UserInfoBean;
+import bean.UserInfoBean;
 import usermanage.presenter.IUserManagePresenter;
 import usermanage.presenter.UserManagePresenter;
+import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CImageView;
@@ -51,15 +54,14 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
     private FragmentManager fragmentManager;
     private List<Fragment> fragmentList;
     private int curPosition = 0, tarPosition = -1;
-
     private View editPopView;
     private PopupWindow editPop;
-
     private IUserManagePresenter userManagePresenter = new UserManagePresenter(this);
+    public UserInfoBean userInfoBean;
 
+    private final int INFO_SUCCESS = 2;
+    private final int INFO_FAILURE = 3;
     private Handler userInfoHandler;
-
-    public UserInfoBean mainUserInfoBean;
 
     public Handler handler = new Handler() {
         @Override
@@ -68,10 +70,15 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
-                        Utils.log(UserManageActivity.this, "修改信息来着");
                         tarPosition = 0;
                         changeFragment();
                         loadData();
+                        userInfoHandler.sendEmptyMessage(5);
+                        break;
+                    case INFO_SUCCESS:
+                        Picasso.with(UserManageActivity.this).load(userInfoBean.getU_img()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
+                        break;
+                    case INFO_FAILURE:
                         break;
                 }
             }
@@ -163,10 +170,7 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
     }
 
     private void loadData() {
-        UserBean userBean = UserUtils.readUserData(UserManageActivity.this);
-        if (userBean != null) {
-            userManagePresenter.loadUserInfo(NetConfig.userInfoUrl + userBean.getId());
-        }
+        userManagePresenter.info(NetConfig.userInfoUrl + UserUtils.readUserData(UserManageActivity.this).getId());
     }
 
     private void changeFragment() {
@@ -232,59 +236,31 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                 Utils.log(UserManageActivity.this, "uri=" + uri.toString());
                 UserBean userBean = UserUtils.readUserData(UserManageActivity.this);
                 if (userBean != null) {
-                    userManagePresenter.upLoadIcon(UserManageActivity.this, userBean.getId(), uri);
+                    userManagePresenter.up(UserManageActivity.this, userBean.getId(), uri);
                 }
             }
         }
     }
 
     @Override
-    public void showLoading() {
-        cpd.show();
-    }
-
-    @Override
-    public void hideLoading() {
-        cpd.dismiss();
-    }
-
-    @Override
-    public void showUpLoadIconFailure(String upLoadIconFailure) {
+    public void upLoadIconFailure(String upLoadIconFailure) {
         Utils.toast(UserManageActivity.this, upLoadIconFailure);
     }
 
     @Override
-    public void showUpLoadIconSuccess(String upLoadIconSuccess, Bitmap bitmap) {
+    public void upLoadIconSuccess(String upLoadIconSuccess, Bitmap bitmap) {
         Utils.toast(UserManageActivity.this, upLoadIconSuccess);
         iconIv.setImageBitmap(bitmap);
     }
 
     @Override
-    public void showLoadUserInfoSuccess(UserInfoBean userInfoBean) {
-        Uri uri = Uri.parse(userInfoBean.getU_img());
-        Picasso.with(UserManageActivity.this).invalidate(uri);
-        Picasso.with(UserManageActivity.this).load(userInfoBean.getU_img()).placeholder(iconIv.getDrawable()).into(iconIv);
-        userManagePresenter.loadUserSkill(userInfoBean);
+    public void infoSuccess(String json) {
+        userInfoBean = DataUtils.getUserInfoBean(json);
+        handler.sendEmptyMessage(INFO_SUCCESS);
     }
 
     @Override
-    public void showLoadUserInfoFailure(String failure) {
-
-    }
-
-    @Override
-    public void showUserSkillSuccess(UserInfoBean uib) {
-        UserUtils.refreshUserData(UserManageActivity.this, uib);
-        mainUserInfoBean = uib;
-        Bundle bundle0 = new Bundle();
-        bundle0.putSerializable("userInfoBean", uib);
-        Message message0 = new Message();
-        message0.setData(bundle0);
-        userInfoHandler.sendMessage(message0);
-    }
-
-    @Override
-    public void showUserSkillFailure(String failure) {
+    public void infoFailure(String failure) {
 
     }
 }

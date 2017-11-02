@@ -110,6 +110,11 @@
         <activity android:name="idcard.view.IdCardActivity" />
         <activity android:name="talkworker.view.TalkWorkerActivity" />
         <activity android:name="persondetail.view.PersonDetailActivity" />
+        <activity android:name="employertotalk.view.EmployerToTalkActivity" />
+        <activity android:name="changeprice.view.ChangePriceActivity" />
+        <activity android:name="employertodoing.view.EmployerToDoingActivity" />
+        <activity android:name="jumpworker.view.JumpWorkerActivity" />
+        <activity android:name="jumpemployer.view.JumpEmployerActivity"></activity>
     </application>
 
 </manifest>
