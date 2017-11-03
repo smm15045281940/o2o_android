@@ -11,7 +11,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillBean;
+import bean.SkillsBean;
 
 /**
  * Created by Administrator on 2017/10/26.
@@ -20,9 +20,9 @@ import bean.SkillBean;
 public class SelectSkillAdapter extends BaseAdapter {
 
     private Context context;
-    private List<SkillBean> list;
+    private List<SkillsBean> list;
 
-    public SelectSkillAdapter(Context context, List<SkillBean> list) {
+    public SelectSkillAdapter(Context context, List<SkillsBean> list) {
         this.context = context;
         this.list = list;
     }
@@ -52,7 +52,7 @@ public class SelectSkillAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.skillTv.setText(list.get(position).getName());
+        holder.skillTv.setText(list.get(position).getS_name());
         return convertView;
     }
 

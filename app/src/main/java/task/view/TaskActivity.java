@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.ToJumpEmployerBean;
+import bean.ToTalkEmployerBean;
 import config.IntentConfig;
 import listener.IdPosClickHelp;
 import adapter.TaskAdapter;
@@ -214,9 +215,9 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
             switch (id) {
                 case R.id.ll_item_task:
                     Intent intent = new Intent(TaskActivity.this, TalkEmployerActivity.class);
-                    ToJumpEmployerBean toJumpEmployerBean = new ToJumpEmployerBean();
-                    toJumpEmployerBean.setTaskId(taskBeanList.get(clickPostion).getTaskId());
-                    intent.putExtra(IntentConfig.toJumpEmployer, toJumpEmployerBean);
+                    ToTalkEmployerBean toTalkEmployerBean = new ToTalkEmployerBean();
+                    toTalkEmployerBean.setT_id(taskBeanList.get(clickPostion).getTaskId());
+                    intent.putExtra(IntentConfig.toTalkEmployer, toTalkEmployerBean);
                     startActivity(intent);
                     break;
                 case R.id.iv_item_task_collect:

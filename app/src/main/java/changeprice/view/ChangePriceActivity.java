@@ -125,7 +125,7 @@ public class ChangePriceActivity extends AppCompatActivity implements IChangePri
 
     private void loadData() {
         cpd.show();
-        changePricePresenter.load(NetConfig.skillUrl);
+        changePricePresenter.load(NetConfig.skillsUrl);
     }
 
     private void notifyData() {
@@ -146,7 +146,16 @@ public class ChangePriceActivity extends AppCompatActivity implements IChangePri
             case R.id.rl_change_price_submit:
                 cpd.show();
                 Utils.log(ChangePriceActivity.this, "submit=" + toChangePriceBean.toString());
-                String url = NetConfig.orderUrl + "?action=price&tew_id=" + toChangePriceBean.getTewId() + "&t_id=" + toChangePriceBean.getTaskId() + "&t_author=" + toChangePriceBean.getAuthorId() + "&amount=" + toChangePriceBean.getPrice() + "&worker_num=" + toChangePriceBean.getAmount() + "&start_time=" + toChangePriceBean.getStartTime() + "&end_time=" + toChangePriceBean.getEndTime() + "&o_worker=" + toChangePriceBean.getWorkerId();
+                String url = NetConfig.orderUrl +
+                        "?action=price" +
+                        "&tew_id=" + toChangePriceBean.getTewId() +
+                        "&t_id=" + toChangePriceBean.getTaskId() +
+                        "&t_author=" + toChangePriceBean.getAuthorId() +
+                        "&amount=" + toChangePriceBean.getPrice() +
+                        "&worker_num=" + toChangePriceBean.getAmount() +
+                        "&start_time=" + toChangePriceBean.getStartTime() +
+                        "&end_time=" + toChangePriceBean.getEndTime() +
+                        "&o_worker=" + toChangePriceBean.getWorkerId();
                 Utils.log(ChangePriceActivity.this, url);
                 changePricePresenter.change(url);
                 break;
@@ -157,7 +166,9 @@ public class ChangePriceActivity extends AppCompatActivity implements IChangePri
     public void loadSuccess(String json) {
         List<String> idList = new ArrayList<>();
         idList.add(toChangePriceBean.getSkillName());
-        skillName = DataUtils.getSkillNameList(json, idList).get(0);
+        if (idList.size() != 0) {
+
+        }
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 

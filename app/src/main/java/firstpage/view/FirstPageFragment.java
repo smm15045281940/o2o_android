@@ -38,7 +38,7 @@ import firstpage.presenter.FirstPagePresenter;
 import firstpage.presenter.IFirstPagePresenter;
 import leftright.view.LeftRightActivity;
 import publishjob.view.PublishJobActivity;
-import skill.view.SkillActivity;
+import activity.SkillsActivity;
 import task.view.TaskActivity;
 import utils.UserUtils;
 import utils.Utils;
@@ -182,7 +182,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 startActivity(msgIntent);
                 break;
             case R.id.iv_frag_first_page_find_worker:
-                startActivity(new Intent(getActivity(), SkillActivity.class));
+                startActivity(new Intent(getActivity(), SkillsActivity.class));
                 break;
             case R.id.iv_frag_first_page_find_job:
                 startActivity(new Intent(getActivity(), TaskActivity.class));

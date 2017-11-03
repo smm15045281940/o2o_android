@@ -5,7 +5,7 @@ import android.os.Handler;
 
 import java.util.List;
 
-import bean.SkillBean;
+import bean.SkillsBean;
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
 import editinfo.module.EditInfoModule;
@@ -55,11 +55,11 @@ public class EditInfoPresenter implements IEditInfoPresenter {
     public void load(String url) {
         editInfoModule.load(url, new AddSkillListener() {
             @Override
-            public void success(final List<SkillBean> skillBeanList) {
+            public void success(final List<SkillsBean> skillsBeanList) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        editInfoFragment.showAddSkillSuccess(skillBeanList);
+                        editInfoFragment.showAddSkillSuccess(skillsBeanList);
                     }
                 });
             }

@@ -276,36 +276,60 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/y5">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:layout_marginRight="@dimen/y5"
                     android:layout_weight="1"
-                    android:text="dfdfdf" />
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="不合适的话可以取消该工人取消后，您将无法与Ta联系"
+                    android:textSize="@dimen/y10" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="取消工人" />
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/sp_login_get"
+                    android:padding="@dimen/y5"
+                    android:text="取消工人"
+                    android:textColor="@color/white_ffffff"
+                    android:textSize="@dimen/y10" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/y5">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:layout_marginRight="@dimen/y5"
                     android:layout_weight="1"
-                    android:text="dfdfdf" />
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="请确认工人到岗并确认工期和工资，然后再确认开工"
+                    android:textSize="@dimen/y10" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="等待工人确认" />
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/sp_login_get"
+                    android:padding="@dimen/y5"
+                    android:text="等待工人确认"
+                    android:textColor="@color/white_ffffff"
+                    android:textSize="@dimen/y10" />
 
             </LinearLayout>
 
@@ -321,18 +345,31 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="@dimen/y5">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/y5"
+                    android:layout_marginRight="@dimen/y5"
                     android:layout_weight="1"
-                    android:text="dfdfdf" />
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="解雇工人后，系统将按已完成的工时计算工人工资并支付给工人"
+                    android:textSize="@dimen/y10" />
 
                 <TextView
+                    android:id="@+id/tv_jump_worker_fire_worker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="解雇工人" />
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/sp_login_get"
+                    android:padding="@dimen/y5"
+                    android:text="解雇工人"
+                    android:textColor="@color/white_ffffff"
+                    android:textSize="@dimen/y10" />
 
             </LinearLayout>
 

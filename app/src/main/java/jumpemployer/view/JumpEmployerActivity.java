@@ -40,12 +40,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.JumpEmployerBean;
-import bean.SkillBean;
+import bean.SkillsBean;
 import bean.ToJumpEmployerBean;
 import bean.ToResignBean;
 import config.IntentConfig;
 import config.NetConfig;
-import listener.IdPosClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -323,7 +322,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void loadSkill() {
-        String url = NetConfig.skillUrl + "?s_id=" + jumpEmployerBean.getSkillId();
+        String url = NetConfig.skillsUrl + "?s_id=" + jumpEmployerBean.getSkillId();
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -335,10 +334,10 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    List<SkillBean> skillBeanList = new ArrayList<>();
-                    skillBeanList.addAll(DataUtils.getSkillBeanList(json));
-                    if (skillBeanList.size() != 0) {
-                        jumpEmployerBean.setSkillName(skillBeanList.get(0).getName());
+                    List<SkillsBean> skillsBeanList = new ArrayList<>();
+                    skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
+                    if (skillsBeanList.size() != 0) {
+//                        jumpEmployerBean.setSkillName(skillsBeanList.get(0).getName());
                     }
                     handler.sendEmptyMessage(2);
                 }
@@ -414,10 +413,12 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         timeTv.setText("工期" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getEndTime())));
         map();
         if (jumpEmployerBean.getO_status().equals("0")) {
-            if (jumpEmployerBean.getO_confirm().equals("2")) {
-                SHOW_STATE = SURE_DO;
-            } else if(jumpEmployerBean.getO_confirm().equals("1")){
+            if (jumpEmployerBean.getO_confirm().equals("0")) {
+                SHOW_STATE = WAIT_EMPLOYER;
+            } else if (jumpEmployerBean.getO_confirm().equals("1")) {
                 SHOW_STATE = RESIGN;
+            } else if (jumpEmployerBean.getO_confirm().equals("2")) {
+                SHOW_STATE = SURE_DO;
             }
         }
         refreshState();

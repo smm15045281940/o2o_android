@@ -16,7 +16,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.SkillBean;
+import bean.SkillsBean;
 import config.NetConfig;
 import userinfo.adapter.UserInfoAdapter;
 import bean.UserInfoBean;
@@ -38,7 +38,7 @@ public class UserInfoFragment extends Fragment implements IUserInfoFragment {
     private final int SKILL_SUCCESS = 3;
     private final int SKILL_FAILURE = 4;
     private UserInfoBean userInfoBean;
-    private List<SkillBean> skillBeanList = new ArrayList<>();
+    private List<SkillsBean> skillsBeanList = new ArrayList<>();
     private UserInfoAdapter userInfoAdapter;
 
     public Handler handler = new Handler() {
@@ -48,7 +48,7 @@ public class UserInfoFragment extends Fragment implements IUserInfoFragment {
             if (msg != null) {
                 switch (msg.what) {
                     case INFO_SUCCESS:
-                        userInfoPresenter.skill(NetConfig.skillUrl + "?s_id=" + userInfoBean.getU_skills());
+                        userInfoPresenter.skill(NetConfig.skillsUrl + "?s_id=" + userInfoBean.getU_skills());
                         break;
                     case INFO_FAILURE:
                         break;
@@ -107,7 +107,7 @@ public class UserInfoFragment extends Fragment implements IUserInfoFragment {
 
     private void notifyData() {
         cpd.dismiss();
-        userInfoAdapter = new UserInfoAdapter(getActivity(), userInfoBean, skillBeanList);
+        userInfoAdapter = new UserInfoAdapter(getActivity(), userInfoBean, skillsBeanList);
         lv.setAdapter(userInfoAdapter);
     }
 
@@ -125,9 +125,9 @@ public class UserInfoFragment extends Fragment implements IUserInfoFragment {
     @Override
     public void skillSuccess(String json) {
         Log.e("UserInfoFragment=", json);
-        skillBeanList.clear();
-        skillBeanList.addAll(DataUtils.getSkillBeanList(json));
-        Log.e("UserInfoFragment=", skillBeanList.toString());
+        skillsBeanList.clear();
+        skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
+        Log.e("UserInfoFragment=", skillsBeanList.toString());
         handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 

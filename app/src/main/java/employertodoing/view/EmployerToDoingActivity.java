@@ -131,6 +131,8 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                 toJumpWorkerBean.setTewId(employerToDoingBeanList.get(clickPosition).getTewId());
                 toJumpWorkerBean.setTaskId(employerToDoingBeanList.get(clickPosition).getTaskId());
                 toJumpWorkerBean.setSkillId(employerToDoingBeanList.get(clickPosition).getSkillId());
+                toJumpWorkerBean.setO_status(employerToDoingBeanList.get(clickPosition).getO_status());
+                toJumpWorkerBean.setO_confirm(employerToDoingBeanList.get(clickPosition).getO_confirm());
                 Intent i = new Intent(EmployerToDoingActivity.this, JumpWorkerActivity.class);
                 i.putExtra(IntentConfig.toJumpWorker, toJumpWorkerBean);
                 startActivity(i);

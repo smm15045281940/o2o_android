@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -13,9 +14,10 @@ import android.widget.RelativeLayout;
 
 import com.gjzg.R;
 
-import bean.ScreenBean;
+import bean.WorkerScreenBean;
 import config.CodeConfig;
 import config.IntentConfig;
+import utils.Utils;
 
 public class WorkerScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -23,7 +25,7 @@ public class WorkerScreenActivity extends AppCompatActivity implements View.OnCl
     private RelativeLayout closeRl, searchRl;
     private EditText nameEt;
     private ImageView leisureIv, midIv;
-    private int workerState = 0;
+    private String u_status = "0";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,22 +56,6 @@ public class WorkerScreenActivity extends AppCompatActivity implements View.OnCl
         midIv.setOnClickListener(this);
     }
 
-    private void changeState(int tarState) {
-        if (tarState != workerState) {
-            switch (tarState) {
-                case 0:
-                    leisureIv.setImageResource(R.mipmap.worker_leisure);
-                    midIv.setImageResource(R.mipmap.worker_mid_g);
-                    break;
-                case 1:
-                    leisureIv.setImageResource(R.mipmap.worker_leisure_g);
-                    midIv.setImageResource(R.mipmap.worker_mid);
-                    break;
-            }
-            workerState = tarState;
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -80,21 +66,33 @@ public class WorkerScreenActivity extends AppCompatActivity implements View.OnCl
                 result();
                 break;
             case R.id.iv_screen_worker_leisure:
-                changeState(0);
+                u_status = "0";
+                refreshState();
                 break;
             case R.id.iv_screen_worker_mid:
-                changeState(1);
+                u_status = "1";
+                refreshState();
                 break;
         }
     }
 
+    private void refreshState() {
+        if (u_status.equals("0")) {
+            leisureIv.setImageResource(R.mipmap.worker_leisure);
+            midIv.setImageResource(R.mipmap.worker_mid_g);
+        } else if (u_status.equals("1")) {
+            leisureIv.setImageResource(R.mipmap.worker_leisure_g);
+            midIv.setImageResource(R.mipmap.worker_mid);
+        }
+    }
+
     private void result() {
-        Intent intent = new Intent();
-        ScreenBean screenBean = new ScreenBean();
-        screenBean.setName(nameEt.getText().toString());
-        screenBean.setState(workerState);
-        intent.putExtra(IntentConfig.screenToWorker, screenBean);
-        setResult(CodeConfig.screenResultCode, intent);
+        Intent searchIntent = new Intent();
+        WorkerScreenBean workerScreenBean = new WorkerScreenBean();
+        workerScreenBean.setU_true_name(nameEt.getText().toString());
+        workerScreenBean.setU_status(u_status);
+        searchIntent.putExtra(IntentConfig.screenToWorker, workerScreenBean);
+        setResult(CodeConfig.screenResultCode, searchIntent);
         finish();
     }
 }

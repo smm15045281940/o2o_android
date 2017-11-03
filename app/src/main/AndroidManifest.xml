@@ -42,13 +42,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="skill.view.SkillActivity" />
-        <activity android:name="worker.view.WorkerActivity" />
+        <activity android:name="activity.SkillsActivity" />
+        <activity android:name="activity.WorkerActivity" />
         <activity android:name="leftright.view.LeftRightActivity" />
         <activity android:name="city.view.CityActivity" />
         <activity android:name="talkemployer.view.TalkEmployerActivity" />
-        <activity android:name="workermanage.view.WorkerManageActivity" />
-        <activity android:name="employermanage.view.EmployerManageActivity" />
+        <activity
+            android:name="workermanage.view.WorkerManageActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="employermanage.view.EmployerManageActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name="usermanage.view.UserManageActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -114,7 +118,8 @@
         <activity android:name="changeprice.view.ChangePriceActivity" />
         <activity android:name="employertodoing.view.EmployerToDoingActivity" />
         <activity android:name="jumpworker.view.JumpWorkerActivity" />
-        <activity android:name="jumpemployer.view.JumpEmployerActivity"></activity>
+        <activity android:name="jumpemployer.view.JumpEmployerActivity" />
+        <activity android:name="activity.FireActivity"></activity>
     </application>
 
 </manifest>

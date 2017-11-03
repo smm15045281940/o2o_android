@@ -26,6 +26,7 @@ import config.NetConfig;
 import config.VarConfig;
 import jumpemployer.view.JumpEmployerActivity;
 import listener.IdPosClickHelp;
+import main.view.MainActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -222,7 +223,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_worker_manage_return:
-                finish();
+                startActivity(new Intent(WorkerManageActivity.this, MainActivity.class));
                 break;
             case R.id.rl_worker_manage_all:
                 tarState = ALL;

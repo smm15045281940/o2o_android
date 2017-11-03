@@ -24,7 +24,6 @@ import redpacket.presenter.IRedPacketPresenter;
 import redpacket.presenter.RedPacketPresenter;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import skill.view.SkillActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;

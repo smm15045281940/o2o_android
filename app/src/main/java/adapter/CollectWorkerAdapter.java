@@ -15,16 +15,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import bean.CollectWorkerBean;
 import bean.WorkerBean;
 import listener.IdPosClickHelp;
 
 public class CollectWorkerAdapter extends BaseAdapter {
 
     private Context context;
-    private List<WorkerBean> list;
+    private List<CollectWorkerBean> list;
     private IdPosClickHelp idPosClickHelp;
 
-    public CollectWorkerAdapter(Context context, List<WorkerBean> list, IdPosClickHelp idPosClickHelp) {
+    public CollectWorkerAdapter(Context context, List<CollectWorkerBean> list, IdPosClickHelp idPosClickHelp) {
         this.context = context;
         this.list = list;
         this.idPosClickHelp = idPosClickHelp;
@@ -55,17 +56,17 @@ public class CollectWorkerAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        WorkerBean workerBean = list.get(position);
-        Picasso.with(context).load(workerBean.getIcon()).into(holder.imageIv);
-        String status = workerBean.getStatus();
+        CollectWorkerBean collectWorkerBean = list.get(position);
+        Picasso.with(context).load(collectWorkerBean.getU_img()).into(holder.imageIv);
+        String status = collectWorkerBean.getU_task_status();
         if (status.equals("0")) {
             holder.statusIv.setImageResource(R.mipmap.worker_leisure);
         } else if (status.equals("1")) {
             holder.statusIv.setImageResource(R.mipmap.worker_mid);
         }
         holder.collectIv.setImageResource(R.mipmap.collect_yellow);
-        holder.nameTv.setText(workerBean.getTitle());
-        holder.infoTv.setText(workerBean.getInfo());
+        holder.nameTv.setText(collectWorkerBean.getU_name());
+        holder.infoTv.setText(collectWorkerBean.getUei_info());
         final int p = position;
         final int llId = holder.ll.getId();
         holder.ll.setOnClickListener(new View.OnClickListener() {

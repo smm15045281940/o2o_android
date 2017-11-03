@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,7 @@ import editinfo.presenter.EditInfoPresenter;
 import editinfo.presenter.IEditInfoPresenter;
 import selectaddress.bean.SelectAddressBean;
 import selectaddress.view.SelectAddressActivity;
-import bean.SkillBean;
+import bean.SkillsBean;
 import bean.UserInfoBean;
 import usermanage.view.UserManageActivity;
 import utils.DataUtils;
@@ -50,15 +49,15 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     private View addSkillPopView;
     private PopupWindow addSkillPop;
     private ListView addSkillLv;
-    private List<SkillBean> selectSkillList = new ArrayList<>();
+    private List<SkillsBean> selectSkillList = new ArrayList<>();
     private AddSkillAdapter addSkillAdapter;
-    private List<SkillBean> selectList = new ArrayList<>();
+    private List<SkillsBean> selectList = new ArrayList<>();
 
     private IEditInfoPresenter editInfoPresenter;
 
     private final int SKILL_SUCCESS = 2;
     private final int SKILL_FAILURE = 3;
-    private List<SkillBean> skillBeanList = new ArrayList<>();
+    private List<SkillsBean> skillsBeanList = new ArrayList<>();
 
     private Handler handler = new Handler() {
         @Override
@@ -136,17 +135,17 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
                 addSkillPop.dismiss();
                 selectList.clear();
                 for (int i = 0; i < selectSkillList.size(); i++) {
-                    if (selectSkillList.get(i).isCheck()) {
-                        selectList.add(selectSkillList.get(i));
-                    }
+//                    if (selectSkillList.get(i).isCheck()) {
+//                        selectList.add(selectSkillList.get(i));
+//                    }
                 }
                 if (selectList.size() != 0) {
-                    if (skillBeanList == null) {
-                        skillBeanList.addAll(selectList);
+                    if (skillsBeanList == null) {
+                        skillsBeanList.addAll(selectList);
                     } else {
-                        skillBeanList.addAll(defList());
+                        skillsBeanList.addAll(defList());
                     }
-                    changeSkill(skillBeanList);
+                    changeSkill(skillsBeanList);
                     editInfoAdapter.notifyDataSetChanged();
                 }
             }
@@ -178,11 +177,11 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
 
     private void loadData() {
         userInfoBean = ((UserManageActivity) getActivity()).userInfoBean;
-        editInfoPresenter.skill(NetConfig.skillUrl + "?s_id=" + userInfoBean.getU_skills());
+        editInfoPresenter.skill(NetConfig.skillsUrl + "?s_id=" + userInfoBean.getU_skills());
     }
 
     private void notifyData() {
-        editInfoAdapter = new EditInfoAdapter(getActivity(), userInfoBean, skillBeanList, this);
+        editInfoAdapter = new EditInfoAdapter(getActivity(), userInfoBean, skillsBeanList, this);
         lv.setAdapter(editInfoAdapter);
     }
 
@@ -230,25 +229,25 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
                 }
                 break;
             case R.id.gv_item_editinfo:
-                skillBeanList.remove(position);
-                changeSkill(skillBeanList);
+                skillsBeanList.remove(position);
+                changeSkill(skillsBeanList);
                 break;
             case R.id.iv_item_editinfo_addskill:
                 backgroundAlpha(0.5f);
                 addSkillPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
-                editInfoPresenter.load(NetConfig.skillUrl);
+                editInfoPresenter.load(NetConfig.skillsUrl);
                 break;
         }
         editInfoAdapter.notifyDataSetChanged();
     }
 
-    private void changeSkill(List<SkillBean> skillBeanList) {
-        if (skillBeanList != null) {
-            if (skillBeanList.size() != 0) {
+    private void changeSkill(List<SkillsBean> skillsBeanList) {
+        if (skillsBeanList != null) {
+            if (skillsBeanList.size() != 0) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(",");
-                for (int i = 0; i < skillBeanList.size(); i++) {
-                    sb.append(skillBeanList.get(i).getId() + ",");
+                for (int i = 0; i < skillsBeanList.size(); i++) {
+                    sb.append(skillsBeanList.get(i).getS_id() + ",");
                 }
                 userInfoBean.setU_skills(sb.toString());
             } else {
@@ -277,7 +276,7 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     public void onClick(int id, int position, boolean checked) {
         switch (id) {
             case R.id.cb_item_add_kind_checked:
-                selectSkillList.get(position).setCheck(checked);
+//                selectSkillList.get(position).setCheck(checked);
                 break;
         }
         addSkillAdapter.notifyDataSetChanged();
@@ -285,8 +284,8 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
 
     @Override
     public void skillSuccess(String json) {
-        skillBeanList.clear();
-        skillBeanList.addAll(DataUtils.getSkillBeanList(json));
+        skillsBeanList.clear();
+        skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
         handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 
@@ -296,9 +295,9 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     }
 
     @Override
-    public void showAddSkillSuccess(List<SkillBean> skillBeanList) {
+    public void showAddSkillSuccess(List<SkillsBean> skillsBeanList) {
         selectSkillList.clear();
-        selectSkillList.addAll(skillBeanList);
+        selectSkillList.addAll(skillsBeanList);
         handler.sendEmptyMessage(1);
     }
 
@@ -324,10 +323,10 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
         getActivity().getWindow().setAttributes(layoutParams);
     }
 
-    private List<SkillBean> defList() {
-        if (skillBeanList != null) {
-            if (skillBeanList.size() != 0) {
-                List<SkillBean> resultList = new ArrayList<>();
+    private List<SkillsBean> defList() {
+        if (skillsBeanList != null) {
+            if (skillsBeanList.size() != 0) {
+                List<SkillsBean> resultList = new ArrayList<>();
                 for (int i = 0; i < selectList.size(); i++) {
                     if (isDiff(i)) {
                         resultList.add(selectList.get(i));
@@ -341,10 +340,10 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
 
     private boolean isDiff(int index) {
         int count = 0;
-        for (int i = 0; i < skillBeanList.size(); i++) {
-            if (selectList.get(index).getId().equals(skillBeanList.get(i).getId())) {
-                count++;
-            }
+        for (int i = 0; i < skillsBeanList.size(); i++) {
+//            if (selectList.get(index).getId().equals(skillsBeanList.get(i).getId())) {
+//                count++;
+//            }
         }
         if (count == 0) {
             return true;

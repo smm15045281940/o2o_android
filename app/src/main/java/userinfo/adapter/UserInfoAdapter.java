@@ -13,7 +13,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillBean;
+import bean.SkillsBean;
 import bean.UserInfoBean;
 import utils.Utils;
 
@@ -21,12 +21,12 @@ public class UserInfoAdapter extends BaseAdapter {
 
     private Context context;
     private UserInfoBean userInfoBean;
-    private List<SkillBean> skillBeanList;
+    private List<SkillsBean> skillsBeanList;
 
-    public UserInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillBean> skillBeanList) {
+    public UserInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillsBean> skillsBeanList) {
         this.context = context;
         this.userInfoBean = userInfoBean;
-        this.skillBeanList = skillBeanList;
+        this.skillsBeanList = skillsBeanList;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class UserInfoAdapter extends BaseAdapter {
                     holder1.gv.setVisibility(View.GONE);
                 } else {
                     holder1.gv.setVisibility(View.VISIBLE);
-                    holder1.gv.setAdapter(new UserSkillAdapter(context, skillBeanList));
+                    holder1.gv.setAdapter(new UserSkillAdapter(context, skillsBeanList));
                     Utils.setGridViewHeight(holder1.gv, 4);
                 }
                 break;

@@ -8,13 +8,7 @@ public interface ITalkWorkerPresenter {
 
     void load(String url);
 
-    void getSkillJson(String url);
-
     void check(String url);
-
-    void cancelWorker(String url);
-
-    void authorSure(String url);
 
     void destroy();
 }

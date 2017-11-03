@@ -32,6 +32,7 @@ import java.util.List;
 
 import bean.TalkEmployerWorkerBean;
 import bean.ToJumpEmployerBean;
+import bean.ToTalkEmployerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import adapter.TalkEmployerAdapter;
@@ -45,6 +46,7 @@ import utils.UserUtils;
 import utils.Utils;
 import view.CImageView;
 import view.CProgressDialog;
+import workermanage.view.WorkerManageActivity;
 
 public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener, IdPosClickHelp {
 
@@ -71,7 +73,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     private List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList = new ArrayList<>();
     private TalkEmployerAdapter talkEmployerAdapter;
     private int clickPosition;
-    private ToJumpEmployerBean toJumpEmployerBean;
+    private ToTalkEmployerBean toTalkEmployerBean;
 
     private RelativeLayout waitRl, noYourselfRl, talkToyouRl, doingForyouRl;
     private final int EMPLOYER_WIAT = 1, NO_YOURSELF = 2, TALK_TO_YOU = 3, DOING_FOR_YOU = 4;
@@ -84,7 +86,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             if (msg != null) {
                 switch (msg.what) {
                     case LOAD_SUCCESS:
-                        talkEmployerPresenter.loadSkill(NetConfig.skillUrl);
+                        talkEmployerPresenter.loadSkill(NetConfig.skillsUrl);
                         break;
                     case LOAD_FAILURE:
                         break;
@@ -97,6 +99,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
                     case INVITE_SUCCESS:
                         cpd.dismiss();
                         Utils.toast(TalkEmployerActivity.this, "邀约请求已发送");
+                        startActivity(new Intent(TalkEmployerActivity.this, WorkerManageActivity.class));
                         break;
                     case INVITE_FAILURE:
                         break;
@@ -184,7 +187,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void initData() {
         talkEmployerPresenter = new TalkEmployerPresenter(this);
-        toJumpEmployerBean = (ToJumpEmployerBean) getIntent().getSerializableExtra(IntentConfig.toJumpEmployer);
+        toTalkEmployerBean = (ToTalkEmployerBean) getIntent().getSerializableExtra(IntentConfig.toTalkEmployer);
         talkEmployerAdapter = new TalkEmployerAdapter(TalkEmployerActivity.this, talkEmployerWorkerBeanList, this);
     }
 
@@ -201,8 +204,8 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void loadData() {
         cpd.show();
-        String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toJumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
-        Utils.log(TalkEmployerActivity.this,url);
+        String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toTalkEmployerBean.getT_id() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+        Utils.log(TalkEmployerActivity.this, url);
         talkEmployerPresenter.load(url);
     }
 
@@ -274,7 +277,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         if (TextUtils.isEmpty(tewId)) {
             Utils.toast(TalkEmployerActivity.this, "请选择任务");
         } else {
-            String url = NetConfig.orderUrl + "?action=create&tew_id=" + tewId + "&t_id=" + toJumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId() + "&o_sponsor=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+            String url = NetConfig.orderUrl + "?action=create&tew_id=" + tewId + "&t_id=" + toTalkEmployerBean.getT_id() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId() + "&o_sponsor=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
             Utils.log(TalkEmployerActivity.this, url);
             cpd.show();
             talkEmployerPresenter.invite(url);
@@ -283,8 +286,9 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     @Override
     public void success(String json) {
-
+        Utils.log(TalkEmployerActivity.this, "talkEmployerJson\n" + json);
         talkEmployerBean = DataUtils.getTalkEmployerBean(json);
+        Utils.log(TalkEmployerActivity.this, "talkEmployerBean\n" + talkEmployerBean.toString());
         for (int i = 0; i < talkEmployerBean.getTalkEmployerWorkerBeanList().size(); i++) {
             idList.add(talkEmployerBean.getTalkEmployerWorkerBeanList().get(i).getId());
         }

@@ -2,9 +2,10 @@ package config;
 
 public interface IntentConfig {
 
-    String skillToWorker = "skill_to_worker";
+    String toWorker = "to_worker";
     String screenToWorker = "screen_to_worker";
     String toTalkWorker = "to_talk_worker";
+    String toTalkEmployer = "to_talk_employer";
     String toJumpEmployer = "to_jump_employer";
     String workerToTalkSkill = "worker_to_talk_skill";
     String toSelectTask = "to_select_skill";
@@ -13,7 +14,8 @@ public interface IntentConfig {
     String toChangePrice = "to_change_price";
     String toComplain = "to_complain";
     String toJumpWorker = "to_jump_worker";
-    String toResign = "to_Resign";
+    String toResign = "to_resign";
+    String toFire = "to_fire";
 
     String taskToTalk = "task_to_talk";
     String talkToDetail = "talk_to_detail";

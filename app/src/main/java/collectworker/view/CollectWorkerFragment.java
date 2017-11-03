@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.CollectWorkerAdapter;
+import bean.CollectWorkerBean;
 import bean.WorkerBean;
 import collectworker.presenter.CollectWorkerPresenter;
 import collectworker.presenter.ICollectWorkerPresenter;
@@ -29,7 +29,6 @@ import config.VarConfig;
 import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import skill.view.SkillActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
@@ -43,7 +42,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-    private List<WorkerBean> collectWorkerList;
+    private List<CollectWorkerBean> collectWorkerBeanList = new ArrayList<>();
     private CollectWorkerAdapter collectWorkerAdapter;
 
     private ICollectWorkerPresenter collectWorkerPresenter;
@@ -72,7 +71,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
                         break;
                     case CANCEL_COLLECT_SUCCESS:
                         Utils.toast(getActivity(), tip);
-                        collectWorkerList.remove(clickPosition);
+                        collectWorkerBeanList.remove(clickPosition);
                         notifyData();
                         break;
                     case CANCEL_COLLECT_FAILURE:
@@ -137,8 +136,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
 
     private void initData() {
         collectWorkerPresenter = new CollectWorkerPresenter(this);
-        collectWorkerList = new ArrayList<>();
-        collectWorkerAdapter = new CollectWorkerAdapter(getActivity(), collectWorkerList, this);
+        collectWorkerAdapter = new CollectWorkerAdapter(getActivity(), collectWorkerBeanList, this);
     }
 
     private void setData() {
@@ -162,7 +160,7 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                if (collectWorkerList.size() == 0) {
+                if (collectWorkerBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
@@ -198,10 +196,10 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
     public void loadSuccess(String loadJson) {
         switch (STATE) {
             case REFRESH:
-                collectWorkerList.clear();
+                collectWorkerBeanList.clear();
                 break;
         }
-        collectWorkerList.addAll(DataUtils.getWorkerBeanList(loadJson));
+        collectWorkerBeanList.addAll(DataUtils.getCollectWorkerBeanList(loadJson));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
@@ -245,12 +243,12 @@ public class CollectWorkerFragment extends Fragment implements ICollectWorkerFra
 
     @Override
     public void onClick(int id, int pos) {
+        clickPosition = pos;
         switch (id) {
             case R.id.ll_item_worker:
                 break;
             case R.id.iv_item_worker_collect:
-                clickPosition = pos;
-                collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + collectWorkerList.get(clickPosition).getCollectId());
+                collectWorkerPresenter.cancelCollect(NetConfig.favorateDelUrl + "?f_id=" + collectWorkerBeanList.get(clickPosition).getF_id());
                 break;
         }
     }

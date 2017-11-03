@@ -16,7 +16,7 @@ import okhttp3.Response;
 public class TalkWorkerModule implements ITalkWorkerModule {
 
     private OkHttpClient okHttpClient;
-    private Call call, getSkillCall, checkCall, cancelWorkerCall, authorSureCall;
+    private Call call, checkCall;
 
     public TalkWorkerModule() {
         okHttpClient = new OkHttpClient();
@@ -31,29 +31,6 @@ public class TalkWorkerModule implements ITalkWorkerModule {
                 .build();
         call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                jsonListener.failure(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    jsonListener.success(response.body().string());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void getSkillJson(String url, final JsonListener jsonListener) {
-        Request request = new Request
-                .Builder()
-                .url(url)
-                .get()
-                .build();
-        getSkillCall = okHttpClient.newCall(request);
-        getSkillCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 jsonListener.failure(e.getMessage());
@@ -88,64 +65,14 @@ public class TalkWorkerModule implements ITalkWorkerModule {
     }
 
     @Override
-    public void cancelWorker(String url, final JsonListener jsonListener) {
-        Request cancelWorkerRequest = new Request.Builder().url(url).get().build();
-        cancelWorkerCall = okHttpClient.newCall(cancelWorkerRequest);
-        cancelWorkerCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                jsonListener.failure(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    jsonListener.success(response.body().string());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void authorSure(String url, final JsonListener jsonListener) {
-        Request authorSureRequest = new Request.Builder().url(url).get().build();
-        authorSureCall = okHttpClient.newCall(authorSureRequest);
-        authorSureCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                jsonListener.failure(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    jsonListener.success(response.body().string());
-                }
-            }
-        });
-    }
-
-    @Override
     public void cancelTask() {
         if (call != null) {
             call.cancel();
             call = null;
         }
-        if (getSkillCall != null) {
-            getSkillCall.cancel();
-            getSkillCall = null;
-        }
         if (checkCall != null) {
             checkCall.cancel();
             checkCall = null;
-        }
-        if (cancelWorkerCall != null) {
-            cancelWorkerCall.cancel();
-            cancelWorkerCall = null;
-        }
-        if (authorSureCall != null) {
-            authorSureCall.cancel();
-            authorSureCall = null;
         }
         if (okHttpClient != null) {
             okHttpClient = null;

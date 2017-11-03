@@ -20,8 +20,10 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
+import bean.ToComplainBean;
 import bean.ToResignBean;
 import bean.UserInfoBean;
+import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
 import main.view.MainActivity;
@@ -137,7 +139,13 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
 
     private void notifyData() {
         Picasso.with(ResignActivity.this).load(userInfoBean.getU_img()).into(iconIv);
-        //TODO
+        nameTv.setText(userInfoBean.getU_name());
+        countTv.setText("好评" + userInfoBean.getU_high_opinions() + "次");
+        if (userInfoBean.getU_sex().equals("0")) {
+            sexIv.setImageResource(R.mipmap.female);
+        } else if (userInfoBean.getU_sex().equals("1")) {
+            sexIv.setImageResource(R.mipmap.male);
+        }
     }
 
     @Override
@@ -145,6 +153,14 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.rl_resign_return:
                 finish();
+                break;
+            case R.id.ll_resign_complain:
+                ToComplainBean toComplainBean = new ToComplainBean();
+                toComplainBean.setAgainstId(toResignBean.getAuthorId());
+                toComplainBean.setCtType("1");
+                Intent complainIntent = new Intent(ResignActivity.this, ComplainActivity.class);
+                complainIntent.putExtra(IntentConfig.toComplain, toComplainBean);
+                startActivity(complainIntent);
                 break;
             case R.id.iv_resign_praise_1:
                 praiseCount = 1;

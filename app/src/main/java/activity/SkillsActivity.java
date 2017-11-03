@@ -1,4 +1,4 @@
-package skill.view;
+package activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,24 +16,28 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.SkillBean;
-import adapter.SkillAdapter;
+import bean.SkillsBean;
+import adapter.SkillsAdapter;
+import bean.ToWorkerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import skill.presenter.ISkillPresenter;
-import skill.presenter.SkillPresenter;
 import utils.DataUtils;
 import utils.Utils;
 import view.CProgressDialog;
-import worker.view.WorkerActivity;
 
-public class SkillActivity extends AppCompatActivity implements ISkillActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class SkillsActivity extends AppCompatActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
 
     private View rootView, emptyView, netView;
     private FrameLayout fl;
@@ -42,14 +46,15 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
     private CProgressDialog cpd;
-    private List<SkillBean> skillBeanList = new ArrayList<>();
-    private SkillAdapter skillAdapter;
-    private ISkillPresenter skillsPresenter;
+    private List<SkillsBean> skillsBeanList = new ArrayList<>();
+    private SkillsAdapter skillsAdapter;
     private final int SUCCESS = 1;
     private final int FAILURE = 2;
     private final int FIRST = 3;
     private final int REFRESH = 4;
     private int STATE = FIRST;
+    private OkHttpClient okHttpClient;
+    private Call skillsCall;
 
     private Handler handler = new Handler() {
         @Override
@@ -72,7 +77,7 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        rootView = LayoutInflater.from(this).inflate(R.layout.activity_skill, null);
+        rootView = LayoutInflater.from(this).inflate(R.layout.activity_skills, null);
         setContentView(rootView);
         initView();
         initData();
@@ -84,9 +89,12 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (skillsPresenter != null) {
-            skillsPresenter.destroy();
-            skillsPresenter = null;
+        if (skillsCall != null) {
+            skillsCall.cancel();
+            skillsCall = null;
+        }
+        if (okHttpClient != null) {
+            okHttpClient = null;
         }
         if (handler != null) {
             handler.removeMessages(SUCCESS);
@@ -98,21 +106,21 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
     private void initView() {
         initRootView();
         initEmptyView();
+        initDialogView();
     }
 
     private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_skill_return);
+        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_skills_return);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
-        cpd = Utils.initProgressDialog(this, cpd);
     }
 
     private void initEmptyView() {
         fl = (FrameLayout) rootView.findViewById(R.id.fl);
-        emptyView = LayoutInflater.from(SkillActivity.this).inflate(R.layout.empty_data, null);
+        emptyView = LayoutInflater.from(SkillsActivity.this).inflate(R.layout.empty_data, null);
         fl.addView(emptyView);
         emptyView.setVisibility(View.GONE);
-        netView = LayoutInflater.from(SkillActivity.this).inflate(R.layout.empty_net, null);
+        netView = LayoutInflater.from(SkillsActivity.this).inflate(R.layout.empty_net, null);
         netTv = (TextView) netView.findViewById(R.id.tv_no_net_refresh);
         netTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,13 +135,17 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
         netView.setVisibility(View.GONE);
     }
 
+    private void initDialogView() {
+        cpd = new CProgressDialog(SkillsActivity.this, R.style.dialog_cprogress);
+    }
+
     private void initData() {
-        skillAdapter = new SkillAdapter(this, skillBeanList);
-        skillsPresenter = new SkillPresenter(SkillActivity.this);
+        skillsAdapter = new SkillsAdapter(this, skillsBeanList);
+        okHttpClient = new OkHttpClient();
     }
 
     private void setData() {
-        plv.setAdapter(skillAdapter);
+        plv.setAdapter(skillsAdapter);
     }
 
     private void setListener() {
@@ -148,14 +160,41 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
                 cpd.show();
                 break;
         }
-        skillsPresenter.load(NetConfig.skillUrl);
+        String skillsUrl = NetConfig.skillsUrl;
+        Utils.log(SkillsActivity.this, "skillsUrl\n" + skillsUrl);
+        Request skillsRequest = new Request
+                .Builder()
+                .url(skillsUrl)
+                .get()
+                .build();
+        skillsCall = okHttpClient.newCall(skillsRequest);
+        skillsCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.sendEmptyMessage(FAILURE);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    switch (STATE) {
+                        case REFRESH:
+                            skillsBeanList.clear();
+                            break;
+                    }
+                    skillsBeanList.addAll(DataUtils.getSkillBeanList(response.body().string()));
+                    Utils.log(SkillsActivity.this, "skillsBeanList\n" + skillsBeanList.toString());
+                    handler.sendEmptyMessage(SUCCESS);
+                }
+            }
+        });
     }
 
     private void notifyData() {
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                if (skillBeanList.size() == 0) {
+                if (skillsBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
@@ -169,7 +208,7 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
                 ptrl.hideHeadView();
                 break;
         }
-        skillAdapter.notifyDataSetChanged();
+        skillsAdapter.notifyDataSetChanged();
     }
 
     private void notifyNet() {
@@ -182,7 +221,7 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
                 break;
             case REFRESH:
                 ptrl.hideHeadView();
-                Utils.toast(SkillActivity.this, VarConfig.noNetTip);
+                Utils.toast(SkillsActivity.this, VarConfig.noNetTip);
                 break;
         }
     }
@@ -190,7 +229,7 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_skill_return:
+            case R.id.rl_skills_return:
                 finish();
                 break;
         }
@@ -198,33 +237,18 @@ public class SkillActivity extends AppCompatActivity implements ISkillActivity, 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ToWorkerBean toWorkerBean = new ToWorkerBean();
+        toWorkerBean.setS_id(skillsBeanList.get(position).getS_id());
+        toWorkerBean.setS_name(skillsBeanList.get(position).getS_name());
         Intent intent = new Intent(this, WorkerActivity.class);
-        intent.putExtra(IntentConfig.skillToWorker, skillBeanList.get(position));
+        intent.putExtra(IntentConfig.toWorker, toWorkerBean);
         startActivity(intent);
-    }
-
-    @Override
-    public void skillSuccess(String skillJson) {
-        Utils.log(SkillActivity.this, "skillJson=" + skillJson);
-        switch (STATE) {
-            case REFRESH:
-                skillBeanList.clear();
-                break;
-        }
-        skillBeanList.addAll(DataUtils.getSkillBeanList(skillJson));
-        Utils.log(SkillActivity.this, "skillBeanList=" + skillBeanList.toString());
-        handler.sendEmptyMessage(SUCCESS);
-    }
-
-    @Override
-    public void skillFailure(String failure) {
-        handler.sendEmptyMessage(FAILURE);
     }
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
         STATE = REFRESH;
-        skillsPresenter.load(NetConfig.skillUrl);
+        loadData();
     }
 
     @Override

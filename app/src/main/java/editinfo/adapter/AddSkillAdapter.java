@@ -16,15 +16,15 @@ import com.gjzg.R;
 import java.util.List;
 
 import editinfo.listener.AddSkillClickHelp;
-import bean.SkillBean;
+import bean.SkillsBean;
 
 public class AddSkillAdapter extends BaseAdapter {
 
     private Context context;
-    private List<SkillBean> list;
+    private List<SkillsBean> list;
     private AddSkillClickHelp addSkillClickHelp;
 
-    public AddSkillAdapter(Context context, List<SkillBean> list, AddSkillClickHelp addSkillClickHelp) {
+    public AddSkillAdapter(Context context, List<SkillsBean> list, AddSkillClickHelp addSkillClickHelp) {
         this.context = context;
         this.list = list;
         this.addSkillClickHelp = addSkillClickHelp;
@@ -55,10 +55,9 @@ public class AddSkillAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        SkillBean skillBean = list.get(position);
-        if (skillBean != null) {
-            holder.nameTv.setText(skillBean.getName());
-            holder.checkCb.setChecked(skillBean.isCheck());
+        SkillsBean skillsBean = list.get(position);
+        if (skillsBean != null) {
+            holder.nameTv.setText(skillsBean.getS_name());
         }
         final int checkId = holder.checkCb.getId();
         final int p = position;

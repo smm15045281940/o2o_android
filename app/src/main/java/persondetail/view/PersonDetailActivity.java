@@ -20,7 +20,7 @@ import java.util.List;
 
 import adapter.EvaluateAdapter;
 import bean.EvaluateBean;
-import bean.SkillBean;
+import bean.SkillsBean;
 import config.IntentConfig;
 import config.NetConfig;
 import persondetail.presenter.IPersonDetailPresenter;
@@ -40,7 +40,7 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
     private RelativeLayout returnRl;
     private ListView listView;
     private GridView gridView;
-    private List<SkillBean> skillBeanList = new ArrayList<>();
+    private List<SkillsBean> skillsBeanList = new ArrayList<>();
     private UserSkillAdapter userSkillAdapter;
     private CProgressDialog cpd;
     private EvaluateAdapter evaluateAdapter;
@@ -64,7 +64,7 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
             if (msg != null) {
                 switch (msg.what) {
                     case INFO_SUCCESS:
-                        personDetailPresenter.getSkill(NetConfig.skillUrl);
+                        personDetailPresenter.getSkill(NetConfig.skillsUrl);
                         break;
                     case INFO_FAILURE:
                         break;
@@ -135,7 +135,7 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
 
     private void initData() {
         evaluateAdapter = new EvaluateAdapter(PersonDetailActivity.this, evaluateBeanList);
-        userSkillAdapter = new UserSkillAdapter(PersonDetailActivity.this, skillBeanList);
+        userSkillAdapter = new UserSkillAdapter(PersonDetailActivity.this, skillsBeanList);
         detailId = getIntent().getStringExtra(IntentConfig.talkToDetail);
         personDetailPresenter = new PersonDetailPresenter(this);
     }
@@ -209,11 +209,11 @@ public class PersonDetailActivity extends AppCompatActivity implements IPersonDe
             skillIdList.add(skillArr[i]);
         }
         List<String> skillNameList = new ArrayList<>();
-        skillNameList.addAll(DataUtils.getSkillNameList(json, skillIdList));
+//        skillNameList.addAll(DataUtils.getSkillNameList(json, skillIdList));
         for (int i = 0; i < skillNameList.size(); i++) {
-            SkillBean skillBean = new SkillBean();
-            skillBean.setName(skillNameList.get(i));
-            skillBeanList.add(skillBean);
+            SkillsBean skillsBean = new SkillsBean();
+//            skillsBean.setName(skillNameList.get(i));
+            skillsBeanList.add(skillsBean);
         }
 
         handler.sendEmptyMessage(SKILL_SUCCESS);

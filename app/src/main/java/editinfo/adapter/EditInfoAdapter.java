@@ -21,7 +21,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillBean;
+import bean.SkillsBean;
 import editinfo.listener.EditInfoClickHelp;
 import bean.UserInfoBean;
 import utils.Utils;
@@ -30,13 +30,13 @@ public class EditInfoAdapter extends BaseAdapter {
 
     private Context context;
     private UserInfoBean userInfoBean;
-    private List<SkillBean> skillBeanList;
+    private List<SkillsBean> skillsBeanList;
     private EditInfoClickHelp editInfoClickHelp;
 
-    public EditInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillBean> skillBeanList, EditInfoClickHelp editInfoClickHelp) {
+    public EditInfoAdapter(Context context, UserInfoBean userInfoBean, List<SkillsBean> skillsBeanList, EditInfoClickHelp editInfoClickHelp) {
         this.context = context;
         this.userInfoBean = userInfoBean;
-        this.skillBeanList = skillBeanList;
+        this.skillsBeanList = skillsBeanList;
         this.editInfoClickHelp = editInfoClickHelp;
     }
 
@@ -175,7 +175,7 @@ public class EditInfoAdapter extends BaseAdapter {
         } else {
             ((RadioButton) holder.roleRg.getChildAt(1)).setChecked(true);
             holder.workerLl.setVisibility(View.VISIBLE);
-            holder.gridView.setAdapter(new EditSkillAdapter(context, skillBeanList));
+            holder.gridView.setAdapter(new EditSkillAdapter(context, skillsBeanList));
             Utils.setGridViewHeight(holder.gridView, 4);
         }
         final int sexId = holder.sexRg.getId();

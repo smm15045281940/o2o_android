@@ -58,16 +58,16 @@ public class WorkerAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         WorkerBean workerBean = list.get(position);
-        Picasso.with(context).load(workerBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
-        holder.titleTv.setText(workerBean.getTitle());
-        holder.infoTv.setText(workerBean.getInfo());
-        String status = workerBean.getStatus();
+        Picasso.with(context).load(workerBean.getU_img()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
+        holder.titleTv.setText(workerBean.getU_true_name());
+        holder.infoTv.setText(workerBean.getUei_info());
+        String status = workerBean.getU_task_status();
         if (status.equals("0")) {
             holder.statusIv.setImageResource(R.mipmap.worker_leisure);
         } else if (status.equals("1")) {
             holder.statusIv.setImageResource(R.mipmap.worker_mid);
         }
-        int favorite = workerBean.getFavorite();
+        int favorite = workerBean.getIs_fav();
         switch (favorite) {
             case 0:
                 holder.collectIv.setImageResource(R.mipmap.collect_gray);

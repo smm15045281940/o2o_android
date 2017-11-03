@@ -108,7 +108,7 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             if (msg != null) {
                 switch (msg.what) {
                     case USER_INFO_SUCCESS:
-                        complainPresenter.userSkill(NetConfig.skillUrl);
+                        complainPresenter.userSkill(NetConfig.skillsUrl);
                         break;
                     case USER_INFO_FAILURE:
                         break;
@@ -282,7 +282,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             skillIdList.add(arr[i]);
         }
         List<String> skillNameList = new ArrayList<>();
-        skillNameList.addAll(DataUtils.getSkillNameList(json, skillIdList));
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < skillNameList.size(); i++) {
             sb.append(skillNameList.get(i));

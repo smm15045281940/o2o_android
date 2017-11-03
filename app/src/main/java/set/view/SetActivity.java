@@ -118,6 +118,7 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
                 startActivity(new Intent(SetActivity.this, AboutUsActivity.class));
                 break;
             case R.id.rl_set_quit:
+                Utils.log(SetActivity.this, "quit");
                 setPresenter.quit(UserUtils.readUserData(SetActivity.this).getId());
                 break;
         }

@@ -10,13 +10,7 @@ public interface ITalkWorkerModule {
 
     void load(String url, JsonListener jsonListener);
 
-    void getSkillJson(String url, JsonListener jsonListener);
-
     void check(String url,JsonListener jsonListener);
-
-    void cancelWorker(String url,JsonListener jsonListener);
-
-    void authorSure(String url,JsonListener jsonListener);
 
     void cancelTask();
 }

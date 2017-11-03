@@ -1,6 +1,7 @@
 package set.module;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import set.listener.QuitListener;
+import utils.Utils;
 
 /**
  * Created by Administrator on 2017/10/24.
@@ -51,6 +53,7 @@ public class SetModule implements ISetModule {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
+                    Log.e("SetActivity", json);
                     if (!TextUtils.isEmpty(json)) {
                         try {
                             JSONObject beanObj = new JSONObject(json);

@@ -2,9 +2,6 @@ package bean;
 
 
 import java.io.Serializable;
-import java.util.List;
-
-import bean.SkillBean;
 
 public class UserInfoBean implements Serializable {
 

@@ -21,16 +21,14 @@ import adapter.EmployerToTalkAdapter;
 import bean.EmployerToTalkBean;
 import bean.ToEmployerToTalkBean;
 import bean.ToJumpWorkerBean;
-import bean.ToTalkWorkerBean;
-import bean.WorkerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import employertotalk.presenter.EmployerToTalkPresenter;
 import employertotalk.presenter.IEmployerToTalkPresenter;
+import jumpworker.view.JumpWorkerActivity;
 import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import talkworker.view.TalkWorkerActivity;
 import utils.DataUtils;
 import utils.Utils;
 import view.CProgressDialog;
@@ -61,7 +59,7 @@ public class EmployerToTalkActivity extends AppCompatActivity implements IEmploy
             if (msg != null) {
                 switch (msg.what) {
                     case LOAD_SUCCESS:
-                        employerToTalkPresenter.skill(NetConfig.skillUrl);
+                        employerToTalkPresenter.skill(NetConfig.skillsUrl);
                         break;
                     case LOAD_FAILURE:
                         break;
@@ -187,9 +185,14 @@ public class EmployerToTalkActivity extends AppCompatActivity implements IEmploy
         clickPosition = pos;
         switch (id) {
             case R.id.ll_item_employer_to_talk_type_1:
-                Intent waitIntent = new Intent(EmployerToTalkActivity.this, TalkWorkerActivity.class);
+                Intent waitIntent = new Intent(EmployerToTalkActivity.this, JumpWorkerActivity.class);
                 ToJumpWorkerBean toJumpWorkerBean = new ToJumpWorkerBean();
+                toJumpWorkerBean.setTaskId(employerToTalkBeanList.get(clickPosition).getTaskId());
                 toJumpWorkerBean.setWorkerId(employerToTalkBeanList.get(clickPosition).getWorkerId());
+                toJumpWorkerBean.setOrderId(employerToTalkBeanList.get(clickPosition).getOrderId());
+                toJumpWorkerBean.setS_name(employerToTalkBeanList.get(clickPosition).getSkillName());
+                toJumpWorkerBean.setO_status(employerToTalkBeanList.get(clickPosition).getO_status());
+                toJumpWorkerBean.setO_confirm(employerToTalkBeanList.get(clickPosition).getO_confirm());
                 waitIntent.putExtra(IntentConfig.toJumpWorker, toJumpWorkerBean);
                 startActivity(waitIntent);
                 break;

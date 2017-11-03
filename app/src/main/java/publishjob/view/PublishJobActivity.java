@@ -36,7 +36,7 @@ import java.util.List;
 
 import adapter.ScnDiaAdapter;
 import bean.PublishWorkerBean;
-import bean.SkillBean;
+import bean.SkillsBean;
 import config.NetConfig;
 import publishjob.adapter.PublishKindAdapter;
 import publishjob.adapter.SelectSkillAdapter;
@@ -77,7 +77,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private PopupWindow skillPop;
     private ListView skillLv;
     private SelectSkillAdapter selectSkillAdapter;
-    private List<SkillBean> skillBeanList;
+    private List<SkillsBean> skillsBeanList;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
@@ -253,14 +253,14 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
         skillLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                publishWorkerBeanList.get(pickPosition).setId(skillBeanList.get(position).getId());
-                publishWorkerBeanList.get(pickPosition).setKind(skillBeanList.get(position).getName());
+                publishWorkerBeanList.get(pickPosition).setId(skillsBeanList.get(position).getS_id());
+                publishWorkerBeanList.get(pickPosition).setKind(skillsBeanList.get(position).getS_name());
                 adapter.notifyDataSetChanged();
                 skillPop.dismiss();
             }
         });
-        skillBeanList = new ArrayList<>();
-        selectSkillAdapter = new SelectSkillAdapter(PublishJobActivity.this, skillBeanList);
+        skillsBeanList = new ArrayList<>();
+        selectSkillAdapter = new SelectSkillAdapter(PublishJobActivity.this, skillsBeanList);
         skillLv.setAdapter(selectSkillAdapter);
         skillPop = new PopupWindow(skillPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         skillPop.setFocusable(true);
@@ -288,7 +288,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
     private void loadData() {
         publishJobPresenter.getTaskType("http://api.gangjianwang.com/Tools/taskType");
-        publishJobPresenter.getSkill(NetConfig.skillUrl);
+        publishJobPresenter.getSkill(NetConfig.skillsUrl);
     }
 
     private void submit() {
@@ -459,7 +459,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
 
     @Override
     public void skillSuccess(String json) {
-        skillBeanList.addAll(DataUtils.getSkillBeanList(json));
+        skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
         handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 

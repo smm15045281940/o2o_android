@@ -39,9 +39,10 @@ import employermanage.presenter.IEmployerManagePresenter;
 import employertodoing.view.EmployerToDoingActivity;
 import employertotalk.view.EmployerToTalkActivity;
 import listener.IdPosClickHelp;
+import main.view.MainActivity;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
-import skill.view.SkillActivity;
+import activity.SkillsActivity;
 import utils.DataUtils;
 import utils.UrlUtils;
 import utils.UserUtils;
@@ -107,6 +108,11 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
         initData();
         setData();
         setListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -187,7 +193,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
             public void onClick(View v) {
                 if (pop.isShowing()) {
                     pop.dismiss();
-                    startActivity(new Intent(EmployerManageActivity.this, SkillActivity.class));
+                    startActivity(new Intent(EmployerManageActivity.this, SkillsActivity.class));
                 }
             }
         });
@@ -301,7 +307,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_employer_manage_return:
-                finish();
+                startActivity(new Intent(EmployerManageActivity.this, MainActivity.class));
                 break;
             case R.id.rl_employer_manage_all:
                 tarState = ALL;
@@ -410,7 +416,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                     toEmployerToTalkBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
                     talkIntent.putExtra(IntentConfig.toEmployerToTalk, toEmployerToTalkBean);
                     startActivity(talkIntent);
-                } else if (status.equals("2")) {
+                } else if (status.equals("2") || status.equals("5")) {
                     Intent doingIntent = new Intent(EmployerManageActivity.this, EmployerToDoingActivity.class);
                     ToEmployerToDoingBean toEmployerToDoingBean = new ToEmployerToDoingBean();
                     toEmployerToDoingBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
@@ -422,7 +428,12 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                 break;
             case R.id.tv_item_employer_manage_wait_cancel:
                 cpd.show();
-                employerManagePresenter.cancel(NetConfig.taskBaseUrl + "?action=del&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() + "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId());
+                String waitCancelUrl = NetConfig.taskBaseUrl +
+                        "?action=del" +
+                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
+                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                Utils.log(EmployerManageActivity.this, waitCancelUrl);
+                employerManagePresenter.cancel(waitCancelUrl);
                 break;
             case R.id.tv_item_employer_manage_talk_cancel:
                 cpd.show();

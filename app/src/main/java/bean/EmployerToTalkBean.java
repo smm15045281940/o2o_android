@@ -24,6 +24,24 @@ public class EmployerToTalkBean implements Serializable {
     private String taskId;
     private String amount;
     private String price;
+    private String o_confirm;
+    private String o_status;
+
+    public String getO_confirm() {
+        return o_confirm;
+    }
+
+    public void setO_confirm(String o_confirm) {
+        this.o_confirm = o_confirm;
+    }
+
+    public String getO_status() {
+        return o_status;
+    }
+
+    public void setO_status(String o_status) {
+        this.o_status = o_status;
+    }
 
     public int getType() {
         return type;
@@ -172,6 +190,8 @@ public class EmployerToTalkBean implements Serializable {
                 ", taskId='" + taskId + '\'' +
                 ", amount='" + amount + '\'' +
                 ", price='" + price + '\'' +
+                ", o_confirm='" + o_confirm + '\'' +
+                ", o_status='" + o_status + '\'' +
                 '}';
     }
 }

@@ -238,7 +238,7 @@ public class Utils {
             int a = str.indexOf(",");
             int b = str.lastIndexOf(",");
             String skill = str.substring(a + 1, b);
-            return NetConfig.skillUrl + "?s_id=" + skill;
+            return NetConfig.skillsUrl + "?s_id=" + skill;
         }
         return null;
     }

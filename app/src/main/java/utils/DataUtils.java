@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+import bean.CollectWorkerBean;
 import bean.ComplainIssueBean;
 import bean.EmployerToDoingBean;
 import bean.EmployerToTalkBean;
@@ -17,7 +18,7 @@ import bean.EvaluateBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.RedPacketBean;
-import bean.SkillBean;
+import bean.SkillsBean;
 import bean.TaskBean;
 import bean.TaskWorkerBean;
 import bean.VoucherBean;
@@ -31,9 +32,9 @@ import bean.WorkerManageBean;
 
 public class DataUtils {
 
-    //工种
-    public static List<SkillBean> getSkillBeanList(String json) {
-        List<SkillBean> resultList = new ArrayList<>();
+    //技能
+    public static List<SkillsBean> getSkillBeanList(String json) {
+        List<SkillsBean> resultList = new ArrayList<>();
         try {
             JSONObject beanObj = new JSONObject(json);
             if (beanObj.optInt("code") == 200) {
@@ -42,10 +43,13 @@ public class DataUtils {
                     for (int i = 0; i < dataArr.length(); i++) {
                         JSONObject o = dataArr.optJSONObject(i);
                         if (o != null) {
-                            SkillBean skillBean = new SkillBean();
-                            skillBean.setId(o.optString("s_id"));
-                            skillBean.setName(o.optString("s_name"));
-                            resultList.add(skillBean);
+                            SkillsBean skillsBean = new SkillsBean();
+                            skillsBean.setS_id(o.optString("s_id"));
+                            skillsBean.setS_name(o.optString("s_name"));
+                            skillsBean.setS_info(o.optString("s_info"));
+                            skillsBean.setS_desc(o.optString("s_desc"));
+                            skillsBean.setS_status(o.optString("s_status"));
+                            resultList.add(skillsBean);
                         }
                     }
                 }
@@ -54,6 +58,32 @@ public class DataUtils {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    //技能名称
+    public static List<String> getSkillNameList(String json, List<String> skillIdList) {
+        List<String> skillNameList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 200) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null) {
+                    for (int i = 0; i < skillIdList.size(); i++) {
+                        for (int j = 0; j < dataArr.length(); j++) {
+                            JSONObject o = dataArr.optJSONObject(j);
+                            if (o != null) {
+                                if (o.optString("s_id").equals(skillIdList.get(i))) {
+                                    skillNameList.add(o.optString("s_name"));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return skillNameList;
     }
 
     //工人
@@ -72,19 +102,33 @@ public class DataUtils {
                                 JSONObject o = dataArr.optJSONObject(i);
                                 if (o != null) {
                                     WorkerBean workerBean = new WorkerBean();
-                                    workerBean.setWorkerId(o.optString("u_id"));
-                                    workerBean.setIcon(o.optString("u_img"));
-                                    workerBean.setTitle(o.optString("u_name"));
-                                    workerBean.setInfo(o.optString("uei_info"));
-                                    workerBean.setStatus(o.optString("u_task_status"));
-                                    workerBean.setCollectId(o.optString("f_id"));
-                                    workerBean.setFavorite(o.optInt("is_fav"));
-                                    workerBean.setPositionX(o.optString("ucp_posit_x"));
-                                    workerBean.setPositionY(o.optString("ucp_posit_y"));
-                                    workerBean.setSex(o.optString("u_sex"));
-                                    workerBean.setMobile(o.optString("u_mobile"));
-                                    workerBean.setAddress(o.optString("uei_address"));
-                                    workerBean.setSkill(o.optString("u_skills"));
+                                    workerBean.setU_id(o.optString("u_id"));
+                                    workerBean.setU_mobile(o.optString("u_mobile"));
+                                    workerBean.setU_idcard(o.optString("u_idcard"));
+                                    workerBean.setU_sex(o.optString("u_sex"));
+                                    workerBean.setU_name(o.optString("u_name"));
+                                    workerBean.setU_skills(o.optString("u_skills"));
+                                    workerBean.setUei_info(o.optString("uei_info"));
+                                    workerBean.setU_task_status(o.optString("u_task_status"));
+                                    workerBean.setU_true_name(o.optString("u_true_name"));
+                                    workerBean.setUcp_posit_x(o.optString("ucp_posit_x"));
+                                    workerBean.setUcp_posit_y(o.optString("ucp_posit_y"));
+                                    workerBean.setUei_address(o.optString("uei_address"));
+                                    workerBean.setU_in_time(o.optString("u_in_time"));
+                                    workerBean.setU_last_edit_time(o.optString("u_last_edit_time"));
+                                    workerBean.setU_online(o.optString("u_online"));
+                                    workerBean.setU_start(o.optString("u_start"));
+                                    workerBean.setU_credit(o.optString("u_credit"));
+                                    workerBean.setU_top(o.optString("u_top"));
+                                    workerBean.setU_recommend(o.optString("u_recommend"));
+                                    workerBean.setU_jobs_num(o.optString("u_jobs_num"));
+                                    workerBean.setU_worked_num(o.optString("u_worked_num"));
+                                    workerBean.setU_high_opinions(o.optString("u_high_opinions"));
+                                    workerBean.setU_low_opinions(o.optString("u_low_opinions"));
+                                    workerBean.setU_middile_opinions(o.optString("u_middle_opinions"));
+                                    workerBean.setU_dissensions(o.optString("u_dissensions"));
+                                    workerBean.setU_img(o.optString("u_img"));
+                                    workerBean.setIs_fav(o.optInt("is_fav"));
                                     workerBean.setRelation(o.optInt("relation"));
                                     workerBean.setRelation_type(o.optInt("relation_type"));
                                     workerBeanList.add(workerBean);
@@ -98,6 +142,41 @@ public class DataUtils {
             e.printStackTrace();
         }
         return workerBeanList;
+    }
+
+    //收藏的工人
+    public static List<CollectWorkerBean> getCollectWorkerBeanList(String json) {
+        List<CollectWorkerBean> collectWorkerBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 1) {
+                JSONObject dataObj = beanObj.optJSONObject("data");
+                if (dataObj != null) {
+                    JSONArray dataArr = dataObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject o = dataArr.optJSONObject(i);
+                            if (o != null) {
+                                CollectWorkerBean collectWorkerBean = new CollectWorkerBean();
+                                collectWorkerBean.setU_id(o.optString("u_id"));
+                                collectWorkerBean.setU_img(o.optString("u_img"));
+                                collectWorkerBean.setU_name(o.optString("u_name"));
+                                collectWorkerBean.setU_task_status(o.optString("u_task_status"));
+                                collectWorkerBean.setU_sex(o.optString("u_sex"));
+                                collectWorkerBean.setUei_info(o.optString("uei_info"));
+                                collectWorkerBean.setUcp_posit_x(o.optString("ucp_posit_x"));
+                                collectWorkerBean.setUcp_posit_y(o.optString("ucp_posit_y"));
+                                collectWorkerBean.setF_id(o.optString("f_id"));
+                                collectWorkerBeanList.add(collectWorkerBean);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return collectWorkerBeanList;
     }
 
     //任务
@@ -337,6 +416,8 @@ public class DataUtils {
                                                 orderEttb.setOrderId(orderObj.optString("o_id"));
                                                 orderEttb.setTewId(orderObj.optString("tew_id"));
                                                 orderEttb.setTaskId(orderObj.optString("t_id"));
+                                                orderEttb.setO_status(orderObj.optString("o_status"));
+                                                orderEttb.setO_confirm(orderObj.optString("o_confirm"));
                                                 orderEttb.setAmount(workerEttb.getAmount());
                                                 orderEttb.setPrice(workerEttb.getPrice());
                                                 orderEttb.setStartTime(workerEttb.getStartTime());
@@ -395,6 +476,8 @@ public class DataUtils {
                                                     e1.setOrderId(o.optString("o_id"));
                                                     e1.setTaskId(o.optString("t_id"));
                                                     e1.setTewId(o.optString("tew_id"));
+                                                    e1.setO_status(o.optString("o_status"));
+                                                    e1.setO_confirm(o.optString("o_confirm"));
                                                     employerToDoingBeanList.add(e1);
                                                 }
                                             }
@@ -432,17 +515,15 @@ public class DataUtils {
                         JSONObject obj = dataArr.optJSONObject(i);
                         if (obj != null) {
                             String status = obj.optString("o_status");
-                            if (status.equals("0") || status.equals("1")) {
-                                WorkerManageBean workerManageBean = new WorkerManageBean();
-                                workerManageBean.setIcon(obj.optString("u_img"));
-                                workerManageBean.setTitle(obj.optString("t_title"));
-                                workerManageBean.setInfo(obj.optString("t_info"));
-                                workerManageBean.setO_status(status);
-                                workerManageBean.setO_confirm(obj.optString("o_confirm"));
-                                workerManageBean.setTaskId(obj.optString("t_id"));
-                                workerManageBean.setOrderId(obj.optString("o_id"));
-                                resultList.add(workerManageBean);
-                            }
+                            WorkerManageBean workerManageBean = new WorkerManageBean();
+                            workerManageBean.setIcon(obj.optString("u_img"));
+                            workerManageBean.setTitle(obj.optString("t_title"));
+                            workerManageBean.setInfo(obj.optString("t_info"));
+                            workerManageBean.setO_status(status);
+                            workerManageBean.setO_confirm(obj.optString("o_confirm"));
+                            workerManageBean.setTaskId(obj.optString("t_id"));
+                            workerManageBean.setOrderId(obj.optString("o_id"));
+                            resultList.add(workerManageBean);
                         }
                     }
                 }
@@ -620,7 +701,7 @@ public class DataUtils {
                     for (int i = 0; i < workerArr.length(); i++) {
                         JSONObject obj = workerArr.optJSONObject(i);
                         if (obj != null) {
-                            if (obj.optInt("remaining") == 1) {
+                            if (obj.optInt("remaining") != 0) {
                                 TalkEmployerWorkerBean t = new TalkEmployerWorkerBean();
                                 t.setId(obj.optString("tew_skills"));
                                 t.setAmount(obj.optString("tew_worker_num"));
@@ -640,31 +721,6 @@ public class DataUtils {
         }
         return talkEmployerBean;
     }
-
-    public static List<String> getSkillNameList(String skillJson, List<String> skillIdList) {
-        List<String> resultList = new ArrayList<>();
-        try {
-            JSONObject beanObj = new JSONObject(skillJson);
-            if (beanObj.optInt("code") == 200) {
-                JSONArray dataArr = beanObj.optJSONArray("data");
-                if (dataArr != null) {
-                    for (int i = 0; i < skillIdList.size(); i++) {
-                        String id = skillIdList.get(i);
-                        for (int j = 0; j < dataArr.length(); j++) {
-                            JSONObject o = dataArr.optJSONObject(j);
-                            if (id.equals(o.optString("s_id"))) {
-                                resultList.add(o.optString("s_name"));
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return resultList;
-    }
-
 
     public static String getPublishJson(PublishBean publishBean, boolean havePass) {
         JSONObject object = new JSONObject();

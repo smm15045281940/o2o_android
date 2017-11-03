@@ -1,11 +1,15 @@
 package jumpworker.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,13 +38,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.SkillBean;
+import activity.FireActivity;
+import bean.SkillsBean;
+import bean.ToChangePriceBean;
 import bean.ToComplainBean;
+import bean.ToFireBean;
 import bean.ToJumpWorkerBean;
 import bean.WorkerBean;
+import changeprice.view.ChangePriceActivity;
 import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
+import employermanage.view.EmployerManageActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -51,11 +60,13 @@ import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CImageView;
+import view.CProgressDialog;
 
 public class JumpWorkerActivity extends AppCompatActivity implements View.OnClickListener {
 
     private View rootView;
     private RelativeLayout returnRl, complainRl;
+    private CProgressDialog cpd;
     private MapView mapView;
     private CImageView iconIv, phoneIv;
     private ImageView sexIv, statusIv;
@@ -67,9 +78,13 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private OkHttpClient okHttpClient;
     private WorkerBean workerBean;
 
-    private TextView cancelWorkerTv, surePriceTv;
+    private TextView cancelWorkerTv, surePriceTv, fireWorkerTv;
     private View cancelWorkerPopView;
     private PopupWindow cancelWorkerPop;
+    private View surePricePopView;
+    private PopupWindow surePricePop;
+    private View fireWorkerPopView;
+    private PopupWindow fireWorkerPop;
 
     private Handler handler = new Handler() {
         @Override
@@ -78,10 +93,11 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
-                        loadSkill();
-                        break;
-                    case 2:
                         notifyData();
+                        break;
+                    case 3:
+                        cpd.dismiss();
+                        startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
                         break;
                 }
             }
@@ -98,6 +114,36 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         initData();
         setListener();
         loadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+        if (toJumpWorkerBean != null) {
+            toJumpWorkerBean = null;
+        }
+        if (workerBean != null) {
+            workerBean = null;
+        }
+        if (okHttpClient != null) {
+            okHttpClient = null;
+        }
+        if (handler != null) {
+
+        }
     }
 
     private void initView() {
@@ -121,9 +167,10 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         surePriceLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_talk_sure_price);
         waitWorkerLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_talk_wait_worker);
         fireWorkerLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_talk_fire_worker);
-
         cancelWorkerTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_cancel_worker);
         surePriceTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_sure_price);
+        fireWorkerTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_fire_worker);
+        cpd = Utils.initProgressDialog(JumpWorkerActivity.this, cpd);
     }
 
     private void initPopView() {
@@ -134,13 +181,18 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         cancelWorkerPopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelWorkerPop.dismiss();
+                if (cancelWorkerPop.isShowing()) {
+                    cancelWorkerPop.dismiss();
+                }
             }
         });
         cancelWorkerPopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelWorker();
+                if (cancelWorkerPop.isShowing()) {
+                    cancelWorkerPop.dismiss();
+                    cancelWorker();
+                }
             }
         });
         cancelWorkerPop = new PopupWindow(cancelWorkerPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -148,6 +200,74 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         cancelWorkerPop.setTouchable(true);
         cancelWorkerPop.setOutsideTouchable(true);
         cancelWorkerPop.setBackgroundDrawable(new BitmapDrawable());
+
+        surePricePopView = LayoutInflater.from(JumpWorkerActivity.this).inflate(R.layout.pop_employer_sure, null);
+        surePricePopView.findViewById(R.id.tv_pop_sure_price_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (surePricePop.isShowing()) {
+                    surePricePop.dismiss();
+                }
+            }
+        });
+        surePricePopView.findViewById(R.id.tv_pop_sure_price_change).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePrice();
+            }
+        });
+        surePricePopView.findViewById(R.id.tv_pop_sure_price_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                employerSure();
+            }
+        });
+        String attention1 = "工作期间未发生解雇或辞职的状况，工作完成后，雇主确认工程结束，即算完工，系统将自动把雇主预付的工人工资结算给工人。如工期结束后，雇主未确认工程结束，系统将在工期结束后3日，把工人应得的工资结算给工人。在工资结算时，系统将收取工人相应的服务费，并把扣除服务费后的薪资转入到工人账户。";
+        int attention1Start = attention1.indexOf("在工资结算时");
+        int attention1Bend = attention1.length();
+        SpannableStringBuilder attention1Style = new SpannableStringBuilder(attention1);
+        attention1Style.setSpan(new ForegroundColorSpan(Color.parseColor("#ff3e50")), attention1Start, attention1Bend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        ((TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_attention_1)).setText(attention1Style);
+
+        String attention2 = "如工作中出现纠纷，请双方先进行沟通，不要轻易的辞职或者解雇。如发生解雇工人的情况，请在完成当日工作后的第二日再与工人解除工作关系，解雇工人当日需要支付工人当日的工资。如发生工人辞职的情况，请工人在完成当日工作后第二天再点击我要辞职，辞职当日雇主不需要支付当日工人工资。";
+        int attention2Start = attention2.indexOf("如发生解雇");
+        int attention2Bend = attention2.length();
+        SpannableStringBuilder attention2Style = new SpannableStringBuilder(attention2);
+        attention2Style.setSpan(new ForegroundColorSpan(Color.parseColor("#ff3e50")), attention2Start, attention2Bend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        ((TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_attention_2)).setText(attention2Style);
+
+        surePricePop = new PopupWindow(surePricePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        surePricePop.setFocusable(true);
+        surePricePop.setTouchable(true);
+        surePricePop.setOutsideTouchable(true);
+        surePricePop.setBackgroundDrawable(new BitmapDrawable());
+
+        fireWorkerPopView = LayoutInflater.from(JumpWorkerActivity.this).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) fireWorkerPopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("确认解雇工人？");
+        ((TextView) fireWorkerPopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) fireWorkerPopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        fireWorkerPopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fireWorkerPop.isShowing()) {
+                    fireWorkerPop.dismiss();
+                }
+            }
+        });
+        fireWorkerPopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fireWorkerPop.isShowing()) {
+                    fireWorkerPop.dismiss();
+                    fireWorker();
+                }
+            }
+        });
+        fireWorkerPop = new PopupWindow(fireWorkerPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        fireWorkerPop.setFocusable(true);
+        fireWorkerPop.setTouchable(true);
+        fireWorkerPop.setOutsideTouchable(true);
+        fireWorkerPop.setBackgroundDrawable(new BitmapDrawable());
     }
 
     private void initData() {
@@ -161,17 +281,18 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         iconIv.setOnClickListener(this);
         cancelWorkerTv.setOnClickListener(this);
         surePriceTv.setOnClickListener(this);
+        fireWorkerTv.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_jump_worker_return:
-                finish();
+                startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
                 break;
             case R.id.rl_jump_worker_complain:
                 ToComplainBean toComplainBean = new ToComplainBean();
-                toComplainBean.setAgainstId(workerBean.getWorkerId());
+                toComplainBean.setAgainstId(workerBean.getU_id());
                 toComplainBean.setCtType("2");
                 Intent i = new Intent(JumpWorkerActivity.this, ComplainActivity.class);
                 i.putExtra(IntentConfig.toComplain, toComplainBean);
@@ -179,7 +300,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.iv_jump_worker_icon:
                 Intent intent = new Intent(JumpWorkerActivity.this, PersonDetailActivity.class);
-                intent.putExtra(IntentConfig.talkToDetail, workerBean.getWorkerId());
+                intent.putExtra(IntentConfig.talkToDetail, workerBean.getU_id());
                 startActivity(intent);
                 break;
             case R.id.tv_jump_worker_cancel_worker:
@@ -188,7 +309,14 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 }
                 break;
             case R.id.tv_jump_worker_sure_price:
-                Utils.log(JumpWorkerActivity.this, "sure");
+                if (!surePricePop.isShowing()) {
+                    surePricePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
+                break;
+            case R.id.tv_jump_worker_fire_worker:
+                if (!fireWorkerPop.isShowing()) {
+                    fireWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
                 break;
         }
     }
@@ -211,10 +339,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-    }
-
-    private void loadSkill() {
-        Request request = new Request.Builder().url(NetConfig.skillUrl + "?s_id=" + workerBean.getSkill()).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -223,43 +347,40 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    List<SkillBean> skillBeanList = new ArrayList<>();
-                    skillBeanList.addAll(DataUtils.getSkillBeanList(response.body().string()));
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < skillBeanList.size(); i++) {
-                        sb.append(skillBeanList.get(i).getName());
-                        if (i != skillBeanList.size() - 1) {
-                            sb.append("、");
-                        }
-                    }
-                    workerBean.setSkillName(sb.toString());
-                    Utils.log(JumpWorkerActivity.this, workerBean.toString());
-                    handler.sendEmptyMessage(2);
-                }
+
             }
         });
+
     }
 
-
     private void notifyData() {
-        Picasso.with(JumpWorkerActivity.this).load(workerBean.getIcon()).into(iconIv);
-        if (workerBean.getSex().equals("0")) {
+        Picasso.with(JumpWorkerActivity.this).load(workerBean.getU_img()).into(iconIv);
+        if (workerBean.getU_sex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
-        } else if (workerBean.getSex().equals("1")) {
+        } else if (workerBean.getU_sex().equals("1")) {
             sexIv.setImageResource(R.mipmap.male);
         }
-        if (workerBean.getStatus().equals("0")) {
+        if (workerBean.getU_task_status().equals("0")) {
             statusIv.setImageResource(R.mipmap.worker_leisure);
-        } else if (workerBean.getStatus().equals("1")) {
+        } else if (workerBean.getU_task_status().equals("1")) {
             statusIv.setImageResource(R.mipmap.worker_mid);
         }
-        nameTv.setText(workerBean.getTitle());
-        skillNameTv.setText(workerBean.getSkillName());
-        infoTv.setText(workerBean.getInfo());
-        addressTv.setText(workerBean.getAddress());
+        nameTv.setText(workerBean.getU_true_name());
+        skillNameTv.setText(toJumpWorkerBean.getS_name());
+        infoTv.setText(workerBean.getUei_info());
+        addressTv.setText(workerBean.getUei_address());
         map();
-        SHOW_STATE = SURE_PRICE;
+        Utils.log(JumpWorkerActivity.this, "o_status\n" + toJumpWorkerBean.getO_status());
+        Utils.log(JumpWorkerActivity.this, "o_confirm\n" + toJumpWorkerBean.getO_confirm());
+        if (toJumpWorkerBean.getO_status().equals("0")) {
+            if (toJumpWorkerBean.getO_confirm().equals("0")) {
+                SHOW_STATE = SURE_PRICE;
+            } else if (toJumpWorkerBean.getO_confirm().equals("1")) {
+                SHOW_STATE = FIRE_WORKER;
+            } else if (toJumpWorkerBean.getO_confirm().equals("2")) {
+                SHOW_STATE = WAIT_WORKER;
+            }
+        }
         refreshState();
     }
 
@@ -303,8 +424,74 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void cancelWorker() {
-        //?action=cancel&o_id=8&tew_id=4&t_id=2&o_worker=9&u_id=1&s_id=2
-        String url = NetConfig.orderUrl + "?action=cancel&o_id" + "&tew_id=" + "t_id=" + "&o_worker=" + toJumpWorkerBean.getWorkerId() + "u_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId() + "&s_id=";
+        cpd.show();
+        String url = NetConfig.orderUrl +
+                "?action=cancel" +
+                "&o_id=" + toJumpWorkerBean.getOrderId();
         Utils.log(JumpWorkerActivity.this, url);
+        Request cancelRequest = new Request.Builder().url(url).get().build();
+        okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(JumpWorkerActivity.this, json);
+                    handler.sendEmptyMessage(3);
+                }
+            }
+        });
+    }
+
+    private void changePrice() {
+        ToChangePriceBean toChangePriceBean = new ToChangePriceBean();
+        toChangePriceBean.setSkillName(toJumpWorkerBean.getS_name());
+        Intent changePriceIntent = new Intent(JumpWorkerActivity.this, ChangePriceActivity.class);
+        changePriceIntent.putExtra(IntentConfig.toChangePrice, toChangePriceBean);
+        startActivity(changePriceIntent);
+    }
+
+    private void employerSure() {
+        cpd.show();
+        //?action=employerConfirm&o_id=8&t_id=2&u_id=1
+        String employerSureUrl = NetConfig.orderUrl +
+                "?action=employerConfirm" +
+                "&o_id=" + toJumpWorkerBean.getOrderId() +
+                "&t_id=" + toJumpWorkerBean.getTaskId() +
+                "&u_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
+        Utils.log(JumpWorkerActivity.this, "employerUrl\n" + employerSureUrl);
+        Request employerSureRequest = new Request.Builder().url(employerSureUrl).get().build();
+        okHttpClient.newCall(employerSureRequest).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(JumpWorkerActivity.this, "employerSureJson\n" + json);
+                    handler.sendEmptyMessage(3);
+                }
+            }
+        });
+    }
+
+    private void fireWorker() {
+        Utils.log(JumpWorkerActivity.this, "fireWorker");
+        ToFireBean toFireBean = new ToFireBean();
+        toFireBean.setTewId(toJumpWorkerBean.getTewId());
+        toFireBean.setFireId(toJumpWorkerBean.getWorkerId());
+        toFireBean.setSkillName(toJumpWorkerBean.getS_name());
+        toFireBean.setTaskId(toJumpWorkerBean.getTaskId());
+        toFireBean.setSkillId(toJumpWorkerBean.getSkillId());
+        Intent fireIntent = new Intent(JumpWorkerActivity.this, FireActivity.class);
+        fireIntent.putExtra(IntentConfig.toFire, fireIntent);
+        startActivity(fireIntent);
     }
 }

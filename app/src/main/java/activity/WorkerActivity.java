@@ -1,4 +1,4 @@
-package worker.view;
+package activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,17 +18,24 @@ import com.gjzg.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.ScreenBean;
-import bean.SkillBean;
+import bean.SkillsBean;
 import bean.ToTalkWorkerBean;
+import bean.ToWorkerBean;
+import bean.WorkerScreenBean;
 import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
 import listener.IdPosClickHelp;
 import login.view.LoginActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import talkworker.view.TalkWorkerActivity;
 import utils.DataUtils;
 import utils.UserUtils;
@@ -39,11 +46,9 @@ import refreshload.PullableListView;
 import utils.Utils;
 import adapter.WorkerAdapter;
 import view.CProgressDialog;
-import worker.presenter.IWorkerPresenter;
-import worker.presenter.WorkerPresenter;
 import workerscreen.view.WorkerScreenActivity;
 
-public class WorkerActivity extends AppCompatActivity implements IWorkerActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
+public class WorkerActivity extends AppCompatActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
     private View rootView, emptyView, netView;
     private RelativeLayout returnRl, screenRl;
@@ -54,18 +59,16 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
     private PullableListView plv;
     private List<WorkerBean> workerBeanList = new ArrayList<>();
     private WorkerAdapter workerAdapter;
-    private IWorkerPresenter workerPresenter;
     private int clickPosition;
-    private String tip;
-    private final int SUCCESS = 1;
-    private final int FAILURE = 2;
-    private final int COLLECT_SUCCESS = 3;
-    private final int COLLECT_FAILURE = 4;
-    private final int FIRST = 5;
-    private final int REFRESH = 6;
-    private final int SCREEN = 7;
+    private final int FIRST = 1;
+    private final int REFRESH = 2;
+    private final int SCREEN = 3;
+    private final int COLLECT = 4;
     private int STATE = FIRST;
-    private SkillBean skillBean;
+    private ToWorkerBean toWorkerBean;
+    private String workerUrl, collectWorkerUrl;
+    private OkHttpClient okHttpClient;
+    private Call workerCall, collectWorkerCall;
 
     private Handler handler = new Handler() {
         @Override
@@ -73,19 +76,16 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
             super.handleMessage(msg);
             if (msg != null) {
                 switch (msg.what) {
-                    case SUCCESS:
-                        notifyData();
-                        break;
-                    case FAILURE:
+                    case 0:
                         notifyNet();
                         break;
-                    case COLLECT_SUCCESS:
-                        Utils.toast(WorkerActivity.this, tip);
-                        workerBeanList.get(clickPosition).setFavorite(1);
-                        workerAdapter.notifyDataSetChanged();
+                    case 1:
+                        notifyData();
                         break;
-                    case COLLECT_FAILURE:
-                        Utils.toast(WorkerActivity.this, tip);
+                    case 2:
+                        Utils.toast(WorkerActivity.this, "收藏成功");
+                        workerBeanList.get(clickPosition).setIs_fav(1);
+                        workerAdapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -102,20 +102,35 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
         initData();
         setData();
         setListener();
+        if (UserUtils.isUserLogin(WorkerActivity.this)) {
+            workerUrl = NetConfig.workerUrl +
+                    "?u_skills=" + toWorkerBean.getS_id() +
+                    "&fu_id=" + UserUtils.readUserData(WorkerActivity.this).getId();
+        } else {
+            workerUrl = NetConfig.workerUrl +
+                    "?u_skills=" + toWorkerBean.getS_id();
+        }
         loadData();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (workerPresenter != null) {
-            workerPresenter.destroy();
-            workerPresenter = null;
+        if (workerCall != null) {
+            workerCall.cancel();
+            workerCall = null;
+        }
+        if (collectWorkerCall != null) {
+            collectWorkerCall.cancel();
+            collectWorkerCall = null;
+        }
+        if (okHttpClient != null) {
+            okHttpClient = null;
         }
         if (handler != null) {
-            handler.removeMessages(SUCCESS);
-            handler.removeMessages(COLLECT_SUCCESS);
-            handler.removeMessages(COLLECT_FAILURE);
+            handler.removeMessages(0);
+            handler.removeMessages(1);
+            handler.removeMessages(2);
             handler = null;
         }
     }
@@ -123,6 +138,7 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
     private void initView() {
         initRootView();
         initEmptyView();
+        initDialogView();
     }
 
     private void initRootView() {
@@ -130,7 +146,6 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
         screenRl = (RelativeLayout) rootView.findViewById(R.id.rl_worker_screen);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
-        cpd = Utils.initProgressDialog(WorkerActivity.this, cpd);
     }
 
     private void initEmptyView() {
@@ -153,10 +168,15 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
         netView.setVisibility(View.GONE);
     }
 
+    private void initDialogView() {
+        cpd = new CProgressDialog(WorkerActivity.this, R.style.dialog_cprogress);
+    }
+
     private void initData() {
-        workerPresenter = new WorkerPresenter(this);
+        okHttpClient = new OkHttpClient();
         workerAdapter = new WorkerAdapter(WorkerActivity.this, workerBeanList, this);
-        skillBean = (SkillBean) getIntent().getSerializableExtra(IntentConfig.skillToWorker);
+        toWorkerBean = (ToWorkerBean) getIntent().getSerializableExtra(IntentConfig.toWorker);
+        Utils.log(WorkerActivity.this, "toWorkerBean\n" + toWorkerBean.toString());
     }
 
     private void setData() {
@@ -174,12 +194,68 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
             case FIRST:
                 cpd.show();
                 break;
+            case SCREEN:
+                cpd.show();
+                break;
         }
-        if (UserUtils.isUserLogin(WorkerActivity.this)) {
-            workerPresenter.load(NetConfig.workerUrl + "?u_skills=" + skillBean.getId() + "&fu_id=" + UserUtils.readUserData(WorkerActivity.this).getId());
-        } else {
-            workerPresenter.load(NetConfig.workerUrl + "?u_skills=" + skillBean.getId());
-        }
+        Utils.log(WorkerActivity.this, "workerUrl\n" + workerUrl);
+        Request workerRequest = new Request.Builder().url(workerUrl).get().build();
+        workerCall = okHttpClient.newCall(workerRequest);
+        workerCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                handler.sendEmptyMessage(0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    switch (STATE) {
+                        case REFRESH:
+                            workerBeanList.clear();
+                            break;
+                        case SCREEN:
+                            workerBeanList.clear();
+                            break;
+                    }
+                    workerBeanList.addAll(DataUtils.getWorkerBeanList(response.body().string()));
+                    Utils.log(WorkerActivity.this, "workerBeanList\n" + workerBeanList.toString());
+                    handler.sendEmptyMessage(1);
+                }
+            }
+        });
+    }
+
+    private void collectWorker() {
+        collectWorkerUrl = NetConfig.addCollectUrl +
+                "?u_id=" + UserUtils.readUserData(WorkerActivity.this).getId() +
+                "&f_type_id=" + workerBeanList.get(clickPosition).getU_id() +
+                "&f_type=1";
+        Utils.log(WorkerActivity.this, "collectWorkerUrl\n" + collectWorkerUrl);
+        Request collectWorkerRequest = new Request.Builder().url(collectWorkerUrl).get().build();
+        collectWorkerCall = okHttpClient.newCall(collectWorkerRequest);
+        collectWorkerCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(WorkerActivity.this, "collectWorkerJson\n" + json);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        if (jsonObject.optInt("code") == 1) {
+                            handler.sendEmptyMessage(2);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void notifyData() {
@@ -227,6 +303,15 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
                 ptrl.hideHeadView();
                 Utils.toast(WorkerActivity.this, VarConfig.noNetTip);
                 break;
+            case SCREEN:
+                cpd.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyView.setVisibility(View.GONE);
+                netView.setVisibility(View.VISIBLE);
+                break;
+            case COLLECT:
+                Utils.toast(WorkerActivity.this, "收藏失败");
+                break;
         }
     }
 
@@ -246,16 +331,22 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CodeConfig.screenRequestCode && resultCode == CodeConfig.screenResultCode && data != null) {
-            ScreenBean screenBean = (ScreenBean) data.getSerializableExtra(IntentConfig.screenToWorker);
-            if (screenBean != null) {
-                cpd.show();
-                STATE = SCREEN;
-                if (UserUtils.isUserLogin(WorkerActivity.this)) {
-                    workerPresenter.load(NetConfig.workerUrl + "?u_skills=" + skillBean.getId() + "&u_task_status=" + screenBean.getState() + "&u_true_name=" + screenBean.getName() + "&fu_id=" + UserUtils.readUserData(WorkerActivity.this).getId());
-                } else {
-                    workerPresenter.load(NetConfig.workerUrl + "?u_skills=" + skillBean.getId() + "&u_task_status=" + screenBean.getState() + "&u_true_name=" + screenBean.getName());
-                }
+            WorkerScreenBean workerScreenBean = (WorkerScreenBean) data.getSerializableExtra(IntentConfig.screenToWorker);
+            Utils.log(WorkerActivity.this, "workerScreenBean\n" + workerScreenBean.toString());
+            if (UserUtils.isUserLogin(WorkerActivity.this)) {
+                workerUrl = NetConfig.workerUrl +
+                        "?u_skills=" + toWorkerBean.getS_id() +
+                        "&u_task_status=" + workerScreenBean.getU_status() +
+                        "&u_true_name=" + workerScreenBean.getU_true_name() +
+                        "&fu_id=" + UserUtils.readUserData(WorkerActivity.this).getId();
+            } else {
+                workerUrl = NetConfig.workerUrl +
+                        "?u_skills=" + toWorkerBean.getS_id() +
+                        "&u_task_status=" + workerScreenBean.getU_status() +
+                        "&u_true_name=" + workerScreenBean.getU_true_name();
             }
+            STATE = SCREEN;
+            loadData();
         }
     }
 
@@ -271,50 +362,6 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
     }
 
     @Override
-    public void loadSuccess(String workerJson) {
-        switch (STATE) {
-            case REFRESH:
-                workerBeanList.clear();
-                break;
-            case SCREEN:
-                workerBeanList.clear();
-                break;
-        }
-        workerBeanList.addAll(DataUtils.getWorkerBeanList(workerJson));
-        handler.sendEmptyMessage(SUCCESS);
-    }
-
-    @Override
-    public void loadFailure(String failure) {
-        handler.sendEmptyMessage(FAILURE);
-    }
-
-    @Override
-    public void collectSuccess(String collectJson) {
-        try {
-            JSONObject beanObj = new JSONObject(collectJson);
-            int code = beanObj.optInt("code");
-            switch (code) {
-                case 1:
-                    tip = VarConfig.collectSuccess;
-                    handler.sendEmptyMessage(COLLECT_SUCCESS);
-                    break;
-                default:
-                    tip = VarConfig.collectFailure;
-                    handler.sendEmptyMessage(COLLECT_FAILURE);
-                    break;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void collectFailure(String failure) {
-
-    }
-
-    @Override
     public void onClick(int id, int pos) {
         clickPosition = pos;
         WorkerBean workerBean = workerBeanList.get(clickPosition);
@@ -323,23 +370,23 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
                 case R.id.ll_item_worker:
                     Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
                     ToTalkWorkerBean toTalkWorkerBean = new ToTalkWorkerBean();
-                    toTalkWorkerBean.setToTalkState(0);
-                    toTalkWorkerBean.setWorkerId(workerBeanList.get(pos).getWorkerId());
-                    toTalkWorkerBean.setSkillId(skillBean.getId());
+                    toTalkWorkerBean.setU_id(workerBeanList.get(pos).getU_id());
+                    toTalkWorkerBean.setS_id(toWorkerBean.getS_id());
+                    toTalkWorkerBean.setS_name(toWorkerBean.getS_name());
                     intent.putExtra(IntentConfig.toTalkWorker, toTalkWorkerBean);
                     startActivity(intent);
                     break;
                 case R.id.iv_item_worker_collect:
-                    if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getWorkerId())) {
+                    if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getU_id())) {
                         Utils.toast(WorkerActivity.this, VarConfig.cannotCollectSelf);
                     } else {
-                        int favorite = workerBean.getFavorite();
+                        int favorite = workerBean.getIs_fav();
                         switch (favorite) {
                             case 0:
-                                workerPresenter.addCollect(NetConfig.addCollectUrl + "?u_id=" + UserUtils.readUserData(WorkerActivity.this).getId() + "&f_type_id=" + workerBean.getWorkerId() + "&f_type=1");
+                                collectWorker();
                                 break;
                             case 1:
-                                Utils.toast(WorkerActivity.this, VarConfig.collectDone);
+                                Utils.toast(WorkerActivity.this, "已经收藏过了不能再收藏");
                                 break;
                         }
                     }
@@ -349,4 +396,5 @@ public class WorkerActivity extends AppCompatActivity implements IWorkerActivity
             startActivity(new Intent(WorkerActivity.this, LoginActivity.class));
         }
     }
+
 }

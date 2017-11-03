@@ -1,5 +1,6 @@
 package selecttask.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +27,7 @@ import bean.ToSelectTaskBean;
 import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
+import employermanage.view.EmployerManageActivity;
 import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
@@ -74,8 +76,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                         break;
                     case INVITE_SUCCESS:
                         cpd.dismiss();
-                        Utils.toast(SelectTaskActivity.this, "邀请成功");
-                        finish();
+                        startActivity(new Intent(SelectTaskActivity.this, EmployerManageActivity.class));
                         break;
                     case INVITE_FAILURE:
                         cpd.dismiss();
