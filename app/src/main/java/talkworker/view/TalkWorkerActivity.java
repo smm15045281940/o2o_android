@@ -292,7 +292,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                 startActivity(intent);
                 break;
             case R.id.rl_talk_worker_wait:
-                talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0&skills=" + toTalkWorkerBean.getS_id());
+                talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id());
                 break;
         }
     }

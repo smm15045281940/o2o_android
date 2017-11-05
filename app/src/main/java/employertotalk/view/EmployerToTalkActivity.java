@@ -171,8 +171,8 @@ public class EmployerToTalkActivity extends AppCompatActivity implements IEmploy
             List<String> skillIdList = new ArrayList<>();
             skillIdList.add(employerToTalkBeanList.get(i).getSkillId());
             employerToTalkBeanList.get(i).setSkillName(DataUtils.getSkillNameList(json, skillIdList).get(0));
-            handler.sendEmptyMessage(SKILL_SUCCESS);
         }
+        handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 
     @Override
@@ -193,6 +193,9 @@ public class EmployerToTalkActivity extends AppCompatActivity implements IEmploy
                 toJumpWorkerBean.setS_name(employerToTalkBeanList.get(clickPosition).getSkillName());
                 toJumpWorkerBean.setO_status(employerToTalkBeanList.get(clickPosition).getO_status());
                 toJumpWorkerBean.setO_confirm(employerToTalkBeanList.get(clickPosition).getO_confirm());
+                toJumpWorkerBean.setTew_start_time(employerToTalkBeanList.get(clickPosition).getStartTime());
+                toJumpWorkerBean.setTew_end_time(employerToTalkBeanList.get(clickPosition).getEndTime());
+                toJumpWorkerBean.setTewPrice(employerToTalkBeanList.get(clickPosition).getPrice());
                 waitIntent.putExtra(IntentConfig.toJumpWorker, toJumpWorkerBean);
                 startActivity(waitIntent);
                 break;

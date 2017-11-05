@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
                 break;
             case R.id.rl_login_get_move_pwd:
                 String phoneNumber = phoneNumberEt.getText().toString();
+                Utils.log(LoginActivity.this, "phoneNumber=" + phoneNumber);
                 if (Utils.isPhonenumber(phoneNumber))
                     iLoginPresenter.getSecurityCode(phoneNumber);
                 break;

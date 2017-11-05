@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +20,8 @@ import java.util.List;
 
 import adapter.EmployerToDoingAdapter;
 import bean.EmployerToDoingBean;
+import bean.EmployerToTalkBean;
+import bean.TInfoTaskBean;
 import bean.ToEmployerToDoingBean;
 import bean.ToJumpWorkerBean;
 import config.IntentConfig;
@@ -52,6 +55,9 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
+                        skill();
+                        break;
+                    case 2:
                         employerToDoingAdapter.notifyDataSetChanged();
                         break;
                 }
@@ -103,9 +109,51 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    employerToDoingBeanList.addAll(DataUtils.getEmployerToDoingBeanList(response.body().string()));
+                    String json = response.body().string();
+                    List<EmployerToDoingBean> list = new ArrayList<>();
+                    list.addAll(DataUtils.getEmployerToDoingBeanList(json));
+                    for (int i = 0; i < list.size(); i++) {
+                        String status = list.get(i).getStatus();
+                        if (TextUtils.isEmpty(status) || status.equals("null")) {
+                            employerToDoingBeanList.add(list.get(i));
+                        } else if (status.equals("1")) {
+                            employerToDoingBeanList.add(list.get(i));
+                        }
+                    }
                     Utils.log(EmployerToDoingActivity.this, employerToDoingBeanList.toString());
+
+                    TInfoTaskBean tInfoTaskBean = DataUtils.getTInfoTaskBean(json);
+                    Utils.log(EmployerToDoingActivity.this, "tInfoTaskBean\n" + tInfoTaskBean.toString());
+
                     handler.sendEmptyMessage(1);
+                }
+            }
+        });
+
+    }
+
+    private void skill() {
+        Request request = new Request.Builder().url(NetConfig.skillsUrl).get().build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    for (int i = 0; i < employerToDoingBeanList.size(); i++) {
+                        List<String> skillIdList = new ArrayList<>();
+                        skillIdList.add(employerToDoingBeanList.get(i).getSkillId());
+                        List<String> skillNameList = new ArrayList<String>();
+                        skillNameList.addAll(DataUtils.getSkillNameList(json, skillIdList));
+                        if (skillNameList.size() != 0) {
+                            employerToDoingBeanList.get(i).setSkillName(skillNameList.get(0));
+                        }
+                    }
+                    handler.sendEmptyMessage(2);
                 }
             }
         });

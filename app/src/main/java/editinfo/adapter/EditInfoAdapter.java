@@ -3,6 +3,7 @@ package editinfo.adapter;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,7 +98,11 @@ public class EditInfoAdapter extends BaseAdapter {
         if (holder.idCardEt.getTag() instanceof TextWatcher) {
             holder.idCardEt.removeTextChangedListener((TextWatcher) holder.idCardEt.getTag());
         }
-        holder.idCardEt.setText(userInfoBean.getU_idcard());
+        String idCard = userInfoBean.getU_idcard();
+//                        if (!TextUtils.isEmpty(idCard)) {
+//                            idCard = idCard.substring(0, 3) + "***********" + idCard.substring(13, idCard.length());
+//                        }
+        holder.idCardEt.setText(idCard);
         TextWatcher idCardTw = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,7 +146,7 @@ public class EditInfoAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                userInfoBean.setUser_area_name(s.toString());
+                userInfoBean.setUei_address(s.toString());
             }
         };
         holder.addressEt.addTextChangedListener(addressTw);
@@ -168,7 +173,11 @@ public class EditInfoAdapter extends BaseAdapter {
         };
         holder.infoEt.addTextChangedListener(infoTw);
         holder.infoEt.setTag(infoTw);
-        holder.mobileTv.setText(userInfoBean.getU_mobile());
+        String mobile = userInfoBean.getU_mobile();
+        if (!TextUtils.isEmpty(mobile)) {
+            mobile = mobile.substring(0, 3) + "****" + mobile.substring(7, mobile.length());
+        }
+        holder.mobileTv.setText(mobile);
         if (userInfoBean.getU_skills().equals("0")) {
             ((RadioButton) holder.roleRg.getChildAt(0)).setChecked(true);
             holder.workerLl.setVisibility(View.GONE);

@@ -1,12 +1,16 @@
 package jumpemployer.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +60,7 @@ import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CImageView;
+import workermanage.view.WorkerManageActivity;
 
 public class JumpEmployerActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -72,6 +77,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
 
     private View beginDoView;
     private PopupWindow beginDoPop;
+    private TextView beginDoPriceTv, beginDoTimeTv;
 
     private View resignPopView;
     private PopupWindow resignPop;
@@ -190,13 +196,22 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         cancelPop.setTouchable(true);
         cancelPop.setOutsideTouchable(true);
         cancelPop.setBackgroundDrawable(new BitmapDrawable());
+        cancelPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
 
         beginDoView = LayoutInflater.from(JumpEmployerActivity.this).inflate(R.layout.pop_worker_sure, null);
+        beginDoPriceTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_price);
+        beginDoTimeTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_time);
         beginDoView.findViewById(R.id.tv_pop_worker_sure_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (beginDoPop.isShowing()) {
                     beginDoPop.dismiss();
+                    startActivity(new Intent(JumpEmployerActivity.this, WorkerManageActivity.class));
                 }
             }
         });
@@ -209,6 +224,21 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 }
             }
         });
+
+        String attention1 = "工作期间未发生解雇或辞职的状况，工作完成后，雇主确认工程结束，即算完工，系统将自动把雇主预付的工人工资结算给工人。如工期结束后，雇主未确认工程结束，系统将在工期结束后3日，把工人应得的工资结算给工人。在工资结算时，系统将收取工人相应的服务费，并把扣除服务费后的薪资转入到工人账户。";
+        int attention1Start = attention1.indexOf("在工资结算时");
+        int attention1Bend = attention1.length();
+        SpannableStringBuilder attention1Style = new SpannableStringBuilder(attention1);
+        attention1Style.setSpan(new ForegroundColorSpan(Color.parseColor("#ff3e50")), attention1Start, attention1Bend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        ((TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_attention_1)).setText(attention1Style);
+
+        String attention2 = "如工作中出现纠纷，请双方先进行沟通，不要轻易的辞职或者解雇。如发生解雇工人的情况，请在完成当日工作后的第二日再与工人解除工作关系，解雇工人当日需要支付工人当日的工资。如发生工人辞职的情况，请工人在完成当日工作后第二天再点击我要辞职，辞职当日雇主不需要支付当日工人工资。";
+        int attention2Start = attention2.indexOf("如发生解雇");
+        int attention2Bend = attention2.length();
+        SpannableStringBuilder attention2Style = new SpannableStringBuilder(attention2);
+        attention2Style.setSpan(new ForegroundColorSpan(Color.parseColor("#ff3e50")), attention2Start, attention2Bend, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        ((TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_attention_2)).setText(attention2Style);
+
         beginDoPop = new PopupWindow(beginDoView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         resignPopView = LayoutInflater.from(JumpEmployerActivity.this).inflate(R.layout.pop_dialog_0, null);
         ((TextView) resignPopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("请与雇主先沟通再进行此项操作\n当日辞职，雇主不需要支付您当日工资\n建议今日工作完毕后，明天再辞职");
@@ -337,7 +367,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                     List<SkillsBean> skillsBeanList = new ArrayList<>();
                     skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
                     if (skillsBeanList.size() != 0) {
-//                        jumpEmployerBean.setSkillName(skillsBeanList.get(0).getName());
+                        jumpEmployerBean.setSkillName(skillsBeanList.get(0).getS_name());
                     }
                     handler.sendEmptyMessage(2);
                 }
@@ -400,6 +430,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void notifyData() {
+        beginDoPriceTv.setText(jumpEmployerBean.getPrice());
+        beginDoTimeTv.setText(DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getEndTime())));
         Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).into(iconIv);
         if (jumpEmployerBean.getSex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
@@ -447,11 +479,13 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.tv_jump_employer_wait_employer_cancel:
                 if (!cancelPop.isShowing()) {
+                    backgroundAlpha(0.5f);
                     cancelPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 }
                 break;
             case R.id.tv_jump_employer_sure_do_cancel:
                 if (!cancelPop.isShowing()) {
+                    backgroundAlpha(0.5f);
                     cancelPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 }
                 break;
@@ -500,5 +534,11 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 resignLl.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private void backgroundAlpha(float f) {
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.alpha = f;
+        getWindow().setAttributes(layoutParams);
     }
 }

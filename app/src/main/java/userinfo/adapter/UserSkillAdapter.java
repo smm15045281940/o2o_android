@@ -50,7 +50,7 @@ public class UserSkillAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         SkillsBean skillsBean = list.get(position);
-//        holder.tv.setText(skillsBean.getName());
+        holder.tv.setText(skillsBean.getS_name());
         return convertView;
     }
 

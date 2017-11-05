@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,11 @@ import config.NetConfig;
 import config.VarConfig;
 import employermanage.view.EmployerManageActivity;
 import listener.IdPosClickHelp;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import selecttask.presenter.ISelectTaskPresenter;
@@ -54,13 +61,16 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
 
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
+    private final int TEW_ID = 7;
     private final int INVITE_SUCCESS = 3;
     private final int INVITE_FAILURE = 4;
     private final int FIRST = 5;
     private final int REFRESH = 6;
     private int STATE = FIRST;
 
+    private String tew_id;
     private ToSelectTaskBean toSelectTaskBean;
+    private int clickPosition;
 
     private Handler handler = new Handler() {
         @Override
@@ -73,6 +83,17 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                         break;
                     case LOAD_FAILURE:
                         notifyNet();
+                        break;
+                    case TEW_ID:
+                        cpd.show();
+                        String url = NetConfig.orderUrl +
+                                "?action=create" +
+                                "&tew_id=" + tew_id +
+                                "&t_id=" + taskBeanList.get(clickPosition).getTaskId() +
+                                "&o_worker=" + toSelectTaskBean.getWorkerId() +
+                                "&o_sponsor=" + UserUtils.readUserData(SelectTaskActivity.this).getId();
+                        Utils.log(SelectTaskActivity.this, "inviteUrl\n" + url);
+                        selectTaskPresenter.invite(url);
                         break;
                     case INVITE_SUCCESS:
                         cpd.dismiss();
@@ -166,7 +187,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                 cpd.show();
                 break;
         }
-        String url = NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(SelectTaskActivity.this).getId() + "&t_storage=0&t_status=0&skills=" + toSelectTaskBean.getSkillId();
+        String url = NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(SelectTaskActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toSelectTaskBean.getSkillId();
         Utils.log(SelectTaskActivity.this, url);
         selectTaskPresenter.load(url);
     }
@@ -270,14 +291,61 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
         handler.sendEmptyMessage(INVITE_FAILURE);
     }
 
+    private void screenOrder(String url) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder().url(url).get().build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(SelectTaskActivity.this, "screenJson\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            JSONObject dataObj = beanObj.optJSONObject("data");
+                            if (dataObj != null) {
+                                JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                                if (workerArr != null) {
+                                    for (int i = 0; i < workerArr.length(); i++) {
+                                        JSONObject o = workerArr.optJSONObject(i);
+                                        if (o != null) {
+                                            int remain = Integer.parseInt(o.optString("remaining"));
+                                            if (remain > 0) {
+                                                tew_id = o.optString("tew_id");
+                                                Utils.log(SelectTaskActivity.this, "tew_id\n" + tew_id);
+                                                handler.sendEmptyMessage(TEW_ID);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onClick(int id, int pos) {
+        clickPosition = pos;
         switch (id) {
             case R.id.tv_item_select_task_choose:
-                cpd.show();
-                String url = "http://api.gangjianwang.com/Orders/index" + "?action=create" + "&tew_id=" + taskBeanList.get(pos).getTewId() + "&t_id=" + taskBeanList.get(pos).getTaskId() + "&o_worker=" + toSelectTaskBean.getWorkerId() + "&o_sponsor=" + UserUtils.readUserData(SelectTaskActivity.this).getId();
-                Utils.log(SelectTaskActivity.this, url);
-                selectTaskPresenter.invite(url);
+                String url = NetConfig.taskBaseUrl +
+                        "?action=info" +
+                        "&t_id=" + taskBeanList.get(clickPosition).getTaskId() +
+                        "&skills=" + toSelectTaskBean.getSkillId();
+                Utils.log(SelectTaskActivity.this, "shaiurl\n" + url);
+                screenOrder(url);
                 break;
         }
     }

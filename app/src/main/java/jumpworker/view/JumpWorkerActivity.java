@@ -83,6 +83,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private PopupWindow cancelWorkerPop;
     private View surePricePopView;
     private PopupWindow surePricePop;
+    private TextView surePricePriceTv, surePriceTimeTv;
     private View fireWorkerPopView;
     private PopupWindow fireWorkerPop;
 
@@ -200,13 +201,22 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         cancelWorkerPop.setTouchable(true);
         cancelWorkerPop.setOutsideTouchable(true);
         cancelWorkerPop.setBackgroundDrawable(new BitmapDrawable());
+        cancelWorkerPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
 
         surePricePopView = LayoutInflater.from(JumpWorkerActivity.this).inflate(R.layout.pop_employer_sure, null);
+        surePricePriceTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_price);
+        surePriceTimeTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_time);
         surePricePopView.findViewById(R.id.tv_pop_sure_price_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (surePricePop.isShowing()) {
                     surePricePop.dismiss();
+                    startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
                 }
             }
         });
@@ -268,6 +278,12 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         fireWorkerPop.setTouchable(true);
         fireWorkerPop.setOutsideTouchable(true);
         fireWorkerPop.setBackgroundDrawable(new BitmapDrawable());
+        fireWorkerPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
     }
 
     private void initData() {
@@ -305,6 +321,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.tv_jump_worker_cancel_worker:
                 if (!cancelWorkerPop.isShowing()) {
+                    backgroundAlpha(0.5f);
                     cancelWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 }
                 break;
@@ -315,6 +332,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.tv_jump_worker_fire_worker:
                 if (!fireWorkerPop.isShowing()) {
+                    backgroundAlpha(0.5f);
                     fireWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 }
                 break;
@@ -338,23 +356,12 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
-
     }
 
     private void notifyData() {
-        Picasso.with(JumpWorkerActivity.this).load(workerBean.getU_img()).into(iconIv);
+        surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
+        surePriceTimeTv.setText(DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_end_time())));
+        Picasso.with(JumpWorkerActivity.this).load(workerBean.getU_img()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
         if (workerBean.getU_sex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
         } else if (workerBean.getU_sex().equals("1")) {
@@ -493,5 +500,11 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         Intent fireIntent = new Intent(JumpWorkerActivity.this, FireActivity.class);
         fireIntent.putExtra(IntentConfig.toFire, fireIntent);
         startActivity(fireIntent);
+    }
+
+    private void backgroundAlpha(float f) {
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.alpha = f;
+        getWindow().setAttributes(layoutParams);
     }
 }

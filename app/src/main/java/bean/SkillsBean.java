@@ -9,6 +9,15 @@ public class SkillsBean implements Serializable {
     private String s_info;
     private String s_desc;
     private String s_status;
+    private boolean check;
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
 
     public String getS_id() {
         return s_id;
@@ -58,6 +67,7 @@ public class SkillsBean implements Serializable {
                 ", s_info='" + s_info + '\'' +
                 ", s_desc='" + s_desc + '\'' +
                 ", s_status='" + s_status + '\'' +
+                ", check=" + check +
                 '}';
     }
 }

@@ -19,6 +19,9 @@ import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.RedPacketBean;
 import bean.SkillsBean;
+import bean.TInfoOrderBean;
+import bean.TInfoTaskBean;
+import bean.TInfoWorkerBean;
 import bean.TaskBean;
 import bean.TaskWorkerBean;
 import bean.VoucherBean;
@@ -394,8 +397,8 @@ public class DataUtils {
                                     workerEttb.setSkillId(workerObj.optString("tew_skills"));
                                     workerEttb.setAmount(workerObj.optString("tew_worker_num"));
                                     workerEttb.setPrice(workerObj.optString("tew_price"));
-                                    workerEttb.setStartTime(getDateToString(Long.parseLong(workerObj.optString("tew_start_time"))));
-                                    workerEttb.setEndTime(getDateToString(Long.parseLong(workerObj.optString("tew_end_time"))));
+                                    workerEttb.setStartTime(workerObj.optString("tew_start_time"));
+                                    workerEttb.setEndTime(workerObj.optString("tew_end_time"));
                                     JSONArray orderArr = workerObj.optJSONArray("orders");
                                     if (orderArr != null) {
                                         if (orderArr.length() != 0) {
@@ -755,5 +758,138 @@ public class DataUtils {
             e.printStackTrace();
         }
         return object.toString();
+    }
+
+    //任务详情
+    public static TInfoTaskBean getTInfoTaskBean(String json) {
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 200) {
+                JSONObject dataObj = beanObj.optJSONObject("data");
+                if (dataObj != null) {
+                    TInfoTaskBean tInfoTaskBean = new TInfoTaskBean();
+                    tInfoTaskBean.setT_id(dataObj.optString("t_id"));
+                    tInfoTaskBean.setT_title(dataObj.optString("t_title"));
+                    tInfoTaskBean.setT_info(dataObj.optString("t_info"));
+                    tInfoTaskBean.setT_amount(dataObj.optString("t_amount"));
+                    tInfoTaskBean.setT_duration(dataObj.optString("t_duration"));
+                    tInfoTaskBean.setT_edit_amount(dataObj.optString("t_edit_amount"));
+                    tInfoTaskBean.setT_amount_edit_times(dataObj.optString("t_amount_edit_times"));
+                    tInfoTaskBean.setT_posit_x(dataObj.optString("t_posit_x"));
+                    tInfoTaskBean.setT_posit_y(dataObj.optString("t_posit_y"));
+                    tInfoTaskBean.setT_author(dataObj.optString("t_author"));
+                    tInfoTaskBean.setT_in_time(dataObj.optString("t_in_time"));
+                    tInfoTaskBean.setT_last_edit_time(dataObj.optString("t_last_edit_time"));
+                    tInfoTaskBean.setT_last_editor(dataObj.optString("t_last_editor"));
+                    tInfoTaskBean.setT_status(dataObj.optString("t_status"));
+                    tInfoTaskBean.setT_phone(dataObj.optString("t_phone"));
+                    tInfoTaskBean.setT_phone_status(dataObj.optString("t_phone_status"));
+                    tInfoTaskBean.setT_type(dataObj.optString("t_type"));
+                    tInfoTaskBean.setT_storage(dataObj.optString("t_storage"));
+                    tInfoTaskBean.setBd_id(dataObj.optString("bd_id"));
+                    tInfoTaskBean.setU_id(dataObj.optString("u_id"));
+                    tInfoTaskBean.setU_name(dataObj.optString("u_name"));
+                    tInfoTaskBean.setU_mobile(dataObj.optString("u_mobile"));
+                    tInfoTaskBean.setU_sex(dataObj.optString("u_sex"));
+                    tInfoTaskBean.setU_online(dataObj.optString("u_online"));
+                    tInfoTaskBean.setU_status(dataObj.optString("u_status"));
+                    tInfoTaskBean.setU_task_status(dataObj.optString("u_task_status"));
+                    tInfoTaskBean.setU_start(dataObj.optString("u_start"));
+                    tInfoTaskBean.setU_credit(dataObj.optString("u_credit"));
+                    tInfoTaskBean.setU_jobs_num(dataObj.optString("u_jobs_num"));
+                    tInfoTaskBean.setU_recommend(dataObj.optString("u_recommend"));
+                    tInfoTaskBean.setU_worked_num(dataObj.optString("u_worked_num"));
+                    tInfoTaskBean.setU_high_opinions(dataObj.optString("u_high_opinions"));
+                    tInfoTaskBean.setU_low_opinions(dataObj.optString("u_low_opinions"));
+                    tInfoTaskBean.setU_middle_opinions(dataObj.optString("u_middle_opinions"));
+                    tInfoTaskBean.setU_dissensions(dataObj.optString("u_dissensions"));
+                    tInfoTaskBean.setU_true_name(dataObj.optString("u_true_name"));
+                    tInfoTaskBean.setU_img(dataObj.optString("u_img"));
+                    tInfoTaskBean.setR_province(dataObj.optString("r_province"));
+                    tInfoTaskBean.setR_city(dataObj.optString("r_city"));
+                    tInfoTaskBean.setR_area(dataObj.optString("r_area"));
+                    tInfoTaskBean.setTew_address(dataObj.optString("tew_address"));
+                    tInfoTaskBean.setT_desc(dataObj.optString("t_desc"));
+                    JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                    if (workerArr != null) {
+                        List<TInfoWorkerBean> tInfoWorkerBeanList = new ArrayList<>();
+                        for (int i = 0; i < workerArr.length(); i++) {
+                            JSONObject workerObj = workerArr.optJSONObject(i);
+                            if (workerObj != null) {
+                                TInfoWorkerBean tInfoWorkerBean = new TInfoWorkerBean();
+                                tInfoWorkerBean.setTew_id(workerObj.optString("tew_id"));
+                                tInfoWorkerBean.setT_id(workerObj.optString("t_id"));
+                                tInfoWorkerBean.setTew_skills(workerObj.optString("tew_skills"));
+                                tInfoWorkerBean.setTew_worker_num(workerObj.optString("tew_worker_num"));
+                                tInfoWorkerBean.setTew_price(workerObj.optString("tew_price"));
+                                tInfoWorkerBean.setTew_start_time(workerObj.optString("tew_start_time"));
+                                tInfoWorkerBean.setTew_end_time(workerObj.optString("tew_end_time"));
+                                tInfoWorkerBean.setR_province(workerObj.optString("r_province"));
+                                tInfoWorkerBean.setR_city(workerObj.optString("r_city"));
+                                tInfoWorkerBean.setR_area(workerObj.optString("r_area"));
+                                tInfoWorkerBean.setTew_address(workerObj.optString("tew_address"));
+                                tInfoWorkerBean.setTew_lock(workerObj.optString("tew_lock"));
+                                tInfoWorkerBean.setTew_status(workerObj.optString("tew_status"));
+                                tInfoWorkerBean.setTew_type(workerObj.optString("tew_type"));
+                                tInfoWorkerBean.setRemaining(workerObj.optInt("remaining"));
+                                JSONArray orderArr = workerObj.optJSONArray("orders");
+                                if (orderArr != null) {
+                                    List<TInfoOrderBean> tInfoOrderBeanList = new ArrayList<>();
+                                    for (int j = 0; j < orderArr.length(); j++) {
+                                        JSONObject orderObj = orderArr.optJSONObject(j);
+                                        if (orderObj != null) {
+                                            TInfoOrderBean tInfoOrderBean = new TInfoOrderBean();
+                                            tInfoOrderBean.setO_id(orderObj.optString("o_id"));
+                                            tInfoOrderBean.setT_id(orderObj.optString("t_id"));
+                                            tInfoOrderBean.setU_id(orderObj.optString("u_id"));
+                                            tInfoOrderBean.setO_worker(orderObj.optString("o_worker"));
+                                            tInfoOrderBean.setO_amount(orderObj.optString("o_amount"));
+                                            tInfoOrderBean.setO_in_time(orderObj.optString("o_in_time"));
+                                            tInfoOrderBean.setO_last_edit_time(orderObj.optString("o_last_edit_time"));
+                                            tInfoOrderBean.setO_status(orderObj.optString("o_status"));
+                                            tInfoOrderBean.setTew_id(orderObj.optString("tew_id"));
+                                            tInfoOrderBean.setS_id(orderObj.optString("s_id"));
+                                            tInfoOrderBean.setO_confirm(orderObj.optString("o_confirm"));
+                                            tInfoOrderBean.setUnbind_time(orderObj.optString("unbind_time"));
+                                            tInfoOrderBean.setO_pay(orderObj.optString("o_pay"));
+                                            tInfoOrderBean.setO_pay_time(orderObj.optString("o_pay_time"));
+                                            tInfoOrderBean.setO_sponsor(orderObj.optString("o_sponsor"));
+                                            tInfoOrderBean.setO_dispute_time(orderObj.optString("o_dispute_time"));
+                                            tInfoOrderBean.setO_start_time(orderObj.optString("o_start_time"));
+                                            tInfoOrderBean.setO_end_time(orderObj.optString("o_end_time"));
+                                            tInfoOrderBean.setU_name(orderObj.optString("u_name"));
+                                            tInfoOrderBean.setU_mobile(orderObj.optString("u_mobile"));
+                                            tInfoOrderBean.setU_sex(orderObj.optString("u_sex"));
+                                            tInfoOrderBean.setU_online(orderObj.optString("u_online"));
+                                            tInfoOrderBean.setU_status(orderObj.optString("u_status"));
+                                            tInfoOrderBean.setU_task_status(orderObj.optString("u_task_status"));
+                                            tInfoOrderBean.setU_start(orderObj.optString("u_start"));
+                                            tInfoOrderBean.setU_credit(orderObj.optString("u_credit"));
+                                            tInfoOrderBean.setU_jobs_num(orderObj.optString("u_jobs_num"));
+                                            tInfoOrderBean.setU_recommend(orderObj.optString("u_recommend"));
+                                            tInfoOrderBean.setU_worked_num(orderObj.optString("u_worked_num"));
+                                            tInfoOrderBean.setU_high_opinions(orderObj.optString("u_high_opinions"));
+                                            tInfoOrderBean.setU_low_opinions(orderObj.optString("u_low_opinions"));
+                                            tInfoOrderBean.setU_middle_opinions(orderObj.optString("u_middle_opinions"));
+                                            tInfoOrderBean.setU_dissensions(orderObj.optString("u_dissensions"));
+                                            tInfoOrderBean.setU_true_name(orderObj.optString("u_true_name"));
+                                            tInfoOrderBean.setU_img(orderObj.optString("u_img"));
+                                            tInfoOrderBeanList.add(tInfoOrderBean);
+                                        }
+                                    }
+                                    tInfoWorkerBean.settInfoOrderBeanList(tInfoOrderBeanList);
+                                }
+                                tInfoWorkerBeanList.add(tInfoWorkerBean);
+                            }
+                        }
+                        tInfoTaskBean.settInfoWorkerBeanList(tInfoWorkerBeanList);
+                    }
+                    return tInfoTaskBean;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

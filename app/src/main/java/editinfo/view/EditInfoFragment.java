@@ -135,9 +135,9 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
                 addSkillPop.dismiss();
                 selectList.clear();
                 for (int i = 0; i < selectSkillList.size(); i++) {
-//                    if (selectSkillList.get(i).isCheck()) {
-//                        selectList.add(selectSkillList.get(i));
-//                    }
+                    if (selectSkillList.get(i).isCheck()) {
+                        selectList.add(selectSkillList.get(i));
+                    }
                 }
                 if (selectList.size() != 0) {
                     if (skillsBeanList == null) {
@@ -276,7 +276,7 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     public void onClick(int id, int position, boolean checked) {
         switch (id) {
             case R.id.cb_item_add_kind_checked:
-//                selectSkillList.get(position).setCheck(checked);
+                selectSkillList.get(position).setCheck(checked);
                 break;
         }
         addSkillAdapter.notifyDataSetChanged();
@@ -341,9 +341,9 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     private boolean isDiff(int index) {
         int count = 0;
         for (int i = 0; i < skillsBeanList.size(); i++) {
-//            if (selectList.get(index).getId().equals(skillsBeanList.get(i).getId())) {
-//                count++;
-//            }
+            if (selectList.get(index).getS_id().equals(skillsBeanList.get(i).getS_id())) {
+                count++;
+            }
         }
         if (count == 0) {
             return true;

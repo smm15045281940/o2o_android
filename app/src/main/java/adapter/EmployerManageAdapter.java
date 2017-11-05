@@ -73,12 +73,12 @@ public class EmployerManageAdapter extends BaseAdapter {
                 holder.waitLl.setVisibility(View.INVISIBLE);
                 holder.talkLl.setVisibility(View.VISIBLE);
                 holder.doneLl.setVisibility(View.INVISIBLE);
-            } else if (employerManageBean.getStatus().equals("2")) {
+            } else if (employerManageBean.getStatus().equals("-3") || employerManageBean.getStatus().equals("2") || employerManageBean.getStatus().equals("5")) {
                 holder.statusIv.setImageResource(R.mipmap.worker_mid);
                 holder.waitLl.setVisibility(View.INVISIBLE);
                 holder.talkLl.setVisibility(View.INVISIBLE);
                 holder.doneLl.setVisibility(View.INVISIBLE);
-            } else if (employerManageBean.getStatus().equals("3")) {
+            } else if (employerManageBean.getStatus().equals("3") || employerManageBean.getStatus().equals("4")) {
                 holder.statusIv.setImageResource(R.mipmap.worker_over);
                 holder.waitLl.setVisibility(View.INVISIBLE);
                 holder.talkLl.setVisibility(View.INVISIBLE);

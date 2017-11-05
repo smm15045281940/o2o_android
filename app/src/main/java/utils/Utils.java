@@ -91,7 +91,7 @@ public class Utils {
 
     //手机号
     public static boolean isPhonenumber(String str) {
-        String regularStr = "^(13[0-9]|14[57]|15[0-35-9]|17[6-8]|18[0-9])[0-9]{8}$";
+        String regularStr = "[1][34578]\\d{9}";
         Pattern p = Pattern.compile(regularStr);
         Matcher m = p.matcher(str);
         return m.matches();

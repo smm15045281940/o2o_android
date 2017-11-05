@@ -416,13 +416,13 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                     toEmployerToTalkBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
                     talkIntent.putExtra(IntentConfig.toEmployerToTalk, toEmployerToTalkBean);
                     startActivity(talkIntent);
-                } else if (status.equals("2") || status.equals("5")) {
+                } else if (status.equals("-3") || status.equals("2") || status.equals("5")) {
                     Intent doingIntent = new Intent(EmployerManageActivity.this, EmployerToDoingActivity.class);
                     ToEmployerToDoingBean toEmployerToDoingBean = new ToEmployerToDoingBean();
                     toEmployerToDoingBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
                     doingIntent.putExtra(IntentConfig.toEmployerToDoing, toEmployerToDoingBean);
                     startActivity(doingIntent);
-                } else if (status.equals("3")) {
+                } else if (status.equals("3") || status.equals("4")) {
                     Utils.log(EmployerManageActivity.this, "已结束");
                 }
                 break;

@@ -65,9 +65,9 @@ public class TaskAdapter extends BaseAdapter {
             holder.statusIv.setImageResource(R.mipmap.worker_wait);
         } else if (status.equals("1")) {
             holder.statusIv.setImageResource(R.mipmap.worker_talk);
-        } else if (status.equals("2")) {
+        } else if (status.equals("-3") || status.equals("2") || status.equals("5")) {
             holder.statusIv.setImageResource(R.mipmap.worker_mid);
-        } else if (status.equals("3")) {
+        } else if (status.equals("3") || status.equals("4")) {
             holder.statusIv.setImageResource(R.mipmap.worker_over);
         }
         switch (taskBean.getFavorite()) {

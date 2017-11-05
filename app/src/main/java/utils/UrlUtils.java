@@ -17,16 +17,16 @@ public class UrlUtils {
                 url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0";
                 break;
             case 1:
-                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 0;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=0";
                 break;
             case 2:
-                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 1;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=1";
                 break;
             case 3:
-                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 2;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=-3,2,5";
                 break;
             case 4:
-                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=" + 3;
+                url = NetConfig.taskBaseUrl + "?t_author=" + (UserUtils.readUserData(context)).getId() + "&t_storage=0&t_status=3,4";
                 break;
         }
         return url;

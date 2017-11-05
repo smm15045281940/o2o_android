@@ -16,6 +16,33 @@ public class ToJumpWorkerBean implements Serializable {
     private String s_name;
     private String o_confirm;
     private String o_status;
+    private String tewPrice;
+    private String tew_start_time;
+    private String tew_end_time;
+
+    public String getTewPrice() {
+        return tewPrice;
+    }
+
+    public void setTewPrice(String tewPrice) {
+        this.tewPrice = tewPrice;
+    }
+
+    public String getTew_start_time() {
+        return tew_start_time;
+    }
+
+    public void setTew_start_time(String tew_start_time) {
+        this.tew_start_time = tew_start_time;
+    }
+
+    public String getTew_end_time() {
+        return tew_end_time;
+    }
+
+    public void setTew_end_time(String tew_end_time) {
+        this.tew_end_time = tew_end_time;
+    }
 
     public String getO_confirm() {
         return o_confirm;

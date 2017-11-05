@@ -142,9 +142,13 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         loginRightNowRl.setVisibility(View.GONE);
         loginDoneRl.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(userBean.getIcon())) {
-            Picasso.with(getActivity()).load(userBean.getIcon()).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).into(loginIconIv);
+            Picasso.with(getActivity()).load(userBean.getIcon()).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(loginIconIv);
         }
-        loginNameTv.setText(userBean.getName());
+        if (TextUtils.isEmpty(userBean.getName())) {
+            loginNameTv.setText("游客");
+        } else {
+            loginNameTv.setText(userBean.getName());
+        }
         String sex = userBean.getSex();
         if (!TextUtils.isEmpty(sex)) {
             if (sex.equals("-1")) {

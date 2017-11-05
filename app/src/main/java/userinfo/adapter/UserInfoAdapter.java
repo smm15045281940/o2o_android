@@ -2,6 +2,7 @@ package userinfo.adapter;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,11 @@ public class UserInfoAdapter extends BaseAdapter {
                         break;
                     case 2:
                         holder0.titleTv.setText("身份证号");
-                        holder0.contentTv.setText(userInfoBean.getU_idcard());
+                        String idCard = userInfoBean.getU_idcard();
+//                        if (!TextUtils.isEmpty(idCard)) {
+//                            idCard = idCard.substring(0, 3) + "***********" + idCard.substring(13, idCard.length());
+//                        }
+                        holder0.contentTv.setText(idCard);
                         break;
                     case 3:
                         holder0.titleTv.setText("现居地");
@@ -103,7 +108,11 @@ public class UserInfoAdapter extends BaseAdapter {
                         break;
                     case 6:
                         holder0.titleTv.setText("手机号码（已绑定）");
-                        holder0.contentTv.setText(userInfoBean.getU_mobile());
+                        String mobile = userInfoBean.getU_mobile();
+                        if (!TextUtils.isEmpty(mobile)) {
+                            mobile = mobile.substring(0, 3) + "****" + mobile.substring(7, mobile.length());
+                        }
+                        holder0.contentTv.setText(mobile);
                         break;
                     case 7:
                         holder0.titleTv.setText("角色选择");
