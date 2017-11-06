@@ -41,7 +41,6 @@
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="王小二"
                     android:textColor="@color/black_252323"
                     android:textSize="@dimen/y10" />
 
@@ -51,8 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/y5"
-                    android:scaleType="fitXY"
-                    android:src="@mipmap/male" />
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 
@@ -60,27 +58,49 @@
                 android:id="@+id/tv_item_tinfotask_inner_skill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="水泥工"
                 android:textColor="@color/black_252323"
                 android:textSize="@dimen/y10"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/iv_item_tinfotask_inner_status"
+            <TextView
+                android:id="@+id/tv_item_tinfotask_inner_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleType="fitXY"
-                android:src="@mipmap/worker_leisure" />
+                android:padding="@dimen/y2"
+                android:textColor="@color/white_ffffff"
+                android:textSize="@dimen/y8" />
 
         </LinearLayout>
 
-        <view.CImageView
-            android:id="@+id/iv_item_tinfotask_inner_mobile"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitXY"
-            android:src="@mipmap/custom_service" />
+            android:layout_gravity="center_vertical">
+
+            <view.CImageView
+                android:id="@+id/iv_item_tinfotask_inner_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@mipmap/custom_service"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_item_tinfotask_inner_evaluate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/blue_3dc4ff"
+                android:paddingBottom="@dimen/y5"
+                android:paddingLeft="@dimen/y10"
+                android:paddingRight="@dimen/y10"
+                android:paddingTop="@dimen/y5"
+                android:text="评价"
+                android:textColor="@color/white_ffffff"
+                android:visibility="gone" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

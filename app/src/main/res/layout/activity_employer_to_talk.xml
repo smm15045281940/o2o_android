@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray_c4ced3"
     android:orientation="vertical"
-    tools:context="employertotalk.view.EmployerToTalkActivity">
+    tools:context="activity.EmployerToTalkActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 
@@ -24,28 +24,9 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/fl"
+    <ListView
+        android:id="@+id/lv_employer_to_talk"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <refreshload.PullToRefreshLayout
-            android:id="@+id/ptrl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include layout="@layout/head" />
-
-            <refreshload.PullableListView
-                android:id="@+id/plv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null" />
-
-            <include layout="@layout/foot" />
-
-        </refreshload.PullToRefreshLayout>
-
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -16,6 +16,7 @@ public interface IntentConfig {
     String toJumpWorker = "to_jump_worker";
     String toResign = "to_resign";
     String toFire = "to_fire";
+    String toEvaluate = "to_Evaluate";
 
     String taskToTalk = "task_to_talk";
     String talkToDetail = "talk_to_detail";

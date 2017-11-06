@@ -102,7 +102,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name="refuseorder.view.RefuseOrderActivity" />
         <activity
-            android:name="evaluate.view.EvaluateActivity"
+            android:name="activity.EvaluateActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="redpacket.view.RedPacketActivity" />
         <activity android:name="voucher.view.VoucherActivity" />
@@ -114,11 +114,11 @@
         <activity android:name="idcard.view.IdCardActivity" />
         <activity android:name="talkworker.view.TalkWorkerActivity" />
         <activity android:name="persondetail.view.PersonDetailActivity" />
-        <activity android:name="employertotalk.view.EmployerToTalkActivity" />
+        <activity android:name="activity.EmployerToTalkActivity" />
         <activity android:name="changeprice.view.ChangePriceActivity" />
-        <activity android:name="employertodoing.view.EmployerToDoingActivity" />
-        <activity android:name="jumpworker.view.JumpWorkerActivity" />
-        <activity android:name="jumpemployer.view.JumpEmployerActivity" />
+        <activity android:name="activity.EmployerToDoingActivity" />
+        <activity android:name="activity.JumpWorkerActivity" />
+        <activity android:name="activity.JumpEmployerActivity" />
         <activity android:name="activity.FireActivity"></activity>
     </application>
 

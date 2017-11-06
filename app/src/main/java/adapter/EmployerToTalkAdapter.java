@@ -75,7 +75,7 @@ public class EmployerToTalkAdapter extends BaseAdapter {
                 }
                 EmployerToTalkBean employerToTalkBean0 = list.get(position);
                 holder0.skillNameTv.setText(employerToTalkBean0.getSkillName());
-                holder0.timeTv.setText(DataUtils.getDateToString(Long.parseLong(employerToTalkBean0.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(employerToTalkBean0.getEndTime())));
+                holder0.timeTv.setText(DataUtils.times(employerToTalkBean0.getStartTime()) + "-" + DataUtils.times(employerToTalkBean0.getEndTime()));
                 break;
             case 1:
                 if (convertView == null) {

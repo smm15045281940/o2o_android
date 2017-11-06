@@ -22,10 +22,10 @@ import com.gjzg.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.ToEmployerToDoingBean;
 import bean.ToEmployerToTalkBean;
 import config.ColorConfig;
 import config.IntentConfig;
@@ -36,10 +36,15 @@ import adapter.EmployerManageAdapter;
 import bean.EmployerManageBean;
 import employermanage.presenter.EmployerManagePresenter;
 import employermanage.presenter.IEmployerManagePresenter;
-import employertodoing.view.EmployerToDoingActivity;
-import employertotalk.view.EmployerToTalkActivity;
+import activity.EmployerToDoingActivity;
+import activity.EmployerToTalkActivity;
 import listener.IdPosClickHelp;
 import main.view.MainActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import activity.SkillsActivity;
@@ -93,6 +98,10 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                         break;
                     case CANCEL_FAILURE:
                         break;
+                    case 5:
+                        employerManageBeanList.remove(clickPosition);
+                        notifyData();
+                        break;
                 }
             }
         }
@@ -122,13 +131,6 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
         if (employerManagePresenter != null) {
             employerManagePresenter.destroy();
             employerManagePresenter = null;
-        }
-        if (handler != null) {
-            handler.removeMessages(LOAD_SUCCESS);
-            handler.removeMessages(LOAD_FAILURE);
-            handler.removeMessages(CANCEL_SUCCESS);
-            handler.removeMessages(CANCEL_FAILURE);
-            handler = null;
         }
     }
 
@@ -410,20 +412,10 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                         backgroundAlpha(0.5f);
                         pop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                     }
-                } else if (status.equals("1")) {
-                    Intent talkIntent = new Intent(EmployerManageActivity.this, EmployerToTalkActivity.class);
-                    ToEmployerToTalkBean toEmployerToTalkBean = new ToEmployerToTalkBean();
-                    toEmployerToTalkBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
-                    talkIntent.putExtra(IntentConfig.toEmployerToTalk, toEmployerToTalkBean);
-                    startActivity(talkIntent);
-                } else if (status.equals("-3") || status.equals("2") || status.equals("5")) {
+                } else {
                     Intent doingIntent = new Intent(EmployerManageActivity.this, EmployerToDoingActivity.class);
-                    ToEmployerToDoingBean toEmployerToDoingBean = new ToEmployerToDoingBean();
-                    toEmployerToDoingBean.setTaskId(employerManageBeanList.get(clickPosition).getTaskId());
-                    doingIntent.putExtra(IntentConfig.toEmployerToDoing, toEmployerToDoingBean);
+                    doingIntent.putExtra(IntentConfig.toEmployerToDoing, employerManageBeanList.get(clickPosition).getTaskId());
                     startActivity(doingIntent);
-                } else if (status.equals("3") || status.equals("4")) {
-                    Utils.log(EmployerManageActivity.this, "已结束");
                 }
                 break;
             case R.id.tv_item_employer_manage_wait_cancel:
@@ -439,7 +431,44 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                 cpd.show();
                 employerManagePresenter.cancel(NetConfig.taskBaseUrl + "?action=del&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() + "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId());
                 break;
+            case R.id.tv_item_employer_manage_done_del:
+                String doneDelUrl = NetConfig.taskBaseUrl +
+                        "?action=del2" +
+                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
+                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                Utils.log(EmployerManageActivity.this, "假删\n" + doneDelUrl);
+                doneDel(doneDelUrl);
+                break;
         }
+    }
+
+    private void doneDel(String doneDelUrl) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder().url(doneDelUrl).get().build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(EmployerManageActivity.this, "doneDel\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            if (beanObj.optString("data").equals("success")) {
+                                handler.sendEmptyMessage(5);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void backgroundAlpha(float f) {

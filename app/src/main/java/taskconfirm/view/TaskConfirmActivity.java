@@ -164,6 +164,7 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
     private void initData() {
         publishBean = new PublishBean();
         publishBean = (PublishBean) getIntent().getSerializableExtra("publishBean");
+        Utils.log(TaskConfirmActivity.this, "publishBean\n" + publishBean.toString());
         adapter = new TaskConfirmAdapter(TaskConfirmActivity.this, publishBean);
         inputPasswordBeanList = new ArrayList<>();
         inputPasswordAdapter = new InputPasswordAdapter(TaskConfirmActivity.this, inputPasswordBeanList);

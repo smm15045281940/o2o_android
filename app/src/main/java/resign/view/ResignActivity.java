@@ -139,7 +139,7 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
 
     private void notifyData() {
         Picasso.with(ResignActivity.this).load(userInfoBean.getU_img()).into(iconIv);
-        nameTv.setText(userInfoBean.getU_name());
+        nameTv.setText(userInfoBean.getU_true_name());
         countTv.setText("好评" + userInfoBean.getU_high_opinions() + "次");
         if (userInfoBean.getU_sex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);

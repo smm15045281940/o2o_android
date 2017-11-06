@@ -54,7 +54,7 @@ public class EvaluateAdapter extends BaseAdapter {
         EvaluateBean evaluateBean = list.get(position);
         Picasso.with(context).load(evaluateBean.getIcon()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
         holder.infoTv.setText(evaluateBean.getInfo());
-        holder.timeTv.setText(DataUtils.getDateToString(Long.parseLong(evaluateBean.getTime())));
+        holder.timeTv.setText(DataUtils.times(evaluateBean.getTime()));
         return convertView;
     }
 

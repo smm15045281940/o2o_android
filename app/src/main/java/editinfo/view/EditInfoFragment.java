@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -199,7 +200,8 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
             Utils.toast(getActivity(), "请添加工种");
             return;
         }
-        editInfoPresenter.submit(userInfoBean);
+        Log.e("EditInfoFragment", "userInfoBean\n" + userInfoBean.toString());
+//        editInfoPresenter.submit(userInfoBean);
     }
 
     @Override

@@ -90,6 +90,7 @@ public class EmployerManageAdapter extends BaseAdapter {
             final int llId = holder.ll.getId();
             final int waitCancelId = holder.waitCancelTv.getId();
             final int talkCancelId = holder.talkCancelTv.getId();
+            final int doneDelId = holder.doneDelTv.getId();
             holder.ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -108,6 +109,12 @@ public class EmployerManageAdapter extends BaseAdapter {
                     idPosClickHelp.onClick(talkCancelId, p);
                 }
             });
+            holder.doneDelTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    idPosClickHelp.onClick(doneDelId, p);
+                }
+            });
         }
         return convertView;
     }
@@ -118,7 +125,7 @@ public class EmployerManageAdapter extends BaseAdapter {
         private TextView titleTv, infoTv;
         private LinearLayout waitLl, talkLl, doneLl;
         private LinearLayout ll;
-        private TextView waitCancelTv, talkCancelTv;
+        private TextView waitCancelTv, talkCancelTv, doneDelTv;
 
         public ViewHolder(View itemView) {
             iconIv = (ImageView) itemView.findViewById(R.id.iv_item_employer_manage_icon);
@@ -131,6 +138,7 @@ public class EmployerManageAdapter extends BaseAdapter {
             ll = (LinearLayout) itemView.findViewById(R.id.ll_item_employer_manage);
             waitCancelTv = (TextView) itemView.findViewById(R.id.tv_item_employer_manage_wait_cancel);
             talkCancelTv = (TextView) itemView.findViewById(R.id.tv_item_employer_manage_talk_cancel);
+            doneDelTv = (TextView) itemView.findViewById(R.id.tv_item_employer_manage_done_del);
         }
     }
 }

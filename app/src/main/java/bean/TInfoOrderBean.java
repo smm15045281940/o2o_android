@@ -44,6 +44,7 @@ public class TInfoOrderBean implements Serializable{
     private String u_dissensions;
     private String u_true_name;
     private String u_img;
+    private String skill;
 
     public String getO_id() {
         return o_id;
@@ -325,6 +326,14 @@ public class TInfoOrderBean implements Serializable{
         this.u_img = u_img;
     }
 
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
     @Override
     public String toString() {
         return "TInfoOrderBean{" +
@@ -363,6 +372,7 @@ public class TInfoOrderBean implements Serializable{
                 ", u_dissensions='" + u_dissensions + '\'' +
                 ", u_true_name='" + u_true_name + '\'' +
                 ", u_img='" + u_img + '\'' +
+                ", skill='" + skill + '\'' +
                 '}';
     }
 }

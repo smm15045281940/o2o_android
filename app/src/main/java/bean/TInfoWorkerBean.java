@@ -26,6 +26,8 @@ public class TInfoWorkerBean implements Serializable {
     private int remaining;
     private List<TInfoOrderBean> tInfoOrderBeanList;
 
+    private String skill;
+
     public String getTew_id() {
         return tew_id;
     }
@@ -154,6 +156,14 @@ public class TInfoWorkerBean implements Serializable {
         this.tInfoOrderBeanList = tInfoOrderBeanList;
     }
 
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
     @Override
     public String toString() {
         return "TInfoWorkerBean{" +
@@ -173,6 +183,7 @@ public class TInfoWorkerBean implements Serializable {
                 ", tew_type='" + tew_type + '\'' +
                 ", remaining=" + remaining +
                 ", tInfoOrderBeanList=" + tInfoOrderBeanList +
+                ", skill='" + skill + '\'' +
                 '}';
     }
 }

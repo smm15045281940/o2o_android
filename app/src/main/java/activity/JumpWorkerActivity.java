@@ -1,4 +1,4 @@
-package jumpworker.view;
+package activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,11 +35,7 @@ import com.gjzg.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import activity.FireActivity;
-import bean.SkillsBean;
 import bean.ToChangePriceBean;
 import bean.ToComplainBean;
 import bean.ToFireBean;
@@ -78,7 +74,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private OkHttpClient okHttpClient;
     private WorkerBean workerBean;
 
-    private TextView cancelWorkerTv, surePriceTv, fireWorkerTv;
+    private TextView cancelWorkerTv, cancelWorker2Tv, surePriceTv, fireWorkerTv;
     private View cancelWorkerPopView;
     private PopupWindow cancelWorkerPop;
     private View surePricePopView;
@@ -142,9 +138,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         if (okHttpClient != null) {
             okHttpClient = null;
         }
-        if (handler != null) {
-
-        }
     }
 
     private void initView() {
@@ -169,6 +162,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         waitWorkerLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_talk_wait_worker);
         fireWorkerLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_talk_fire_worker);
         cancelWorkerTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_cancel_worker);
+        cancelWorker2Tv = (TextView) rootView.findViewById(R.id.tv_jump_worker_cancel_worker_2);
         surePriceTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_sure_price);
         fireWorkerTv = (TextView) rootView.findViewById(R.id.tv_jump_worker_fire_worker);
         cpd = Utils.initProgressDialog(JumpWorkerActivity.this, cpd);
@@ -296,6 +290,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         complainRl.setOnClickListener(this);
         iconIv.setOnClickListener(this);
         cancelWorkerTv.setOnClickListener(this);
+        cancelWorker2Tv.setOnClickListener(this);
         surePriceTv.setOnClickListener(this);
         fireWorkerTv.setOnClickListener(this);
     }
@@ -320,6 +315,14 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 startActivity(intent);
                 break;
             case R.id.tv_jump_worker_cancel_worker:
+                Utils.log(JumpWorkerActivity.this, "cancelWorker");
+                if (!cancelWorkerPop.isShowing()) {
+                    backgroundAlpha(0.5f);
+                    cancelWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
+                break;
+            case R.id.tv_jump_worker_cancel_worker_2:
+                Utils.log(JumpWorkerActivity.this, "cancelWorker");
                 if (!cancelWorkerPop.isShowing()) {
                     backgroundAlpha(0.5f);
                     cancelWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
@@ -360,7 +363,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
 
     private void notifyData() {
         surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
-        surePriceTimeTv.setText(DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_end_time())));
+//        surePriceTimeTv.setText(DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_end_time())));
         Picasso.with(JumpWorkerActivity.this).load(workerBean.getU_img()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
         if (workerBean.getU_sex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
@@ -457,6 +460,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private void changePrice() {
         ToChangePriceBean toChangePriceBean = new ToChangePriceBean();
         toChangePriceBean.setSkillName(toJumpWorkerBean.getS_name());
+
         Intent changePriceIntent = new Intent(JumpWorkerActivity.this, ChangePriceActivity.class);
         changePriceIntent.putExtra(IntentConfig.toChangePrice, toChangePriceBean);
         startActivity(changePriceIntent);

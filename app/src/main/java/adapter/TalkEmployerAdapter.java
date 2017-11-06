@@ -65,7 +65,7 @@ public class TalkEmployerAdapter extends BaseAdapter {
         TalkEmployerWorkerBean talkEmployerWorkerBean = list.get(position);
         holder.skillTv.setText("招" + talkEmployerWorkerBean.getSkill() + talkEmployerWorkerBean.getAmount() + "人");
         holder.priceTv.setText("工资" + talkEmployerWorkerBean.getPrice() + "元/天");
-        holder.timeTv.setText(DataUtils.getDateToString(Long.parseLong(talkEmployerWorkerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(talkEmployerWorkerBean.getEndTime())));
+        holder.timeTv.setText(DataUtils.times(talkEmployerWorkerBean.getStartTime()) + "-" + DataUtils.times(talkEmployerWorkerBean.getEndTime()));
         holder.selectRb.setChecked(talkEmployerWorkerBean.isSelect());
         final int p = position;
         final int selectId = holder.selectRb.getId();

@@ -72,7 +72,7 @@
             <TextView
                 android:id="@+id/tv_employer_manage_doing"
                 style="@style/tv_manage"
-                android:text="进行中" />
+                android:text="工作中" />
 
         </RelativeLayout>
 

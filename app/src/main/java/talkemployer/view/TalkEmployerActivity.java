@@ -31,13 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bean.TalkEmployerWorkerBean;
-import bean.ToJumpEmployerBean;
 import bean.ToTalkEmployerBean;
 import config.IntentConfig;
 import config.NetConfig;
 import adapter.TalkEmployerAdapter;
 import bean.TalkEmployerBean;
-import evaluate.view.EvaluateActivity;
+import activity.EvaluateActivity;
 import listener.IdPosClickHelp;
 import persondetail.view.PersonDetailActivity;
 import talkemployer.presenter.TalkEmployerPresenter;

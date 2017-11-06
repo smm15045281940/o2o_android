@@ -1,4 +1,4 @@
-package jumpemployer.view;
+package activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -283,7 +283,9 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void loadData() {
-        String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toJumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
+        String url = NetConfig.taskBaseUrl +
+                "?action=info&t_id=" + toJumpEmployerBean.getTaskId() +
+                "&o_worker=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
         Utils.log(JumpEmployerActivity.this, url);
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -352,7 +354,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void loadSkill() {
-        String url = NetConfig.skillsUrl + "?s_id=" + jumpEmployerBean.getSkillId();
+        String url = NetConfig.skillsUrl;
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -364,11 +366,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    List<SkillsBean> skillsBeanList = new ArrayList<>();
-                    skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
-                    if (skillsBeanList.size() != 0) {
-                        jumpEmployerBean.setSkillName(skillsBeanList.get(0).getS_name());
-                    }
+                    jumpEmployerBean.setSkillName(DataUtils.getSkillName(json, jumpEmployerBean.getSkillId()));
                     handler.sendEmptyMessage(2);
                 }
             }
@@ -431,7 +429,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
 
     private void notifyData() {
         beginDoPriceTv.setText(jumpEmployerBean.getPrice());
-        beginDoTimeTv.setText(DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getEndTime())));
+        beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
         Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).into(iconIv);
         if (jumpEmployerBean.getSex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
@@ -442,7 +440,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         skillCountTv.setText("招" + jumpEmployerBean.getSkillName() + jumpEmployerBean.getCount() + "人");
         priceTv.setText("工资" + jumpEmployerBean.getPrice() + "元/天");
         addressTv.setText(jumpEmployerBean.getAddress());
-        timeTv.setText("工期" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(jumpEmployerBean.getEndTime())));
+        timeTv.setText("工期" + DataUtils.times(jumpEmployerBean.getStartTime()) + "——" + DataUtils.times(jumpEmployerBean.getEndTime()));
         map();
         if (jumpEmployerBean.getO_status().equals("0")) {
             if (jumpEmployerBean.getO_confirm().equals("0")) {

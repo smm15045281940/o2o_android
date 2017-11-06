@@ -75,7 +75,7 @@ public class EmployerToDoingAdapter extends BaseAdapter {
                     holder0 = (ViewHolder0) convertView.getTag();
                 }
                 holder0.skillNameTv.setText(list.get(position).getSkillName());
-                holder0.timeTv.setText(DataUtils.getDateToString(Long.parseLong(list.get(position).getStartTime())) + "-" + DataUtils.getDateToString(Long.parseLong(list.get(position).getEndTime())));
+                holder0.timeTv.setText(DataUtils.times(list.get(position).getStartTime()) + "-" + DataUtils.times(list.get(position).getEndTime()));
                 break;
             case 1:
                 if (convertView == null) {

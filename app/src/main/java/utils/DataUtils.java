@@ -89,6 +89,29 @@ public class DataUtils {
         return skillNameList;
     }
 
+    public static String getSkillName(String json, String skillId) {
+        String skillName = null;
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 200) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null) {
+                    for (int i = 0; i < dataArr.length(); i++) {
+                        JSONObject o = dataArr.optJSONObject(i);
+                        if (o != null) {
+                            if (o.optString("s_id").equals(skillId)) {
+                                skillName = o.optString("s_name");
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return skillName;
+    }
+
     //工人
     public static List<WorkerBean> getWorkerBeanList(String workerJson) {
         List<WorkerBean> workerBeanList = new ArrayList<>();
@@ -501,10 +524,12 @@ public class DataUtils {
         return employerToDoingBeanList;
     }
 
-    public static String getDateToString(long milSecond) {
-        Date date = new Date(milSecond);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-        return format.format(date);
+    public static String times(String time) {
+        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd");
+        long lcc = Long.valueOf(time);
+        int i = Integer.parseInt(time);
+        String times = sdr.format(new Date(i * 1000L));
+        return times;
     }
 
     public static List<WorkerManageBean> getWorkerManageBeanList(String json) {
