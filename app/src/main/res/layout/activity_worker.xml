@@ -25,7 +25,8 @@
         <RelativeLayout
             android:id="@+id/rl_worker_screen"
             style="@style/rl_return"
-            android:layout_alignParentRight="true">
+            android:layout_alignParentRight="true"
+            android:visibility="gone">
 
             <ImageView
                 style="@style/iv_return"

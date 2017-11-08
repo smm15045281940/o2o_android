@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.gjzg.R;
 
 import aboutus.view.AboutUsActivity;
+import activity.MessageTipActivity;
 import cache.LruJsonCache;
 import set.presenter.ISetPresenter;
 import set.presenter.SetPresenter;
@@ -26,7 +27,7 @@ import utils.Utils;
 public class SetActivity extends AppCompatActivity implements ISetActivity, View.OnClickListener {
 
     private View rootView, cachePopView;
-    private RelativeLayout returnRl, clearCacheRl, aboutUsRl, quitRl;
+    private RelativeLayout returnRl, clearCacheRl, messageTipRl, aboutUsRl, quitRl;
     private PopupWindow cachePop;
     private LruJsonCache lruJsonCache;
     private ISetPresenter setPresenter;
@@ -50,6 +51,7 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_return);
         clearCacheRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_cache_clear);
+        messageTipRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_cache_message_tip);
         aboutUsRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_about_us);
         quitRl = (RelativeLayout) rootView.findViewById(R.id.rl_set_quit);
     }
@@ -97,6 +99,7 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
     private void setListener() {
         returnRl.setOnClickListener(this);
         clearCacheRl.setOnClickListener(this);
+        messageTipRl.setOnClickListener(this);
         aboutUsRl.setOnClickListener(this);
         quitRl.setOnClickListener(this);
     }
@@ -113,6 +116,9 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
                     cachePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                     backgroundAlpha(0.5f);
                 }
+                break;
+            case R.id.rl_set_cache_message_tip:
+                startActivity(new Intent(SetActivity.this, MessageTipActivity.class));
                 break;
             case R.id.rl_set_about_us:
                 startActivity(new Intent(SetActivity.this, AboutUsActivity.class));

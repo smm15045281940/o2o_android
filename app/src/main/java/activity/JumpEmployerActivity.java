@@ -325,7 +325,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                                                             if (o.optString("o_worker").equals(UserUtils.readUserData(JumpEmployerActivity.this).getId())) {
                                                                 jumpEmployerBean.setSkillId(workerObj.optString("tew_skills"));
                                                                 jumpEmployerBean.setCount(workerObj.optString("tew_worker_num"));
-                                                                jumpEmployerBean.setPrice(workerObj.optString("tew_price"));
                                                                 jumpEmployerBean.setStartTime(workerObj.optString("tew_start_time"));
                                                                 jumpEmployerBean.setEndTime(workerObj.optString("tew_end_time"));
                                                                 jumpEmployerBean.setAddress(workerObj.optString("tew_address"));
@@ -334,6 +333,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                                                                 jumpEmployerBean.setOrderId(o.optString("o_id"));
                                                                 jumpEmployerBean.setTewId(o.optString("tew_id"));
                                                                 jumpEmployerBean.setTaskId(o.optString("t_id"));
+                                                                jumpEmployerBean.setPrice(o.optString("o_amount"));
                                                             }
                                                         }
                                                     }
@@ -374,7 +374,10 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void cancel() {
-        String url = NetConfig.orderUrl + "?action=cancel&o_id=" + jumpEmployerBean.getOrderId();
+        String url = NetConfig.orderUrl +
+                "?action=cancel" +
+                "&o_id=" + jumpEmployerBean.getOrderId() +
+                "&sponsor=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
         Utils.log(JumpEmployerActivity.this, url);
         Request cancelRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
@@ -499,17 +502,15 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void map() {
-        mapView.showScaleControl(false);
-        mapView.showZoomControls(false);
         BaiduMap baiduMap = mapView.getMap();
         UiSettings settings = baiduMap.getUiSettings();
         settings.setAllGesturesEnabled(false);
         settings.setOverlookingGesturesEnabled(false);
         settings.setZoomGesturesEnabled(false);
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.point_blue);
-        LatLng point = new LatLng(Double.parseDouble(jumpEmployerBean.getPosX()), Double.parseDouble(jumpEmployerBean.getPosY()));
+        LatLng point = new LatLng(Double.parseDouble(jumpEmployerBean.getPosY()), Double.parseDouble(jumpEmployerBean.getPosX()));
         OverlayOptions overlayOptions = new MarkerOptions().position(point).icon(bitmap);
-        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("19"));
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("15"));
         baiduMap.animateMapStatus(mapStatusUpdate);
         baiduMap.addOverlay(overlayOptions);
     }

@@ -20,7 +20,7 @@ import java.util.List;
 
 import config.ColorConfig;
 import discount.view.DiscountFragment;
-import firstpage.view.FirstPageFragment;
+import fragment.FirstPageFragment;
 import manage.view.ManageFragment;
 import mine.view.MineFragment;
 

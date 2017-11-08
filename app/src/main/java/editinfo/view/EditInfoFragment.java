@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -196,12 +197,22 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     }
 
     private void judgeSubmit() {
-        if (userInfoBean.getU_skills().equals("-1")) {
-            Utils.toast(getActivity(), "请添加工种");
-            return;
-        }
         Log.e("EditInfoFragment", "userInfoBean\n" + userInfoBean.toString());
-//        editInfoPresenter.submit(userInfoBean);
+        if (TextUtils.isEmpty(userInfoBean.getU_true_name())) {
+            Utils.toast(getActivity(), "请输入昵称");
+        } else if (TextUtils.isEmpty(userInfoBean.getU_idcard())) {
+            Utils.toast(getActivity(), "请输入身份证号");
+        } else if (TextUtils.isEmpty(userInfoBean.getUser_area_name())) {
+            Utils.toast(getActivity(), "请选择现居地");
+        } else if (TextUtils.isEmpty(userInfoBean.getUei_address())) {
+            Utils.toast(getActivity(), "请输入详细地址");
+        } else if (TextUtils.isEmpty(userInfoBean.getU_info())) {
+            Utils.toast(getActivity(), "请输入个人简介");
+        } else if (userInfoBean.getU_skills().equals("-1")) {
+            Utils.toast(getActivity(), "请添加工种");
+        } else {
+            editInfoPresenter.submit(userInfoBean);
+        }
     }
 
     @Override

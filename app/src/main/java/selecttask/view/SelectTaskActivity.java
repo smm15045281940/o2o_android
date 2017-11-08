@@ -274,9 +274,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
             switch (code) {
                 case 200:
                     String msg = beanObj.optString("data");
-                    if (msg.equals("failure")) {
-                        handler.sendEmptyMessage(INVITE_FAILURE);
-                    } else {
+                    if (msg.equals("success")) {
                         handler.sendEmptyMessage(INVITE_SUCCESS);
                     }
                     break;

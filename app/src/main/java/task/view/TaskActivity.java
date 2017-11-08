@@ -210,17 +210,17 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
 
     @Override
     public void onClick(int id, int pos) {
-        if (UserUtils.isUserLogin(TaskActivity.this)) {
-            clickPostion = pos;
-            switch (id) {
-                case R.id.ll_item_task:
-                    Intent intent = new Intent(TaskActivity.this, TalkEmployerActivity.class);
-                    ToTalkEmployerBean toTalkEmployerBean = new ToTalkEmployerBean();
-                    toTalkEmployerBean.setT_id(taskBeanList.get(clickPostion).getTaskId());
-                    intent.putExtra(IntentConfig.toTalkEmployer, toTalkEmployerBean);
-                    startActivity(intent);
-                    break;
-                case R.id.iv_item_task_collect:
+        clickPostion = pos;
+        switch (id) {
+            case R.id.ll_item_task:
+                Intent intent = new Intent(TaskActivity.this, TalkEmployerActivity.class);
+                ToTalkEmployerBean toTalkEmployerBean = new ToTalkEmployerBean();
+                toTalkEmployerBean.setT_id(taskBeanList.get(clickPostion).getTaskId());
+                intent.putExtra(IntentConfig.toTalkEmployer, toTalkEmployerBean);
+                startActivity(intent);
+                break;
+            case R.id.iv_item_task_collect:
+                if (UserUtils.isUserLogin(TaskActivity.this)) {
                     if (UserUtils.readUserData(TaskActivity.this).getId().equals(taskBeanList.get(clickPostion).getAuthorId())) {
                         Utils.toast(TaskActivity.this, VarConfig.cannotCollectSelf);
                     } else {
@@ -233,10 +233,10 @@ public class TaskActivity extends AppCompatActivity implements ITaskActivity, Vi
                                 break;
                         }
                     }
-                    break;
-            }
-        } else {
-            startActivity(new Intent(TaskActivity.this, LoginActivity.class));
+                } else {
+                    startActivity(new Intent(TaskActivity.this, LoginActivity.class));
+                }
+                break;
         }
     }
 

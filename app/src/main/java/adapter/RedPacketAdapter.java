@@ -12,6 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
+import listener.IdPosClickHelp;
 import listener.ListItemClickHelp;
 import bean.RedPacketBean;
 
@@ -19,10 +20,12 @@ public class RedPacketAdapter extends BaseAdapter {
 
     private Context context;
     private List<RedPacketBean> list;
+    private IdPosClickHelp idPosClickHelp;
 
-    public RedPacketAdapter(Context context, List<RedPacketBean> list) {
+    public RedPacketAdapter(Context context, List<RedPacketBean> list, IdPosClickHelp idPosClickHelp) {
         this.context = context;
         this.list = list;
+        this.idPosClickHelp = idPosClickHelp;
     }
 
     @Override
@@ -51,9 +54,32 @@ public class RedPacketAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         RedPacketBean redPacketBean = list.get(position);
-        holder.amountTv.setText(redPacketBean.getAmount() + "元");
-        holder.startTimeTv.setText(redPacketBean.getStartTime());
-        holder.endTimeTv.setText(redPacketBean.getEndTime());
+        holder.amountTv.setText(redPacketBean.getB_amount() + "元");
+        if (redPacketBean.getB_start_time().equals("0")) {
+            holder.startTimeTv.setText("不限");
+        } else {
+            holder.startTimeTv.setText(redPacketBean.getB_start_time());
+        }
+        if (redPacketBean.getB_end_time().equals("0")) {
+            holder.endTimeTv.setText("不限");
+        } else {
+            holder.endTimeTv.setText(redPacketBean.getB_end_time());
+        }
+        if (redPacketBean.getBd_use_time().equals("0")) {
+            holder.statusTv.setText("立即领取");
+            holder.statusTv.setEnabled(true);
+        } else {
+            holder.statusTv.setText("已领取");
+            holder.statusTv.setEnabled(false);
+        }
+        final int pos = position;
+        final int statusId = holder.statusTv.getId();
+        holder.statusTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                idPosClickHelp.onClick(statusId, pos);
+            }
+        });
         return convertView;
     }
 

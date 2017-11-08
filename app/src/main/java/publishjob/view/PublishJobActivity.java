@@ -385,8 +385,6 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
             } else if (endMonth == startMonth) {
                 if (endDay < startDay) {
                     return false;
-                } else if (endDay == startDay) {
-                    return false;
                 } else {
                     return true;
                 }

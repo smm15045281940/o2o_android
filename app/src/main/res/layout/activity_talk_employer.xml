@@ -17,26 +17,6 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_talk_employer_complain"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/sl_press"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/y5"
-                android:layout_marginRight="@dimen/y5"
-                android:text="投诉"
-                android:textColor="@color/blue_2681fc"
-                android:textSize="@dimen/y10" />
-
-        </RelativeLayout>
-
     </RelativeLayout>
 
     <LinearLayout

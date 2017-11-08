@@ -1,16 +1,12 @@
-package firstpage.view;
+package fragment;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,15 +24,17 @@ import com.gjzg.R;
 
 import java.util.List;
 
+import bean.LonLatBean;
 import city.bean.CityBean;
 import city.bean.CityBigBean;
-import city.view.CityActivity;
+import activity.CityActivity;
 import config.IntentConfig;
 import config.NetConfig;
-import config.PermissionConfig;
 import firstpage.presenter.FirstPagePresenter;
 import firstpage.presenter.IFirstPagePresenter;
+import firstpage.view.IFirstPageFragment;
 import leftright.view.LeftRightActivity;
+import login.view.LoginActivity;
 import publishjob.view.PublishJobActivity;
 import activity.SkillsActivity;
 import task.view.TaskActivity;
@@ -79,6 +77,9 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                         break;
                     case ID_DONE:
                         cpd.dismiss();
+                        UserUtils.saveLonLat(getActivity(), new LonLatBean(positionX + "", positionY + ""));
+                        Utils.log(getActivity(), "positionX\n" + positionX + "\npositionY\n" + positionY);
+                        Utils.log(getActivity(), "saveLonLat");
                         if (UserUtils.isUserLogin(getActivity())) {
                             firstpagePresenter.changePosition(NetConfig.changePositionUrl + "?u_id=" + UserUtils.readUserData(getActivity()).getId() + "&ucp_posit_x=" + positionX + "&ucp_posit_y=" + positionY);
                         }
@@ -105,7 +106,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         initView();
         initData();
         setListener();
-        checkLocPermisson();
+        loadData();
         return rootView;
     }
 
@@ -135,7 +136,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         option.setCoorType("bd09ll");
-        int span = 300000;
+        int span = 600000;
         option.setScanSpan(span);
         option.setIsNeedAddress(true);
         option.setOpenGps(true);
@@ -177,9 +178,13 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 startActivityForResult(cityIntent, IntentConfig.CITY_REQUEST);
                 break;
             case R.id.rl_frag_first_page_msg:
-                Intent msgIntent = new Intent(getActivity(), LeftRightActivity.class);
-                msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
-                startActivity(msgIntent);
+                if (UserUtils.isUserLogin(getActivity())) {
+                    Intent msgIntent = new Intent(getActivity(), LeftRightActivity.class);
+                    msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
+                    startActivity(msgIntent);
+                } else {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
                 break;
             case R.id.iv_frag_first_page_find_worker:
                 startActivity(new Intent(getActivity(), SkillsActivity.class));
@@ -188,23 +193,19 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 startActivity(new Intent(getActivity(), TaskActivity.class));
                 break;
             case R.id.iv_frag_first_page_send_job:
-                startActivity(new Intent(getActivity(), PublishJobActivity.class));
+                if (UserUtils.isUserLogin(getActivity())) {
+                    String idcard = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), PublishJobActivity.class));
+                    }
+                } else {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
                 break;
             default:
                 break;
-        }
-    }
-
-    private void checkLocPermisson() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int permisson = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
-            if (permisson != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionConfig.LOCATION);
-            } else {
-                loadData();
-            }
-        } else {
-            loadData();
         }
     }
 
@@ -216,21 +217,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
             if (cityBean != null) {
                 cityTv.setText(cityBean.getName());
             }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PermissionConfig.LOCATION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    loadData();
-                } else {
-                    Utils.toast(getActivity(), "请在系统设置中打开定位权限");
-                    getActivity().finish();
-                }
-                break;
         }
     }
 

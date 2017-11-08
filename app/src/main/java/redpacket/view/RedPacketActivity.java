@@ -13,6 +13,10 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,12 @@ import config.NetConfig;
 import config.VarConfig;
 import adapter.RedPacketAdapter;
 import bean.RedPacketBean;
+import listener.IdPosClickHelp;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import redpacket.presenter.IRedPacketPresenter;
 import redpacket.presenter.RedPacketPresenter;
 import refreshload.PullToRefreshLayout;
@@ -29,7 +39,7 @@ import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
-public class RedPacketActivity extends AppCompatActivity implements IRedPacketActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+public class RedPacketActivity extends AppCompatActivity implements IRedPacketActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
     private View rootView, emptyView, netView;
     private FrameLayout fl;
@@ -47,6 +57,7 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     private final int FIRST = 3;
     private final int REFRESH = 4;
     private int STATE = FIRST;
+    private int clickPosition;
 
     private Handler handler = new Handler() {
         @Override
@@ -59,6 +70,10 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
                         break;
                     case LOAD_FAILURE:
                         notifyNet();
+                        break;
+                    case 666:
+                        redPacketBeanList.get(clickPosition).setBd_use_time("1");
+                        notifyData();
                         break;
                 }
             }
@@ -126,7 +141,7 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
 
     private void initData() {
         redPacketPresenter = new RedPacketPresenter(this);
-        redPacketAdapter = new RedPacketAdapter(this, redPacketBeanList);
+        redPacketAdapter = new RedPacketAdapter(this, redPacketBeanList, this);
     }
 
     private void setData() {
@@ -134,12 +149,16 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     }
 
     private void setListener() {
+        ptrl.setOnRefreshListener(this);
         returnRl.setOnClickListener(this);
     }
 
     private void loadData() {
-        cpd.show();
-        redPacketPresenter.load(NetConfig.redBagUrl + "?action=list&uid=" + UserUtils.readUserData(RedPacketActivity.this).getId() + "&bt_id=2");
+        String url = NetConfig.redBagUrl +
+                "?action=list" +
+                "&uid=" + UserUtils.readUserData(RedPacketActivity.this).getId() +
+                "&bt_withdraw=1";
+        redPacketPresenter.load(url);
     }
 
     private void notifyData() {
@@ -189,6 +208,11 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
 
     @Override
     public void loadSuccess(String json) {
+        switch (STATE) {
+            case REFRESH:
+                redPacketBeanList.clear();
+                break;
+        }
         redPacketBeanList.addAll(DataUtils.getRedPacketBeanList(json));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
@@ -200,11 +224,55 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideHeadView();
+        STATE = REFRESH;
+        loadData();
     }
 
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         ptrl.hideFootView();
+    }
+
+    @Override
+    public void onClick(int id, int pos) {
+        clickPosition = pos;
+        switch (id) {
+            case R.id.tv_item_red_packet_status:
+                String receiveUrl = NetConfig.redBagUrl +
+                        "?action=using" +
+                        "&bd_id=" + redPacketBeanList.get(clickPosition).getBd_id() +
+                        "&uid=" + UserUtils.readUserData(RedPacketActivity.this).getId();
+                receive(receiveUrl);
+                break;
+        }
+    }
+
+    private void receive(String url) {
+        cpd.show();
+        Request request = new Request.Builder().url(url).get().build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            if (beanObj.optString("data").equals("success")) {
+                                handler.sendEmptyMessage(666);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }

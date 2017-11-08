@@ -126,9 +126,9 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                     boolean b = true;
                     for (int i = 0; i < t.gettInfoOrderBeanList().size(); i++) {
                         if (t.gettInfoOrderBeanList().get(i).getU_task_status().equals("0")) {
-                            if(t.gettInfoOrderBeanList().get(i).getO_status().equals("-1") || t.gettInfoOrderBeanList().get(i).getO_status().equals("-2")){
+                            if (t.gettInfoOrderBeanList().get(i).getO_status().equals("-1") || t.gettInfoOrderBeanList().get(i).getO_status().equals("-2")) {
 
-                            }else{
+                            } else {
                                 b = false;
                             }
                             break;
@@ -304,8 +304,9 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                             toJumpWorkerBean.setTaskId(tInfoOrderBean.getT_id());
                             toJumpWorkerBean.setTewId(tInfoOrderBean.getTew_id());
                             toJumpWorkerBean.setWorkerId(tInfoOrderBean.getO_worker());
-                            toJumpWorkerBean.setTew_start_time(tInfoOrderBean.getO_start_time());
-                            toJumpWorkerBean.setTew_end_time(tInfoOrderBean.getO_end_time());
+                            toJumpWorkerBean.setTew_start_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_start_time());
+                            toJumpWorkerBean.setTew_end_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_end_time());
+                            toJumpWorkerBean.setTew_worker_num(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_worker_num());
                             toJumpWorkerBean.setOrderId(tInfoOrderBean.getO_id());
                             toJumpWorkerBean.setTewPrice(tInfoOrderBean.getO_amount());
                             toJumpWorkerBean.setO_confirm(tInfoOrderBean.getO_confirm());

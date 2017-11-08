@@ -38,6 +38,7 @@ import adapter.TalkEmployerAdapter;
 import bean.TalkEmployerBean;
 import activity.EvaluateActivity;
 import listener.IdPosClickHelp;
+import login.view.LoginActivity;
 import persondetail.view.PersonDetailActivity;
 import talkemployer.presenter.TalkEmployerPresenter;
 import utils.DataUtils;
@@ -50,7 +51,7 @@ import workermanage.view.WorkerManageActivity;
 public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener, IdPosClickHelp {
 
     private View rootView;
-    private RelativeLayout returnRl, complainRl;
+    private RelativeLayout returnRl;
     private View headMapView;
     private CImageView iconIv, phoneIv;
     private ImageView sexIv;
@@ -154,7 +155,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void initRootView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_return);
-        complainRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_complain);
         talkLv = (ListView) rootView.findViewById(R.id.lv_talk_employer);
         cpd = Utils.initProgressDialog(TalkEmployerActivity.this, cpd);
 
@@ -174,8 +174,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         addressTv = (TextView) headMapView.findViewById(R.id.tv_head_talk_employer_address);
         talkLv.addHeaderView(headMapView);
         mapView = (MapView) headMapView.findViewById(R.id.mv_head_talk_employer);
-        mapView.showScaleControl(false);
-        mapView.showZoomControls(false);
         baiduMap = mapView.getMap();
         UiSettings settings = baiduMap.getUiSettings();
         settings.setAllGesturesEnabled(false);
@@ -196,14 +194,18 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     private void setListener() {
         returnRl.setOnClickListener(this);
-        complainRl.setOnClickListener(this);
         waitRl.setOnClickListener(this);
         iconIv.setOnClickListener(this);
     }
 
     private void loadData() {
         cpd.show();
-        String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toTalkEmployerBean.getT_id() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+        String url;
+        if (UserUtils.isUserLogin(TalkEmployerActivity.this)) {
+            url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toTalkEmployerBean.getT_id() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
+        } else {
+            url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toTalkEmployerBean.getT_id();
+        }
         Utils.log(TalkEmployerActivity.this, url);
         talkEmployerPresenter.load(url);
     }
@@ -211,7 +213,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     private void notifyData() {
         LatLng point = new LatLng(Double.parseDouble(talkEmployerBean.getPosY()), Double.parseDouble(talkEmployerBean.getPosX()));
         OverlayOptions overlayOptions = new MarkerOptions().position(point).icon(bitmap);
-        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("19"));
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("15"));
         baiduMap.animateMapStatus(mapStatusUpdate);
         baiduMap.addOverlay(overlayOptions);
         Picasso.with(TalkEmployerActivity.this).load(talkEmployerBean.getIcon()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
@@ -252,11 +254,17 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             case R.id.rl_talk_employer_return:
                 finish();
                 break;
-            case R.id.rl_talk_employer_complain:
-                startActivity(new Intent(TalkEmployerActivity.this, EvaluateActivity.class));
-                break;
             case R.id.rl_talk_employer_wait:
-                inviteJudge();
+                if (UserUtils.isUserLogin(TalkEmployerActivity.this)) {
+                    String idcard = UserUtils.readUserData(TalkEmployerActivity.this).getIdcard();
+                    if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
+                        Utils.toast(TalkEmployerActivity.this, "请在工作管理中完善个人信息");
+                    } else {
+                        inviteJudge();
+                    }
+                } else {
+                    startActivity(new Intent(TalkEmployerActivity.this, LoginActivity.class));
+                }
                 break;
             case R.id.iv_head_talk_employer_icon:
                 Intent intent = new Intent(TalkEmployerActivity.this, PersonDetailActivity.class);

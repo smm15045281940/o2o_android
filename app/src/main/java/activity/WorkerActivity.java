@@ -365,18 +365,18 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(int id, int pos) {
         clickPosition = pos;
         WorkerBean workerBean = workerBeanList.get(clickPosition);
-        if (UserUtils.isUserLogin(WorkerActivity.this)) {
-            switch (id) {
-                case R.id.ll_item_worker:
-                    Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
-                    ToTalkWorkerBean toTalkWorkerBean = new ToTalkWorkerBean();
-                    toTalkWorkerBean.setU_id(workerBeanList.get(pos).getU_id());
-                    toTalkWorkerBean.setS_id(toWorkerBean.getS_id());
-                    toTalkWorkerBean.setS_name(toWorkerBean.getS_name());
-                    intent.putExtra(IntentConfig.toTalkWorker, toTalkWorkerBean);
-                    startActivity(intent);
-                    break;
-                case R.id.iv_item_worker_collect:
+        switch (id) {
+            case R.id.ll_item_worker:
+                Intent intent = new Intent(WorkerActivity.this, TalkWorkerActivity.class);
+                ToTalkWorkerBean toTalkWorkerBean = new ToTalkWorkerBean();
+                toTalkWorkerBean.setU_id(workerBeanList.get(pos).getU_id());
+                toTalkWorkerBean.setS_id(toWorkerBean.getS_id());
+                toTalkWorkerBean.setS_name(toWorkerBean.getS_name());
+                intent.putExtra(IntentConfig.toTalkWorker, toTalkWorkerBean);
+                startActivity(intent);
+                break;
+            case R.id.iv_item_worker_collect:
+                if (UserUtils.isUserLogin(WorkerActivity.this)) {
                     if (UserUtils.readUserData(WorkerActivity.this).getId().equals(workerBean.getU_id())) {
                         Utils.toast(WorkerActivity.this, VarConfig.cannotCollectSelf);
                     } else {
@@ -390,10 +390,10 @@ public class WorkerActivity extends AppCompatActivity implements View.OnClickLis
                                 break;
                         }
                     }
-                    break;
-            }
-        } else {
-            startActivity(new Intent(WorkerActivity.this, LoginActivity.class));
+                } else {
+                    startActivity(new Intent(WorkerActivity.this, LoginActivity.class));
+                }
+                break;
         }
     }
 

@@ -1,5 +1,8 @@
 package fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +19,7 @@ import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 
 //系统消息
-public class SysMsgFragment extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
+public class SysMsgFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private PullToRefreshLayout ptrl;
@@ -25,13 +28,19 @@ public class SysMsgFragment extends CommonFragment implements PullToRefreshLayou
     private MsgAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
 
+    @Nullable
     @Override
-    protected View getRootView() {
-        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+        initView();
+        initData();
+        setData();
+        setListener();
+        loadData();
+        return rootView;
     }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         initRootView();
     }
 
@@ -41,24 +50,20 @@ public class SysMsgFragment extends CommonFragment implements PullToRefreshLayou
         plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
-    @Override
-    protected void initData() {
+    private void initData() {
         list = new ArrayList<>();
         adapter = new MsgAdapter(getActivity(), list);
     }
 
-    @Override
-    protected void setData() {
+    private void setData() {
         plv.setAdapter(adapter);
     }
 
-    @Override
-    protected void setListener() {
+    private void setListener() {
         ptrl.setOnRefreshListener(this);
     }
 
-    @Override
-    protected void loadData() {
+    private void loadData() {
         MsgBean sm0 = new MsgBean();
         sm0.setTitle("系统消息");
         sm0.setDate("2017/03/05");

@@ -19,6 +19,15 @@ public class ToJumpWorkerBean implements Serializable {
     private String tewPrice;
     private String tew_start_time;
     private String tew_end_time;
+    private String tew_worker_num;
+
+    public String getTew_worker_num() {
+        return tew_worker_num;
+    }
+
+    public void setTew_worker_num(String tew_worker_num) {
+        this.tew_worker_num = tew_worker_num;
+    }
 
     public String getTewPrice() {
         return tewPrice;
@@ -119,6 +128,10 @@ public class ToJumpWorkerBean implements Serializable {
                 ", s_name='" + s_name + '\'' +
                 ", o_confirm='" + o_confirm + '\'' +
                 ", o_status='" + o_status + '\'' +
+                ", tewPrice='" + tewPrice + '\'' +
+                ", tew_start_time='" + tew_start_time + '\'' +
+                ", tew_end_time='" + tew_end_time + '\'' +
+                ", tew_worker_num='" + tew_worker_num + '\'' +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package city.view;
+package activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,14 +24,17 @@ import city.bean.CityBean;
 import city.bean.CityBigBean;
 import city.presenter.CityPresenter;
 import city.presenter.ICityPresenter;
+import city.view.ICityActivity;
 import config.IntentConfig;
 import utils.Utils;
+import view.CProgressDialog;
 import view.SlideBar;
 
 public class CityActivity extends AppCompatActivity implements ICityActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private View rootView;
     private RelativeLayout returnRl;
+    private CProgressDialog cProgressDialog;
     private SlideBar sb;
     private ListView lv;
     private List<CityBean> list;
@@ -45,6 +48,7 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
+                        cProgressDialog.dismiss();
                         adapter.notifyDataSetChanged();
                         break;
                 }
@@ -82,6 +86,7 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_city_return);
         sb = (SlideBar) rootView.findViewById(R.id.sb_city);
         lv = (ListView) rootView.findViewById(R.id.lv_city);
+        cProgressDialog = Utils.initProgressDialog(CityActivity.this, cProgressDialog);
     }
 
     private void initData() {
@@ -110,6 +115,7 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
     }
 
     private void loadData() {
+        cProgressDialog.show();
         Intent intent = getIntent();
         if (intent != null) {
             CityBigBean cityBigBean = (CityBigBean) intent.getSerializableExtra("cityBigBean");

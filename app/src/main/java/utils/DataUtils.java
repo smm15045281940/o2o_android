@@ -1,5 +1,8 @@
 package utils;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +18,7 @@ import bean.ComplainIssueBean;
 import bean.EmployerToDoingBean;
 import bean.EmployerToTalkBean;
 import bean.EvaluateBean;
+import bean.LonLatBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.RedPacketBean;
@@ -34,6 +38,25 @@ import bean.UserInfoBean;
 import bean.WorkerManageBean;
 
 public class DataUtils {
+
+    //距离
+    public static String getDistance(LonLatBean lonLatBean1, LonLatBean lonLatBean2) {
+        String distance = "";
+        if (lonLatBean1 != null && lonLatBean2 != null) {
+            String lon1 = lonLatBean1.getLon();
+            String lat1 = lonLatBean1.getLat();
+            String lon2 = lonLatBean2.getLon();
+            String lat2 = lonLatBean2.getLat();
+            if (lon1.equals("0.00000000") || lat1.equals("0.00000000") || lon2.equals("0.00000000") || lat2.equals("0.00000000")) {
+            } else {
+                LatLng latLng1 = new LatLng(Double.parseDouble(lat1), Double.parseDouble(lon1));
+                LatLng latLng2 = new LatLng(Double.parseDouble(lat2), Double.parseDouble(lon2));
+                Double d = DistanceUtil.getDistance(latLng1, latLng2);
+                distance = String.format("%.2f", d / 1000);
+            }
+        }
+        return distance;
+    }
 
     //技能
     public static List<SkillsBean> getSkillBeanList(String json) {
@@ -355,9 +378,32 @@ public class DataUtils {
                             JSONObject o = dataArr.optJSONObject(i);
                             if (o != null) {
                                 RedPacketBean redPacketBean = new RedPacketBean();
-                                redPacketBean.setAmount(o.optString("b_amount"));
-                                redPacketBean.setStartTime(o.optString("b_start_time"));
-                                redPacketBean.setEndTime(o.optString("b_end_time"));
+                                redPacketBean.setB_id(o.optString("b_id"));
+                                redPacketBean.setBt_id(o.optString("bt_id"));
+                                redPacketBean.setB_start_time(o.optString("b_start_time"));
+                                redPacketBean.setB_end_time(o.optString("b_end_time"));
+                                redPacketBean.setB_total(o.optString("b_total"));
+                                redPacketBean.setB_offset(o.optString("b_offset"));
+                                redPacketBean.setB_status(o.optString("b_status"));
+                                redPacketBean.setB_type(o.optString("b_type"));
+                                redPacketBean.setB_author(o.optString("b_author"));
+                                redPacketBean.setB_in_time(o.optString("b_in_time"));
+                                redPacketBean.setB_last_editor(o.optString("b_last_editor"));
+                                redPacketBean.setB_last_edit_time(o.optString("b_last_edit_time"));
+                                redPacketBean.setB_info(o.optString("b_info"));
+                                redPacketBean.setB_amount(o.optString("b_amount"));
+                                redPacketBean.setB_use_amount(o.optString("b_use_amount"));
+                                redPacketBean.setBd_id(o.optString("bd_id"));
+                                redPacketBean.setBd_serial(o.optString("bd_serial"));
+                                redPacketBean.setBd_author(o.optString("bd_author"));
+                                redPacketBean.setBd_use_time(o.optString("bd_use_time"));
+                                redPacketBean.setBt_name(o.optString("bt_name"));
+                                redPacketBean.setBt_in_time(o.optString("bt_in_time"));
+                                redPacketBean.setBt_author(o.optString("bt_author"));
+                                redPacketBean.setBt_last_editor(o.optString("bt_last_editor"));
+                                redPacketBean.setBt_last_edit_time(o.optString("bt_last_edit_time"));
+                                redPacketBean.setBt_info(o.optString("bt_info"));
+                                redPacketBean.setBt_withdraw(o.optString("bt_withdraw"));
                                 redPacketBeanList.add(redPacketBean);
                             }
                         }

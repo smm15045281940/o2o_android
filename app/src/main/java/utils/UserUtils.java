@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
+
+import bean.LonLatBean;
 import login.bean.UserBean;
 import bean.UserInfoBean;
 
@@ -47,6 +51,48 @@ public class UserUtils {
         return userBean;
     }
 
+    //保存用户经纬度
+    public static void saveLonLat(Context context, LonLatBean lonLatBean) {
+        if (context != null && lonLatBean != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor et = sp.edit();
+            et.putString("lon", lonLatBean.getLon());
+            et.putString("lat", lonLatBean.getLat());
+            et.commit();
+        }
+    }
+
+    //读取用户经纬度
+    public static LonLatBean getLonLat(Context context) {
+        LonLatBean lonLatBean = new LonLatBean();
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            lonLatBean.setLon(sp.getString("lon", "0.00000000"));
+            lonLatBean.setLat(sp.getString("lat", "0.00000000"));
+        }
+        return lonLatBean;
+    }
+
+    //保存客服电话
+    public static void saveServiceMobile(Context context, String serviceMobile) {
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor et = sp.edit();
+            et.putString("serviceMobile", serviceMobile);
+            et.commit();
+        }
+    }
+
+    //读取客服电话
+    public static String getServiceMobile(Context context) {
+        String serviceMobile = null;
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            serviceMobile = sp.getString("serviceMobile", "");
+        }
+        return serviceMobile;
+    }
+
     //用户登录状态
     public static boolean isUserLogin(Context context) {
         SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
@@ -69,6 +115,8 @@ public class UserUtils {
         et.remove("pass");
         et.remove("idcard");
         et.remove("mobile");
+        et.remove("lon");
+        et.remove("lat");
         et.commit();
     }
 

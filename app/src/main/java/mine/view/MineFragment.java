@@ -1,6 +1,8 @@
 package mine.view;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,11 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,19 +26,32 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import collect.view.CollectActivity;
 import config.IntentConfig;
+import config.NetConfig;
 import leftright.view.LeftRightActivity;
 import login.bean.UserBean;
 import login.view.LoginActivity;
 import mine.presenter.IMinePresenter;
 import mine.presenter.MinePresenter;
 import myevaluate.view.MyEvaluateActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import passwordset.view.SetPwdActivity;
 import redpacket.view.RedPacketActivity;
 import set.view.SetActivity;
 import bean.UserInfoBean;
+import usermanage.view.UserManageActivity;
 import utils.UserUtils;
+import utils.Utils;
 import voucher.view.VoucherActivity;
 import wallet.view.WalletActivity;
 
@@ -41,13 +59,17 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
 
     private View rootView;
     private RelativeLayout collectRl, evaluateRl, walletRl, msgRl, redBagRl, voucherRl;
-    private LinearLayout setCashPwdLl, settingLl;
+    private LinearLayout setCashPwdLl, serviceTermLl, settingLl, customerServiceLl;
     private TextView loginTv;
     private RelativeLayout loginRightNowRl, loginDoneRl;
-    private TextView loginNameTv;
+    private TextView loginNameTv, loginTipTv;
     private ImageView loginIconIv, loginSexIv, loginOnlineIv;
     private IMinePresenter minePresenter;
     private final int REFRESH_DONE = 1;
+
+    private View serviceMobilePopView;
+    private TextView serviceMobileContentTv;
+    private PopupWindow serviceMobilePop;
 
     private Handler handler = new Handler() {
         @Override
@@ -78,6 +100,41 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         super.onResume();
         if (UserUtils.isUserLogin(getActivity())) {
             minePresenter.load(UserUtils.readUserData(getActivity()).getId());
+            String serviceMobileUrl = NetConfig.appConfigUrl;
+            Utils.log(getActivity(), "serviceMobileUrl\n" + serviceMobileUrl);
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Request request = new Request.Builder().url(serviceMobileUrl).get().build();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        try {
+                            JSONObject beanObj = new JSONObject(json);
+                            if (beanObj.optInt("code") == 1) {
+                                JSONObject dataObj = beanObj.optJSONObject("data");
+                                if (dataObj != null) {
+                                    JSONObject o = dataObj.optJSONObject("data");
+                                    if (o != null) {
+                                        String serviceMobile = o.optString("service_telephone");
+                                        if (!TextUtils.isEmpty(serviceMobile)) {
+                                            UserUtils.saveServiceMobile(getActivity(), serviceMobile);
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Utils.log(getActivity(), "serviceMobileJson\n" + json);
+                    }
+                }
+            });
         } else {
             loginRightNowRl.setVisibility(View.VISIBLE);
             loginDoneRl.setVisibility(View.GONE);
@@ -100,6 +157,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
 
     private void initView() {
         initRootView();
+        initPopView();
     }
 
     private void initData() {
@@ -114,14 +172,56 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         redBagRl = (RelativeLayout) rootView.findViewById(R.id.rl_mine_red_bag);
         voucherRl = (RelativeLayout) rootView.findViewById(R.id.rl_mine_voucher);
         setCashPwdLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_set_cash_pwd);
+        serviceTermLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_service_term);
         settingLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_setting);
+        customerServiceLl = (LinearLayout) rootView.findViewById(R.id.ll_mine_customer_service);
         loginTv = (TextView) rootView.findViewById(R.id.tv_mine_login);
         loginRightNowRl = (RelativeLayout) rootView.findViewById(R.id.rl_frag_me_login_right_now);
         loginDoneRl = (RelativeLayout) rootView.findViewById(R.id.rl_frag_me_login_done);
         loginIconIv = (ImageView) rootView.findViewById(R.id.iv_frag_me_login_icon);
         loginNameTv = (TextView) rootView.findViewById(R.id.tv_frag_me_login_name);
+        loginTipTv = (TextView) rootView.findViewById(R.id.tv_frag_me_login_line_tip);
         loginSexIv = (ImageView) rootView.findViewById(R.id.iv_frag_me_login_sex);
         loginOnlineIv = (ImageView) rootView.findViewById(R.id.iv_frag_me_login_online);
+    }
+
+    private void initPopView() {
+        serviceMobilePopView = LayoutInflater.from(getActivity()).inflate(R.layout.pop_dialog_0, null);
+        serviceMobileContentTv = (TextView) serviceMobilePopView.findViewById(R.id.tv_pop_dialog_0_content);
+        ((TextView) serviceMobilePopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) serviceMobilePopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("拨打");
+        serviceMobilePopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (serviceMobilePop.isShowing()) {
+                    serviceMobilePop.dismiss();
+                }
+            }
+        });
+        serviceMobilePopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (serviceMobilePop.isShowing()) {
+                    serviceMobilePop.dismiss();
+                    Intent in = new Intent(Intent.ACTION_DIAL);
+                    in.setData(Uri.parse("tel:" + UserUtils.getServiceMobile(getActivity())));
+                    if (in.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(in);
+                    }
+                }
+            }
+        });
+        serviceMobilePop = new PopupWindow(serviceMobilePopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        serviceMobilePop.setFocusable(true);
+        serviceMobilePop.setTouchable(true);
+        serviceMobilePop.setOutsideTouchable(true);
+        serviceMobilePop.setBackgroundDrawable(new BitmapDrawable());
+        serviceMobilePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
     }
 
     private void setListener() {
@@ -132,9 +232,12 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         redBagRl.setOnClickListener(this);
         voucherRl.setOnClickListener(this);
         setCashPwdLl.setOnClickListener(this);
+        serviceTermLl.setOnClickListener(this);
         settingLl.setOnClickListener(this);
+        customerServiceLl.setOnClickListener(this);
         loginTv.setOnClickListener(this);
         loginOnlineIv.setOnClickListener(this);
+        loginIconIv.setOnClickListener(this);
     }
 
     private void notifyUserData() {
@@ -165,10 +268,13 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         if (!TextUtils.isEmpty(online)) {
             if (online.equals("-1")) {
                 loginOnlineIv.setImageResource(R.mipmap.user_off_line);
+                loginTipTv.setText("隐藏信息");
             } else if (online.equals("0")) {
+                loginTipTv.setText("隐藏信息");
                 loginOnlineIv.setImageResource(R.mipmap.user_off_line);
             } else if (online.equals("1")) {
                 loginOnlineIv.setImageResource(R.mipmap.user_on_line);
+                loginTipTv.setText("公开信息");
             }
         }
     }
@@ -201,9 +307,17 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                 case R.id.ll_mine_set_cash_pwd:
                     startActivity(new Intent(getActivity(), SetPwdActivity.class));
                     break;
+                case R.id.ll_mine_service_term:
+                    break;
                 case R.id.ll_mine_setting:
-                    Intent settingIntent = new Intent(getActivity(), SetActivity.class);
-                    startActivity(settingIntent);
+                    startActivity(new Intent(getActivity(), SetActivity.class));
+                    break;
+                case R.id.ll_mine_customer_service:
+                    if (!serviceMobilePop.isShowing()) {
+                        backgroundAlpha(0.5f);
+                        serviceMobileContentTv.setText(UserUtils.getServiceMobile(getActivity()));
+                        serviceMobilePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                    }
                     break;
                 case R.id.tv_mine_login:
                     Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
@@ -216,6 +330,9 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                     } else if (online.equals("1")) {
                         minePresenter.postOnline(UserUtils.readUserData(getActivity()).getId(), "-1");
                     }
+                    break;
+                case R.id.iv_frag_me_login_icon:
+                    startActivity(new Intent(getActivity(), UserManageActivity.class));
                     break;
             }
         } else {
@@ -252,5 +369,11 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
     public void showPostOnlineFailure(String failure) {
         Log.e("showPostOnlineFailure", failure);
         handler.sendEmptyMessage(REFRESH_DONE);
+    }
+
+    private void backgroundAlpha(float f) {
+        WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
+        layoutParams.alpha = f;
+        getActivity().getWindow().setAttributes(layoutParams);
     }
 }

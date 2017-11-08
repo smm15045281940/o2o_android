@@ -1,5 +1,8 @@
 package fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +18,7 @@ import config.StateConfig;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 
-//工作邀约
-public class JobOfferFragment extends CommonFragment implements PullToRefreshLayout.OnRefreshListener {
+public class JobOfferFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private PullToRefreshLayout ptrl;
@@ -25,13 +27,19 @@ public class JobOfferFragment extends CommonFragment implements PullToRefreshLay
     private MsgAdapter adapter;
     private int state = StateConfig.LOAD_DONE;
 
+    @Nullable
     @Override
-    protected View getRootView() {
-        return rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
+        initView();
+        initData();
+        setData();
+        setListener();
+        loadData();
+        return rootView;
     }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         initRootView();
     }
 
@@ -41,24 +49,20 @@ public class JobOfferFragment extends CommonFragment implements PullToRefreshLay
         plv = (PullableListView) rootView.findViewById(R.id.plv);
     }
 
-    @Override
-    protected void initData() {
+    private void initData() {
         list = new ArrayList<>();
         adapter = new MsgAdapter(getActivity(), list);
     }
 
-    @Override
-    protected void setData() {
+    private void setData() {
         plv.setAdapter(adapter);
     }
 
-    @Override
-    protected void setListener() {
+    private void setListener() {
         ptrl.setOnRefreshListener(this);
     }
 
-    @Override
-    protected void loadData() {
+    private void loadData() {
         MsgBean mo0 = new MsgBean();
         mo0.setTitle("工作邀约");
         mo0.setDate("2017/03/07");

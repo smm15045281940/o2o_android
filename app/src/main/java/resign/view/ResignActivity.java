@@ -18,6 +18,9 @@ import android.widget.TextView;
 import com.gjzg.R;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import bean.ToComplainBean;
@@ -212,6 +215,7 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
                 "&s_id=" + toResignBean.getSkillId() +
                 "&start=" + praiseCount +
                 "&appraisal=" + contentEt.getText().toString();
+        Utils.log(ResignActivity.this, "submitUrl\n" + submitUrl);
         Request submitRequest = new Request.Builder().url(submitUrl).get().build();
         okHttpClient.newCall(submitRequest).enqueue(new Callback() {
             @Override
@@ -222,7 +226,18 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    handler.sendEmptyMessage(2);
+                    String json = response.body().string();
+                    Utils.log(ResignActivity.this, "json\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            if (beanObj.optString("data").equals("success")) {
+                                handler.sendEmptyMessage(2);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

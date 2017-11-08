@@ -41,7 +41,6 @@ import bean.ToComplainBean;
 import bean.ToFireBean;
 import bean.ToJumpWorkerBean;
 import bean.WorkerBean;
-import changeprice.view.ChangePriceActivity;
 import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
@@ -395,8 +394,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void map() {
-        mapView.showScaleControl(false);
-        mapView.showZoomControls(false);
+//        mapView.showScaleControl(false);
+//        mapView.showZoomControls(false);
         BaiduMap baiduMap = mapView.getMap();
         UiSettings settings = baiduMap.getUiSettings();
         settings.setAllGesturesEnabled(false);
@@ -405,7 +404,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.point_blue);
         LatLng point = new LatLng(Double.parseDouble("0"), Double.parseDouble("0"));
         OverlayOptions overlayOptions = new MarkerOptions().position(point).icon(bitmap);
-        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("19"));
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("15"));
         baiduMap.animateMapStatus(mapStatusUpdate);
         baiduMap.addOverlay(overlayOptions);
     }
@@ -437,7 +436,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         cpd.show();
         String url = NetConfig.orderUrl +
                 "?action=cancel" +
-                "&o_id=" + toJumpWorkerBean.getOrderId();
+                "&o_id=" + toJumpWorkerBean.getOrderId() +
+                "&sponsor=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
         Utils.log(JumpWorkerActivity.this, url);
         Request cancelRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
@@ -459,8 +459,15 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
 
     private void changePrice() {
         ToChangePriceBean toChangePriceBean = new ToChangePriceBean();
-        toChangePriceBean.setSkillName(toJumpWorkerBean.getS_name());
-
+        toChangePriceBean.setTew_id(toJumpWorkerBean.getTewId());
+        toChangePriceBean.setT_id(toJumpWorkerBean.getTaskId());
+        toChangePriceBean.setT_author(UserUtils.readUserData(JumpWorkerActivity.this).getId());
+        toChangePriceBean.setAmount(toJumpWorkerBean.getTewPrice());
+        toChangePriceBean.setWorker_num(toJumpWorkerBean.getTew_worker_num());
+        toChangePriceBean.setStart_time(DataUtils.times(toJumpWorkerBean.getTew_start_time()));
+        toChangePriceBean.setEnd_time(DataUtils.times(toJumpWorkerBean.getTew_end_time()));
+        toChangePriceBean.setO_worker(toJumpWorkerBean.getWorkerId());
+        toChangePriceBean.setSkill(toJumpWorkerBean.getS_name());
         Intent changePriceIntent = new Intent(JumpWorkerActivity.this, ChangePriceActivity.class);
         changePriceIntent.putExtra(IntentConfig.toChangePrice, toChangePriceBean);
         startActivity(changePriceIntent);

@@ -22,7 +22,7 @@
             android:layout_centerInParent="true"
             android:text="敬请期待"
             android:textColor="@color/black_252323"
-            android:textSize="@dimen/y14" />
+            android:textSize="@dimen/y10" />
 
     </RelativeLayout>
 

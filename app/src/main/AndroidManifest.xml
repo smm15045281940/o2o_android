@@ -45,7 +45,7 @@
         <activity android:name="activity.SkillsActivity" />
         <activity android:name="activity.WorkerActivity" />
         <activity android:name="leftright.view.LeftRightActivity" />
-        <activity android:name="city.view.CityActivity" />
+        <activity android:name="activity.CityActivity" />
         <activity android:name="talkemployer.view.TalkEmployerActivity" />
         <activity
             android:name="workermanage.view.WorkerManageActivity"
@@ -55,7 +55,7 @@
             android:launchMode="singleTask" />
         <activity
             android:name="usermanage.view.UserManageActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="task.view.TaskActivity" />
         <activity android:name="set.view.SetActivity" />
         <activity android:name="serviceclause.view.SevClsActivity" />
@@ -115,11 +115,12 @@
         <activity android:name="talkworker.view.TalkWorkerActivity" />
         <activity android:name="persondetail.view.PersonDetailActivity" />
         <activity android:name="activity.EmployerToTalkActivity" />
-        <activity android:name="changeprice.view.ChangePriceActivity" />
+        <activity android:name="activity.ChangePriceActivity" />
         <activity android:name="activity.EmployerToDoingActivity" />
         <activity android:name="activity.JumpWorkerActivity" />
         <activity android:name="activity.JumpEmployerActivity" />
-        <activity android:name="activity.FireActivity"></activity>
+        <activity android:name="activity.FireActivity" />
+        <activity android:name="activity.MessageTipActivity"></activity>
     </application>
 
 </manifest>

@@ -2,6 +2,8 @@ package config;
 
 public interface NetConfig {
 
+    //地区
+    String regionUrl = "http://api.gangjianwang.com/Regions/index";
     //工种
     String skillsUrl = "http://api.gangjianwang.com/Skills/index";
     //工人
@@ -36,7 +38,8 @@ public interface NetConfig {
     String complainTypeUrl = "http://api.gangjianwang.com/Users/complaintsType";
     //投诉提交
     String complainSubmitUrl = "http://api.gangjianwang.com/Users/complaintsAdd";
-
+    //配置文件
+    String appConfigUrl = "http://api.gangjianwang.com/ApplicationConfig/getAppConfig";
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String fgtPwdCodeUrl = "http://api.gangjianwang.com/Users/passwordEdit?u_mobile=";

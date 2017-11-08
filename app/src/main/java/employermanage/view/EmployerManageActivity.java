@@ -99,6 +99,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                     case CANCEL_FAILURE:
                         break;
                     case 5:
+                        STATE = FIRST;
                         employerManageBeanList.remove(clickPosition);
                         notifyData();
                         break;

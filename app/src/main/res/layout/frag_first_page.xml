@@ -25,6 +25,7 @@
                     android:id="@+id/tv_fp_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="定位中"
                     android:textColor="@color/blue_2681fc"
                     android:textSize="@dimen/y11" />
 
@@ -57,7 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/y20"
                 android:layout_marginTop="@dimen/y5"
-                android:background="@drawable/sl_time_stamp">
+                android:background="@drawable/sl_time_stamp"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="@dimen/x11"

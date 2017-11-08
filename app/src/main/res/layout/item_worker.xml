@@ -16,8 +16,8 @@
 
         <view.CImageView
             android:id="@+id/iv_item_worker_icon"
-            android:layout_width="@dimen/y35"
-            android:layout_height="@dimen/y35"
+            android:layout_width="@dimen/y32"
+            android:layout_height="@dimen/y32"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/x10"
@@ -84,10 +84,10 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_item_worker_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y20"
-                android:visibility="invisible" />
+                android:layout_marginTop="@dimen/y20" />
 
         </LinearLayout>
 

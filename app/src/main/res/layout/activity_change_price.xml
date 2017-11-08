@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray_c4ced3"
     android:orientation="vertical"
-    tools:context="changeprice.view.ChangePriceActivity">
+    tools:context="activity.ChangePriceActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 
@@ -59,7 +59,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_change_price_skill_name"
+                android:id="@+id/tv_change_price_skill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -75,7 +75,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tv_change_price_amount"
+                    android:id="@+id/tv_change_price_worker_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_252323"
@@ -90,12 +90,13 @@
                     android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/et_change_price_price"
+                    android:id="@+id/et_change_price_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/y20"
                     android:background="@null"
                     android:hint="请输入工资"
+                    android:textCursorDrawable="@null"
                     android:textSize="@dimen/y10" />
 
                 <TextView
@@ -124,19 +125,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv_change_price_startTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black_252323"
-                    android:textSize="@dimen/y10" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-" />
-
-                <TextView
-                    android:id="@+id/tv_change_price_endTime"
+                    android:id="@+id/tv_change_price_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black_252323"

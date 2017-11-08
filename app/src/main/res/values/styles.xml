@@ -31,8 +31,8 @@
     </style>
     <!--主页底部按钮ImageView样式-->
     <style name="iv_main">
-        <item name="android:layout_width">@dimen/y17</item>
-        <item name="android:layout_height">@dimen/y17</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:scaleType">fitXY</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
@@ -56,8 +56,8 @@
     </style>
     <!--工作管理充值ImageView样式-->
     <style name="iv_job_mag_pay">
-        <item name="android:layout_width">@dimen/y24</item>
-        <item name="android:layout_height">@dimen/y24</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:scaleType">fitXY</item>
         <item name="android:layout_marginTop">@dimen/x10</item>
@@ -67,11 +67,11 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">@dimen/y6</item>
+        <item name="android:layout_marginTop">@dimen/y5</item>
         <item name="android:textColor">@color/gray_a0a0a0</item>
-        <item name="android:textSize">@dimen/y10</item>
+        <item name="android:textSize">@dimen/y8</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginBottom">@dimen/x10</item>
+        <item name="android:layout_marginBottom">@dimen/y5</item>
     </style>
     <!--工作管理工人工作管理TextView样式-->
     <style name="tv_job_mag_mag">
@@ -80,13 +80,13 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">@dimen/y20</item>
         <item name="android:textColor">@color/blue_2681fc</item>
-        <item name="android:textSize">@dimen/y11</item>
+        <item name="android:textSize">@dimen/y10</item>
         <item name="android:textStyle">bold</item>
     </style>
     <!--工作管理工人工作管理ImageView样式-->
     <style name="iv_job_mag_mag">
-        <item name="android:layout_width">@dimen/y20</item>
-        <item name="android:layout_height">@dimen/y20</item>
+        <item name="android:layout_width">@dimen/y14</item>
+        <item name="android:layout_height">@dimen/y14</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginRight">@dimen/y20</item>
@@ -95,10 +95,11 @@
     </style>
     <!--我的收藏ImageView样式-->
     <style name="iv_me_collect">
-        <item name="android:layout_width">@dimen/y25</item>
-        <item name="android:layout_height">@dimen/y25</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_marginTop">@dimen/y5</item>
     </style>
     <!--我的收藏TextView样式-->
     <style name="tv_me_collect">
@@ -106,8 +107,9 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">@color/blue_2681fc</item>
-        <item name="android:textSize">@dimen/y10</item>
-        <item name="android:layout_marginTop">@dimen/y3</item>
+        <item name="android:textSize">@dimen/y8</item>
+        <item name="android:layout_marginTop">@dimen/y2</item>
+        <item name="android:layout_marginBottom">@dimen/y5</item>
     </style>
     <!--设置TextView样式-->
     <style name="tv_set">
@@ -115,16 +117,16 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginBottom">@dimen/y5</item>
-        <item name="android:layout_marginLeft">@dimen/y15</item>
+        <item name="android:layout_marginLeft">@dimen/y10</item>
         <item name="android:layout_marginTop">@dimen/y5</item>
-        <item name="android:textSize">@dimen/y12</item>
+        <item name="android:textSize">@dimen/y8</item>
         <item name="android:textColor">@color/gray_a0a0a0</item>
     </style>
     <!--设置ImageView样式
     <ImageView-->
     <style name="iv_set">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/y5</item>
+        <item name="android:layout_height">@dimen/y5</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:scaleType">fitXY</item>
@@ -164,11 +166,9 @@
     </style>
     <!--我的客服图片样式-->
     <style name="iv_mine_service">
-        <item name="android:layout_width">@dimen/y18</item>
-        <item name="android:layout_height">@dimen/y18</item>
-        <item name="android:layout_marginBottom">@dimen/y5</item>
-        <item name="android:layout_marginLeft">@dimen/y10</item>
-        <item name="android:layout_marginTop">@dimen/y5</item>
+        <item name="android:layout_width">@dimen/y12</item>
+        <item name="android:layout_height">@dimen/y12</item>
+        <item name="android:layout_margin">@dimen/y5</item>
         <item name="android:scaleType">fitXY</item>
     </style>
     <!--我的客服文字样式-->
@@ -176,9 +176,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_marginLeft">@dimen/y10</item>
         <item name="android:textColor">@color/gray_a0a0a0</item>
-        <item name="android:textSize">@dimen/y10</item>
+        <item name="android:textSize">@dimen/y8</item>
     </style>
     <!--顶部bar样式
     <RelativeLayout-->

@@ -20,6 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
+                android:layout_margin="@dimen/y5"
                 android:gravity="center"
                 android:textColor="@color/black_252323"
                 android:textSize="@dimen/y10" />
@@ -47,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:textColor="@color/blue_3dc4ff"
-                    android:textSize="@dimen/y10" />
+                    android:textSize="@dimen/y8" />
 
             </RelativeLayout>
 
@@ -70,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:textColor="@color/blue_3dc4ff"
-                    android:textSize="@dimen/y10" />
+                    android:textSize="@dimen/y8" />
 
             </RelativeLayout>
 

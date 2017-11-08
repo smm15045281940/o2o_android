@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
     private TextView getMovePwdTv, loginTv;
     private GradientDrawable getMovePwdGd, loginGd;
     private CProgressDialog cpd;
-    private ILoginPresenter iLoginPresenter = new LoginPresenter(this);
+    private ILoginPresenter iLoginPresenter;
 
     private UserBean mUserBean;
 
@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
         rootView = LayoutInflater.from(this).inflate(R.layout.activity_login, null);
         setContentView(rootView);
         initView();
+        initData();
         setListener();
     }
 
@@ -62,6 +63,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
         loginTv = (TextView) rootView.findViewById(R.id.tv_login_log);
         loginGd = (GradientDrawable) loginTv.getBackground();
         cpd = Utils.initProgressDialog(LoginActivity.this, cpd);
+    }
+
+    private void initData() {
+        iLoginPresenter = new LoginPresenter(this);
     }
 
     private void setListener() {

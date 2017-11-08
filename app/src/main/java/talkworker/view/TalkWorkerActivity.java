@@ -33,6 +33,7 @@ import bean.ToSelectTaskBean;
 import bean.ToTalkWorkerBean;
 import config.IntentConfig;
 import config.NetConfig;
+import login.view.LoginActivity;
 import persondetail.view.PersonDetailActivity;
 import selecttask.view.SelectTaskActivity;
 import talkworker.presenter.ITalkWorkerPresenter;
@@ -264,8 +265,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         if (TextUtils.isEmpty(workerBean.getUcp_posit_x()) || workerBean.getUcp_posit_x().equals("null")) {
             workerBean.setUcp_posit_x("0");
         }
-        mapView.showScaleControl(false);
-        mapView.showZoomControls(false);
         BaiduMap baiduMap = mapView.getMap();
         UiSettings settings = baiduMap.getUiSettings();
         settings.setAllGesturesEnabled(false);
@@ -274,7 +273,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.point_blue);
         LatLng latLng = new LatLng(Double.parseDouble(workerBean.getUcp_posit_y()), Double.parseDouble(workerBean.getUcp_posit_x()));
         OverlayOptions overlayOptions = new MarkerOptions().position(latLng).icon(bitmap);
-        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, Float.parseFloat("19"));
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, Float.parseFloat("15"));
         baiduMap.animateMapStatus(mapStatusUpdate);
         baiduMap.addOverlay(overlayOptions);
     }
@@ -292,7 +291,16 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                 startActivity(intent);
                 break;
             case R.id.rl_talk_worker_wait:
-                talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id());
+                if (UserUtils.isUserLogin(TalkWorkerActivity.this)) {
+                    String idcard = UserUtils.readUserData(TalkWorkerActivity.this).getIdcard();
+                    if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
+                        Utils.toast(TalkWorkerActivity.this, "请在工作管理中完善个人信息");
+                    } else {
+                        talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id());
+                    }
+                } else {
+                    startActivity(new Intent(TalkWorkerActivity.this, LoginActivity.class));
+                }
                 break;
         }
     }
