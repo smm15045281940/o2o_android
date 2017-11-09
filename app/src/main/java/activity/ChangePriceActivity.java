@@ -1,5 +1,6 @@
 package activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,9 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.List;
 import bean.ToChangePriceBean;
 import config.IntentConfig;
 import config.NetConfig;
+import employermanage.view.EmployerManageActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -36,6 +41,7 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
     private RelativeLayout returnRl, submitRl;
     private TextView skillTv, workerNumTv, timeTv;
     private EditText amountEt;
+    private CProgressDialog cProgressDialog;
     private ToChangePriceBean toChangePriceBean;
 
     private Handler handler = new Handler() {
@@ -44,7 +50,10 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
             super.handleMessage(msg);
             if (msg != null) {
                 switch (msg.what) {
-
+                    case 1:
+                        cProgressDialog.dismiss();
+                        startActivity(new Intent(ChangePriceActivity.this, EmployerManageActivity.class));
+                        break;
                 }
             }
         }
@@ -72,6 +81,7 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
         workerNumTv = (TextView) rootView.findViewById(R.id.tv_change_price_worker_num);
         timeTv = (TextView) rootView.findViewById(R.id.tv_change_price_time);
         amountEt = (EditText) rootView.findViewById(R.id.et_change_price_amount);
+        cProgressDialog = Utils.initProgressDialog(ChangePriceActivity.this, cProgressDialog);
     }
 
     private void initData() {
@@ -131,6 +141,7 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
     };
 
     private void change(String url) {
+        cProgressDialog.show();
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -144,6 +155,16 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Utils.log(ChangePriceActivity.this, "json\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            if (beanObj.optString("data").equals("success")) {
+                                handler.sendEmptyMessage(1);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

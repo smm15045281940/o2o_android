@@ -2,6 +2,7 @@ package city.adapter;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,11 @@ public class CityAdapter extends CommonAdapter<CityBean> {
         CityBean cityBean = list.get(position);
         if (cityBean != null) {
             if (position == 0) {
-                holder.tv.setText("当前定位城市：" + cityBean.getName());
+                if (TextUtils.isEmpty(cityBean.getName())) {
+                    holder.tv.setText("当前定位城市：未开启定位功能");
+                } else {
+                    holder.tv.setText("当前定位城市：" + cityBean.getName());
+                }
             } else {
                 holder.tv.setText(cityBean.getName());
             }

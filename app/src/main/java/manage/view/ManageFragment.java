@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,16 +61,36 @@ public class ManageFragment extends Fragment implements View.OnClickListener {
         if (UserUtils.isUserLogin(getActivity())) {
             switch (v.getId()) {
                 case R.id.rl_manage_recharge:
-                    startActivity(new Intent(getActivity(), WalletActivity.class));
+                    String idcard0 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard0 == null || TextUtils.isEmpty(idcard0) || idcard0.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), WalletActivity.class));
+                    }
                     break;
                 case R.id.rl_manage_publish:
-                    startActivity(new Intent(getActivity(), PublishJobActivity.class));
+                    String idcard1 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard1 == null || TextUtils.isEmpty(idcard1) || idcard1.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), PublishJobActivity.class));
+                    }
                     break;
                 case R.id.rl_manage_worker:
-                    startActivity(new Intent(getActivity(), WorkerManageActivity.class));
+                    String idcard2 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard2 == null || TextUtils.isEmpty(idcard2) || idcard2.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), WorkerManageActivity.class));
+                    }
                     break;
                 case R.id.rl_manage_employer:
-                    startActivity(new Intent(getActivity(), EmployerManageActivity.class));
+                    String idcard3 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard3 == null || TextUtils.isEmpty(idcard3) || idcard3.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), EmployerManageActivity.class));
+                    }
                     break;
                 case R.id.rl_manage_user:
                     startActivity(new Intent(getActivity(), UserManageActivity.class));

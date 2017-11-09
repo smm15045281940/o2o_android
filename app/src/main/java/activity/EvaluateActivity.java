@@ -131,6 +131,7 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
         praise2Iv.setOnClickListener(this);
         praise3Iv.setOnClickListener(this);
         submitTv.setOnClickListener(this);
+        complainTv.setOnClickListener(this);
         desEt.addTextChangedListener(contentTw);
     }
 
@@ -163,13 +164,17 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
             sexIv.setImageResource(R.mipmap.male);
         }
         nameTv.setText(userInfoBean.getU_true_name());
-        identityTv.setText(toEvaluateBean.getSkill());
+        if (toEvaluateBean.getTc_type().equals("0")) {
+            identityTv.setText(toEvaluateBean.getSkill());
+        } else if (toEvaluateBean.getTc_type().equals("1")) {
+            identityTv.setText("雇主");
+        }
         countTv.setText("好评" + userInfoBean.getU_high_opinions() + "次");
     }
 
     private void submit() {
         cpd.show();
-        String submitUrl = "http://api.gangjianwang.com/Users/commentAdd";
+        String submitUrl = NetConfig.commentAddUrl;
         RequestBody submitBody = new FormBody.Builder()
                 .add("u_id", toEvaluateBean.getU_id())
                 .add("t_id", toEvaluateBean.getT_id())
@@ -193,6 +198,7 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
+                    Utils.log(EvaluateActivity.this, "submitJson\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 1) {
@@ -201,7 +207,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    Utils.log(EvaluateActivity.this, "submitJson\n" + json);
                 }
             }
         });
@@ -214,6 +219,7 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.tv_evaluate_complain:
+                //TODO
                 startActivity(new Intent(this, ComplainActivity.class));
                 break;
             case R.id.iv_evaluate_praise_1:

@@ -19,7 +19,7 @@
 
         <TextView
             style="@style/tv_top_title"
-            android:text="辞职原因" />
+            android:text="解雇原因" />
 
     </RelativeLayout>
 
@@ -129,8 +129,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
             android:layout_marginTop="@dimen/y5"
+            android:gravity="center"
             android:text="解雇工人后，系统将按照已完成工时为工人计算工资"
             android:textColor="@color/blue_2681fc"
             android:textSize="@dimen/y10" />
@@ -167,7 +168,7 @@
                 android:layout_width="@dimen/y25"
                 android:layout_height="@dimen/y25"
                 android:scaleType="fitXY"
-                android:src="@mipmap/praise_yes" />
+                android:src="@mipmap/praise_no" />
 
             <ImageView
                 android:id="@+id/iv_fire_praise_2"

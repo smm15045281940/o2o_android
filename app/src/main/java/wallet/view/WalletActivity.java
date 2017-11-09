@@ -118,7 +118,11 @@ public class WalletActivity extends AppCompatActivity implements IWalletActivity
     }
 
     private void notifyData() {
-        overageTv.setText(walletBean.getOverage());
+        if (TextUtils.isEmpty(walletBean.getOverage())) {
+            overageTv.setText("0");
+        } else {
+            overageTv.setText(walletBean.getOverage());
+        }
     }
 
     @Override

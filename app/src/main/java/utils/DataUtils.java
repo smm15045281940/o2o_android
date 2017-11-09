@@ -251,6 +251,8 @@ public class DataUtils {
                                 taskBean.setFavorite(obj.optInt("favorate"));
                                 taskBean.setAuthorId(obj.optString("t_author"));
                                 taskBean.setTewId(obj.optString("tew_id"));
+                                taskBean.setPosX(obj.optString("t_posit_x"));
+                                taskBean.setPosY(obj.optString("t_posit_y"));
                                 JSONArray workerArr = obj.optJSONArray("workers");
                                 if (workerArr != null) {
                                     for (int j = 0; j < workerArr.length(); j++) {

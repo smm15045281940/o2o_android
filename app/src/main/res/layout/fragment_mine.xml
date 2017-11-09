@@ -16,6 +16,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/y5"
         android:layout_marginTop="1dp"
         android:scrollbars="none">
 
@@ -31,8 +32,8 @@
 
                 <view.CImageView
                     android:id="@+id/iv_frag_me_login_icon"
-                    android:layout_width="@dimen/y30"
-                    android:layout_height="@dimen/y30"
+                    android:layout_width="@dimen/y34"
+                    android:layout_height="@dimen/y34"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/y10"
                     android:scaleType="fitXY"
@@ -356,9 +357,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ll_mine_service_out"
-                android:layout_marginBottom="@dimen/y5">
+            <LinearLayout style="@style/ll_mine_service_out">
 
                 <LinearLayout
                     android:id="@+id/ll_mine_customer_service"

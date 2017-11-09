@@ -15,7 +15,7 @@ import okhttp3.Response;
 public class ComplainModule implements IComplainModule {
 
     private OkHttpClient okHttpClient;
-    private Call call, userInfoCall, userSkillCall, submitCall;
+    private Call call, userInfoCall, submitCall;
 
     public ComplainModule() {
         okHttpClient = new OkHttpClient();
@@ -26,25 +26,6 @@ public class ComplainModule implements IComplainModule {
         Request userInfoRequest = new Request.Builder().url(url).get().build();
         userInfoCall = okHttpClient.newCall(userInfoRequest);
         userInfoCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                jsonListener.failure(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    jsonListener.success(response.body().string());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void userSkill(String url, final JsonListener jsonListener) {
-        Request userSkillRequest = new Request.Builder().url(url).get().build();
-        userSkillCall = okHttpClient.newCall(userSkillRequest);
-        userSkillCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 jsonListener.failure(e.getMessage());
@@ -115,10 +96,6 @@ public class ComplainModule implements IComplainModule {
         if (userInfoCall != null) {
             userInfoCall.cancel();
             userInfoCall = null;
-        }
-        if (userSkillCall != null) {
-            userSkillCall.cancel();
-            userSkillCall = null;
         }
         if (okHttpClient != null) {
             okHttpClient = null;

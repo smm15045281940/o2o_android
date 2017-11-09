@@ -80,7 +80,7 @@ public class WorkerAdapter extends BaseAdapter {
         if (TextUtils.isEmpty(distance)) {
             holder.distanceTv.setText("无法获取距离");
         } else {
-            holder.distanceTv.setText("离我" + DataUtils.getDistance(lonLatBean1, lonLatBean2) + "公里");
+            holder.distanceTv.setText("离我" + distance + "公里");
         }
         int favorite = workerBean.getIs_fav();
         switch (favorite) {

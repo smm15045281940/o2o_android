@@ -60,7 +60,6 @@ public class IdCardActivity extends AppCompatActivity implements IIdCardActivity
                         Intent intent = new Intent(IdCardActivity.this, PwdActivity.class);
                         intent.putExtra("verifycode", verifycode);
                         startActivity(intent);
-                        finish();
                         break;
                     case VERIFY_FAILURE:
                         cpd.dismiss();

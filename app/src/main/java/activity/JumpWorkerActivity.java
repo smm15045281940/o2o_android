@@ -304,6 +304,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 ToComplainBean toComplainBean = new ToComplainBean();
                 toComplainBean.setAgainstId(workerBean.getU_id());
                 toComplainBean.setCtType("2");
+                toComplainBean.setSkill(toJumpWorkerBean.getS_name());
                 Intent i = new Intent(JumpWorkerActivity.this, ComplainActivity.class);
                 i.putExtra(IntentConfig.toComplain, toComplainBean);
                 startActivity(i);
@@ -508,8 +509,10 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         toFireBean.setSkillName(toJumpWorkerBean.getS_name());
         toFireBean.setTaskId(toJumpWorkerBean.getTaskId());
         toFireBean.setSkillId(toJumpWorkerBean.getSkillId());
+        toFireBean.setStart("0");
+        toFireBean.setContent("");
         Intent fireIntent = new Intent(JumpWorkerActivity.this, FireActivity.class);
-        fireIntent.putExtra(IntentConfig.toFire, fireIntent);
+        fireIntent.putExtra(IntentConfig.toFire, toFireBean);
         startActivity(fireIntent);
     }
 

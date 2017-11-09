@@ -137,13 +137,14 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        CityBean c = list.get(position);
-        if (c != null) {
-            Intent intent = new Intent();
-            intent.putExtra(IntentConfig.CITY, c);
-            setResult(IntentConfig.CITY_RESULT, intent);
-            finish();
+        Intent intent = new Intent();
+        if (position == 0) {
+            intent.putExtra(IntentConfig.CITY, new CityBean());
+        } else {
+            intent.putExtra(IntentConfig.CITY, list.get(position));
         }
+        setResult(IntentConfig.CITY_RESULT, intent);
+        finish();
     }
 
     @Override

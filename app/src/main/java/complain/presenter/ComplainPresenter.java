@@ -47,31 +47,6 @@ public class ComplainPresenter implements IComplainPresenter {
     }
 
     @Override
-    public void userSkill(String url) {
-        complainModule.userSkill(url, new JsonListener() {
-            @Override
-            public void success(final String json) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        complainActivity.userSkillSuccess(json);
-                    }
-                });
-            }
-
-            @Override
-            public void failure(final String failure) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        complainActivity.userSkillFailure(failure);
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
     public void userIssue(String url) {
         complainModule.userIssue(url, new JsonListener() {
             @Override

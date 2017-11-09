@@ -352,7 +352,7 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                         toEvaluateBean.setTc_u_id(tInfoOrderBean.getO_worker());
                         toEvaluateBean.setTce_desc("");
                         toEvaluateBean.setTc_type("0");
-                        toEvaluateBean.setTc_start("1");
+                        toEvaluateBean.setTc_start("0");
                         toEvaluateBean.setSkill(tInfoOrderBean.getSkill());
                         Intent evaluateIntent = new Intent(EmployerToDoingActivity.this, EvaluateActivity.class);
                         evaluateIntent.putExtra(IntentConfig.toEvaluate, toEvaluateBean);

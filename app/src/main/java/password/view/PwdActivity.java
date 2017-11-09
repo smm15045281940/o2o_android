@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import login.bean.UserBean;
+import main.view.MainActivity;
 import password.presenter.IPwdPresenter;
 import password.presenter.PwdPresenter;
 import phoneprove.view.PhoneProveActivity;
@@ -77,7 +78,7 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
                         UserBean userBean = UserUtils.readUserData(PwdActivity.this);
                         userBean.setPass("1");
                         UserUtils.saveUserData(PwdActivity.this, userBean);
-                        finish();
+                        startActivity(new Intent(PwdActivity.this, MainActivity.class));
                         break;
                     case SET_PWD_FAILURE:
                         cpd.dismiss();
@@ -100,7 +101,7 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
                     case EDIT_PWD_SUCCESS:
                         cpd.dismiss();
                         Utils.toast(PwdActivity.this, pwdTip);
-                        finish();
+                        startActivity(new Intent(PwdActivity.this, MainActivity.class));
                         break;
                     case EDIT_PWD_FAILURE:
                         cpd.dismiss();
@@ -111,7 +112,7 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
                     case FORGET_PWD_SUCCESS:
                         cpd.dismiss();
                         Utils.toast(PwdActivity.this, pwdTip);
-                        finish();
+                        startActivity(new Intent(PwdActivity.this, MainActivity.class));
                         break;
                     case FORGET_PWD_FAILURE:
                         cpd.dismiss();
@@ -216,7 +217,7 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
     private void refreshView() {
         switch (state) {
             case FIRST:
-                textView.setText("设置六位提现密码");
+                textView.setText("设置六位交易密码");
                 fgtTv.setVisibility(View.INVISIBLE);
                 break;
             case AGAIN:
@@ -304,7 +305,6 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
                 break;
             case R.id.tv_pwd_fgt:
                 startActivity(new Intent(this, PhoneProveActivity.class));
-                finish();
                 break;
         }
     }

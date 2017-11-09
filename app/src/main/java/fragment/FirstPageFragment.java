@@ -1,11 +1,15 @@
 package fragment;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +27,7 @@ import com.baidu.location.Poi;
 import com.gjzg.R;
 
 import java.util.List;
+import java.util.jar.Manifest;
 
 import bean.LonLatBean;
 import city.bean.CityBean;
@@ -106,7 +111,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         initView();
         initData();
         setListener();
-        loadData();
+        checkLocPermission();
         return rootView;
     }
 
@@ -147,6 +152,33 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         option.SetIgnoreCacheException(false);
         option.setEnableSimulateGps(false);
         locationClient.setLocOption(option);
+    }
+
+    private void checkLocPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int permisson = ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION);
+            if (permisson != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            } else {
+                loadData();
+            }
+        } else {
+            loadData();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadData();
+                } else {
+                    Utils.toast(getActivity(), "请在设置中开启定位权限");
+                }
+                break;
+        }
     }
 
     private void loadData() {
@@ -215,7 +247,11 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         if (requestCode == IntentConfig.CITY_REQUEST && resultCode == IntentConfig.CITY_RESULT && data != null) {
             CityBean cityBean = (CityBean) data.getSerializableExtra(IntentConfig.CITY);
             if (cityBean != null) {
-                cityTv.setText(cityBean.getName());
+                if (TextUtils.isEmpty(cityBean.getName())) {
+                    cityTv.setText("定位中...");
+                } else {
+                    cityTv.setText(cityBean.getName());
+                }
             }
         }
     }

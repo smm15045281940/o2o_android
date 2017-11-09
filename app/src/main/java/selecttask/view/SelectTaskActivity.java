@@ -268,6 +268,7 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     @Override
     public void inviteSuccess(String json) {
         Utils.log(SelectTaskActivity.this, json);
+        json = Utils.cutJson(json);
         try {
             JSONObject beanObj = new JSONObject(json);
             int code = beanObj.optInt("code");

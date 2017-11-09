@@ -30,6 +30,10 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.gjzg.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,6 +42,11 @@ import adapter.ScnDiaAdapter;
 import bean.PublishWorkerBean;
 import bean.SkillsBean;
 import config.NetConfig;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import publishjob.adapter.PublishKindAdapter;
 import publishjob.adapter.SelectSkillAdapter;
 import bean.PublishBean;
@@ -91,9 +100,12 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
     private final int SKILL_SUCCESS = 3;
     private final int SKILL_FAILURE = 4;
     private final int LOCATE_SUCCESS = 5;
+    private final int TIME_SUCCESS = 6;
 
     private LocationClient locationClient;
     private BDLocationListener bdLocationListener;
+
+    private String nowTime;
 
     private Handler handler = new Handler() {
         @Override
@@ -117,6 +129,22 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                         Intent i = new Intent(PublishJobActivity.this, TaskConfirmActivity.class);
                         i.putExtra("publishBean", publishBean);
                         startActivity(i);
+                        break;
+                    case TIME_SUCCESS:
+                        if (!TextUtils.isEmpty(nowTime)) {
+                            int timeCount = 0;
+                            for (int j = 0; j < publishBean.getPublishWorkerBeanList().size(); j++) {
+                                if (judgeTime(nowTime, publishBean.getPublishWorkerBeanList().get(j).getStartTime())) {
+                                    timeCount++;
+                                }
+                            }
+                            if (timeCount != publishBean.getPublishWorkerBeanList().size()) {
+                                Utils.toast(PublishJobActivity.this, "开始日期不能早于今天！");
+                            } else {
+                                cpd.show();
+                                locationClient.start();
+                            }
+                        }
                         break;
                 }
             }
@@ -357,8 +385,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                                 if (timeCount != publishWorkerBeanList.size()) {
                                     Utils.toast(PublishJobActivity.this, "结束日期不能早于开始日期！");
                                 } else {
-                                    cpd.show();
-                                    locationClient.start();
+                                    getNowTime();
                                 }
                             }
                         }
@@ -425,6 +452,41 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 startActivityForResult(new Intent(PublishJobActivity.this, SelectAddressActivity.class), 1);
                 break;
         }
+    }
+
+    private void getNowTime() {
+        String timeUrl = NetConfig.timeUrl;
+        Request request = new Request.Builder().url(timeUrl).get().build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(PublishJobActivity.this, "timeJson\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            JSONObject dataObj = beanObj.optJSONObject("data");
+                            if (dataObj != null) {
+                                JSONObject timeObj = dataObj.optJSONObject("datetime");
+                                if (timeObj != null) {
+                                    nowTime = timeObj.optString("date");
+                                    handler.sendEmptyMessage(TIME_SUCCESS);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     @Override

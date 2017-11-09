@@ -47,6 +47,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import passwordset.view.SetPwdActivity;
 import redpacket.view.RedPacketActivity;
+import serviceclause.view.ServiceTermActivity;
 import set.view.SetActivity;
 import bean.UserInfoBean;
 import usermanage.view.UserManageActivity;
@@ -284,30 +285,65 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         if (UserUtils.isUserLogin(getActivity())) {
             switch (v.getId()) {
                 case R.id.rl_mine_collect:
-                    startActivity(new Intent(getActivity(), CollectActivity.class));
+                    String idcard0 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard0 == null || TextUtils.isEmpty(idcard0) || idcard0.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), CollectActivity.class));
+                    }
                     break;
                 case R.id.rl_mine_evaluate:
-                    startActivity(new Intent(getActivity(), MyEvaluateActivity.class));
+                    String idcard1 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard1 == null || TextUtils.isEmpty(idcard1) || idcard1.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), MyEvaluateActivity.class));
+                    }
                     break;
                 case R.id.rl_mine_wallet:
-                    Intent walletIntent = new Intent(getActivity(), WalletActivity.class);
-                    startActivity(walletIntent);
+                    String idcard2 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard2 == null || TextUtils.isEmpty(idcard2) || idcard2.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), WalletActivity.class));
+                    }
                     break;
                 case R.id.rl_mine_msg:
-                    Intent messageIntent = new Intent(getActivity(), LeftRightActivity.class);
-                    messageIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
-                    startActivity(messageIntent);
+                    String idcard3 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard3 == null || TextUtils.isEmpty(idcard3) || idcard3.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        Intent messageIntent = new Intent(getActivity(), LeftRightActivity.class);
+                        messageIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
+                        startActivity(messageIntent);
+                    }
                     break;
                 case R.id.rl_mine_red_bag:
-                    startActivity(new Intent(getActivity(), RedPacketActivity.class));
+                    String idcard4 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard4 == null || TextUtils.isEmpty(idcard4) || idcard4.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), RedPacketActivity.class));
+                    }
                     break;
                 case R.id.rl_mine_voucher:
-                    startActivity(new Intent(getActivity(), VoucherActivity.class));
+                    String idcard5 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard5 == null || TextUtils.isEmpty(idcard5) || idcard5.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), VoucherActivity.class));
+                    }
                     break;
                 case R.id.ll_mine_set_cash_pwd:
-                    startActivity(new Intent(getActivity(), SetPwdActivity.class));
+                    String idcard6 = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard6 == null || TextUtils.isEmpty(idcard6) || idcard6.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        startActivity(new Intent(getActivity(), SetPwdActivity.class));
+                    }
                     break;
                 case R.id.ll_mine_service_term:
+                    startActivity(new Intent(getActivity(), ServiceTermActivity.class));
                     break;
                 case R.id.ll_mine_setting:
                     startActivity(new Intent(getActivity(), SetActivity.class));
@@ -315,7 +351,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                 case R.id.ll_mine_customer_service:
                     if (!serviceMobilePop.isShowing()) {
                         backgroundAlpha(0.5f);
-                        serviceMobileContentTv.setText(UserUtils.getServiceMobile(getActivity()));
+                        serviceMobileContentTv.setText("客服电话：" + UserUtils.getServiceMobile(getActivity()));
                         serviceMobilePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                     }
                     break;

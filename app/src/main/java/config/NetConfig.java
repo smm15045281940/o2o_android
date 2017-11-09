@@ -40,6 +40,13 @@ public interface NetConfig {
     String complainSubmitUrl = "http://api.gangjianwang.com/Users/complaintsAdd";
     //配置文件
     String appConfigUrl = "http://api.gangjianwang.com/ApplicationConfig/getAppConfig";
+    //评论添加
+    String commentAddUrl = "http://api.gangjianwang.com/Users/commentAdd";
+    //时间
+    String timeUrl = "http://api.gangjianwang.com/Tools/index";
+    //文章
+    String articleUrl = "http://api.gangjianwang.com/Articles/articlesInfo?a_id=13";
+
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
     String fgtPwdCodeUrl = "http://api.gangjianwang.com/Users/passwordEdit?u_mobile=";

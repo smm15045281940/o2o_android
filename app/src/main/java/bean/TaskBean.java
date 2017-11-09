@@ -13,8 +13,26 @@ public class TaskBean implements Serializable {
     private String title;
     private String info;
     private String status;
+    private String posX;
+    private String posY;
     private int favorite;
     private List<TaskWorkerBean> taskWorkerBeanList;
+
+    public String getPosX() {
+        return posX;
+    }
+
+    public void setPosX(String posX) {
+        this.posX = posX;
+    }
+
+    public String getPosY() {
+        return posY;
+    }
+
+    public void setPosY(String posY) {
+        this.posY = posY;
+    }
 
     public String getTewId() {
         return tewId;
@@ -107,6 +125,8 @@ public class TaskBean implements Serializable {
                 ", title='" + title + '\'' +
                 ", info='" + info + '\'' +
                 ", status='" + status + '\'' +
+                ", posX='" + posX + '\'' +
+                ", posY='" + posY + '\'' +
                 ", favorite=" + favorite +
                 ", taskWorkerBeanList=" + taskWorkerBeanList +
                 '}';

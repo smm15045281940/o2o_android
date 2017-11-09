@@ -40,6 +40,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import phoneprove.view.PhoneProveActivity;
 import taskconfirm.adapter.InputPasswordAdapter;
 import taskconfirm.adapter.TaskConfirmAdapter;
 import taskconfirm.bean.InputPasswordBean;
@@ -333,6 +334,7 @@ public class TaskConfirmActivity extends AppCompatActivity implements View.OnCli
                 inputPasswordPop.dismiss();
                 break;
             case R.id.tv_pop_input_password_forget:
+                startActivity(new Intent(this, PhoneProveActivity.class));
                 break;
         }
     }

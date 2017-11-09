@@ -88,14 +88,10 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
 
     private final int USER_INFO_SUCCESS = 1;
     private final int USER_INFO_FAILURE = 2;
-    private final int USER_SKILL_SUCCESS = 3;
-    private final int USER_SKILL_FAILURE = 4;
     private final int USER_ISSUE_SUCCESS = 5;
     private final int USER_ISSUE_FAILURE = 6;
     private final int SUBMIT_SUCCESS = 7;
     private final int SUBMIT_FAILURE = 8;
-    private String skillName;
-
     private CImageView iconIv;
     private ImageView sexIv;
     private TextView nameTv, skillNameTv, evaluateTv;
@@ -108,14 +104,9 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             if (msg != null) {
                 switch (msg.what) {
                     case USER_INFO_SUCCESS:
-                        complainPresenter.userSkill(NetConfig.skillsUrl);
-                        break;
-                    case USER_INFO_FAILURE:
-                        break;
-                    case USER_SKILL_SUCCESS:
                         complainPresenter.userIssue(NetConfig.complainTypeUrl + "?ct_type=" + toComplainBean.getCtType());
                         break;
-                    case USER_SKILL_FAILURE:
+                    case USER_INFO_FAILURE:
                         break;
                     case USER_ISSUE_SUCCESS:
                         notifyData();
@@ -157,8 +148,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
         if (handler != null) {
             handler.removeMessages(USER_INFO_SUCCESS);
             handler.removeMessages(USER_INFO_FAILURE);
-            handler.removeMessages(USER_SKILL_SUCCESS);
-            handler.removeMessages(USER_SKILL_FAILURE);
             handler.removeMessages(USER_ISSUE_SUCCESS);
             handler.removeMessages(USER_ISSUE_FAILURE);
             handler.removeMessages(SUBMIT_SUCCESS);
@@ -275,30 +264,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     }
 
     @Override
-    public void userSkillSuccess(String json) {
-        String[] arr = userInfoBean.getU_skills().split(",");
-        List<String> skillIdList = new ArrayList<>();
-        for (int i = 0; i < arr.length; i++) {
-            skillIdList.add(arr[i]);
-        }
-        List<String> skillNameList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < skillNameList.size(); i++) {
-            sb.append(skillNameList.get(i));
-            if (i != skillNameList.size() - 1) {
-                sb.append("、");
-            }
-        }
-        skillName = sb.toString();
-        handler.sendEmptyMessage(USER_SKILL_SUCCESS);
-    }
-
-    @Override
-    public void userSkillFailure(String failure) {
-
-    }
-
-    @Override
     public void userIssueSuccess(String json) {
         complainIssueBeanList.addAll(DataUtils.getComplainIssueBeanList(json));
         handler.sendEmptyMessage(USER_ISSUE_SUCCESS);
@@ -329,7 +294,7 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             sexIv.setImageResource(R.mipmap.male);
         }
         nameTv.setText(userInfoBean.getU_true_name());
-        skillNameTv.setText(skillName);
+        skillNameTv.setText(toComplainBean.getSkill());
         evaluateTv.setText("好评" + userInfoBean.getU_high_opinions() + "次");
         complainIssueAdapter.notifyDataSetChanged();
     }

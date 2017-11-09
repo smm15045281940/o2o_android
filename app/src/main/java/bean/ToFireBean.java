@@ -13,6 +13,24 @@ public class ToFireBean implements Serializable {
     private String fireId;
     private String skillId;
     private String skillName;
+    private String start;
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
 
     public String getSkillId() {
         return skillId;
@@ -52,5 +70,18 @@ public class ToFireBean implements Serializable {
 
     public void setSkillName(String skillName) {
         this.skillName = skillName;
+    }
+
+    @Override
+    public String toString() {
+        return "ToFireBean{" +
+                "tewId='" + tewId + '\'' +
+                ", taskId='" + taskId + '\'' +
+                ", fireId='" + fireId + '\'' +
+                ", skillId='" + skillId + '\'' +
+                ", skillName='" + skillName + '\'' +
+                ", start='" + start + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

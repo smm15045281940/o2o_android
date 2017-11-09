@@ -13,6 +13,15 @@ public class ToComplainBean implements Serializable {
     private String ctId;
     private String ctType;
     private String content;
+    private String skill;
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
 
     public String getAgainstId() {
         return againstId;
@@ -62,6 +71,7 @@ public class ToComplainBean implements Serializable {
                 ", ctId='" + ctId + '\'' +
                 ", ctType='" + ctType + '\'' +
                 ", content='" + content + '\'' +
+                ", skill='" + skill + '\'' +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import bean.LonLatBean;
 import listener.IdPosClickHelp;
 import bean.TaskBean;
+import utils.DataUtils;
+import utils.UserUtils;
 
 public class TaskAdapter extends BaseAdapter {
 
@@ -70,6 +74,14 @@ public class TaskAdapter extends BaseAdapter {
         } else if (status.equals("3") || status.equals("4")) {
             holder.statusIv.setImageResource(R.mipmap.worker_over);
         }
+        LonLatBean lonLatBean1 = UserUtils.getLonLat(context);
+        LonLatBean lonLatBean2 = new LonLatBean(taskBean.getPosX(), taskBean.getPosY());
+        String distance = DataUtils.getDistance(lonLatBean1, lonLatBean2);
+        if (TextUtils.isEmpty(distance)) {
+            holder.distanceTv.setText("无法获取距离");
+        } else {
+            holder.distanceTv.setText("离我" + distance + "公里");
+        }
         switch (taskBean.getFavorite()) {
             case 0:
                 holder.collectIv.setImageResource(R.mipmap.collect_gray);
@@ -99,7 +111,7 @@ public class TaskAdapter extends BaseAdapter {
     private class ViewHolder {
 
         private LinearLayout ll;
-        private TextView titleTv, infoTv;
+        private TextView titleTv, infoTv, distanceTv;
         private ImageView iconIv, statusIv, collectIv;
 
         public ViewHolder(View itemView) {
@@ -109,6 +121,7 @@ public class TaskAdapter extends BaseAdapter {
             iconIv = (ImageView) itemView.findViewById(R.id.iv_item_task_icon);
             statusIv = (ImageView) itemView.findViewById(R.id.iv_item_task_status);
             collectIv = (ImageView) itemView.findViewById(R.id.iv_item_task_collect);
+            distanceTv = (TextView) itemView.findViewById(R.id.tv_item_task_distance);
         }
     }
 }

@@ -373,6 +373,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
     @Override
     public void cancelSuccess(String json) {
         Utils.log(EmployerManageActivity.this, "cancel=" + json);
+        json = Utils.cutJson(json);
         try {
             JSONObject beanObj = new JSONObject(json);
             int code = beanObj.optInt("code");
@@ -430,6 +431,11 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                 break;
             case R.id.tv_item_employer_manage_talk_cancel:
                 cpd.show();
+                String talkcancelUrl = NetConfig.taskBaseUrl +
+                        "?action=del" +
+                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
+                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                Utils.log(EmployerManageActivity.this, "talkcancelUrl\n" + talkcancelUrl);
                 employerManagePresenter.cancel(NetConfig.taskBaseUrl + "?action=del&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() + "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId());
                 break;
             case R.id.tv_item_employer_manage_done_del:

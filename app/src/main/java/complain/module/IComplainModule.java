@@ -8,8 +8,6 @@ public interface IComplainModule {
 
     void userInfo(String url, JsonListener jsonListener);
 
-    void userSkill(String url, JsonListener jsonListener);
-
     void userIssue(String url, JsonListener jsonListener);
 
     void submit(String url, ToComplainBean toComplainBean, JsonListener jsonListener);

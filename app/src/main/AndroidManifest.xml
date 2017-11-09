@@ -58,11 +58,13 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="task.view.TaskActivity" />
         <activity android:name="set.view.SetActivity" />
-        <activity android:name="serviceclause.view.SevClsActivity" />
-        <activity android:name="login.view.LoginActivity" />
+        <activity android:name="serviceclause.view.ServiceTermActivity" />
+        <activity
+            android:name="login.view.LoginActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="pay.view.PayWayActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="publishjob.view.PublishJobActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
@@ -73,17 +75,17 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="workerscreen.view.WorkerScreenActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="taskscreen.view.TaskScreenActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="passwordset.view.SetPwdActivity" />
         <activity
             android:name="password.view.PwdActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
             android:name="phoneprove.view.PhoneProveActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="selecttask.view.SelectTaskActivity" />
         <activity
             android:name="resign.view.ResignActivity"
@@ -95,11 +97,15 @@
 
         <service android:name="service.CodeTimerService" />
         <service android:name="service.GetLoginCodeTimerService" />
+        <service
+            android:name="service.TimerService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name="identity.view.IdActivity" />
         <activity
             android:name="phonebind.view.PhoneBindActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="refuseorder.view.RefuseOrderActivity" />
         <activity
             android:name="activity.EvaluateActivity"
@@ -120,7 +126,7 @@
         <activity android:name="activity.JumpWorkerActivity" />
         <activity android:name="activity.JumpEmployerActivity" />
         <activity android:name="activity.FireActivity" />
-        <activity android:name="activity.MessageTipActivity"></activity>
+        <activity android:name="activity.MessageTipActivity" />
     </application>
 
 </manifest>

@@ -78,7 +78,6 @@ public class PhoneProveActivity extends AppCompatActivity implements IPhoneProve
                         Intent intent = new Intent(PhoneProveActivity.this, IdCardActivity.class);
                         intent.putExtra("verifycode", phoneproveSb.toString());
                         startActivity(intent);
-                        finish();
                         break;
                     case PROVE_MOBILE_FAILURE:
                         cpd.dismiss();
@@ -235,7 +234,7 @@ public class PhoneProveActivity extends AppCompatActivity implements IPhoneProve
                 finish();
                 break;
             case R.id.tv_phone_prove_resend:
-                startService(new Intent(this, CodeTimerService.class));
+                loadData();
                 break;
         }
     }

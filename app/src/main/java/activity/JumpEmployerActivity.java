@@ -45,6 +45,7 @@ import java.util.List;
 
 import bean.JumpEmployerBean;
 import bean.SkillsBean;
+import bean.ToEvaluateBean;
 import bean.ToJumpEmployerBean;
 import bean.ToResignBean;
 import config.IntentConfig;
@@ -82,9 +83,9 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     private View resignPopView;
     private PopupWindow resignPop;
 
-    private LinearLayout waitEmployerLl, sureDoLl, resignLl;
-    private TextView waitEmployerCancelTv, sureDoCancelTv, sureDoDoTv, resignTv;
-    private final int WAIT_EMPLOYER = 1, SURE_DO = 2, RESIGN = 3;
+    private LinearLayout waitEmployerLl, sureDoLl, resignLl, evaluateLl;
+    private TextView waitEmployerCancelTv, sureDoCancelTv, sureDoDoTv, resignTv, evaluateTv;
+    private final int WAIT_EMPLOYER = 1, SURE_DO = 2, RESIGN = 3, EVALUATE = 4;
     private int SHOW_STATE;
 
     private ToJumpEmployerBean toJumpEmployerBean;
@@ -163,10 +164,12 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         waitEmployerLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_employer_wait_employer);
         sureDoLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_employer_sure_do);
         resignLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_employer_resign);
+        evaluateLl = (LinearLayout) rootView.findViewById(R.id.ll_jump_employer_evaluate);
         waitEmployerCancelTv = (TextView) rootView.findViewById(R.id.tv_jump_employer_wait_employer_cancel);
         sureDoCancelTv = (TextView) rootView.findViewById(R.id.tv_jump_employer_sure_do_cancel);
         sureDoDoTv = (TextView) rootView.findViewById(R.id.tv_jump_employer_sure_do_do);
         resignTv = (TextView) rootView.findViewById(R.id.tv_jump_employer_resign);
+        evaluateTv = (TextView) rootView.findViewById(R.id.tv_jump_employer_evaluate);
     }
 
     private void initPopView() {
@@ -280,6 +283,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         sureDoCancelTv.setOnClickListener(this);
         sureDoDoTv.setOnClickListener(this);
         resignTv.setOnClickListener(this);
+        evaluateTv.setOnClickListener(this);
     }
 
     private void loadData() {
@@ -445,14 +449,18 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         addressTv.setText(jumpEmployerBean.getAddress());
         timeTv.setText("工期" + DataUtils.times(jumpEmployerBean.getStartTime()) + "——" + DataUtils.times(jumpEmployerBean.getEndTime()));
         map();
-        if (jumpEmployerBean.getO_status().equals("0")) {
-            if (jumpEmployerBean.getO_confirm().equals("0")) {
+        String o_status = jumpEmployerBean.getO_status();
+        String o_confirm = jumpEmployerBean.getO_confirm();
+        if (o_status.equals("0")) {
+            if (o_confirm.equals("0")) {
                 SHOW_STATE = WAIT_EMPLOYER;
-            } else if (jumpEmployerBean.getO_confirm().equals("1")) {
+            } else if (o_confirm.equals("1")) {
                 SHOW_STATE = RESIGN;
-            } else if (jumpEmployerBean.getO_confirm().equals("2")) {
+            } else if (o_confirm.equals("2")) {
                 SHOW_STATE = SURE_DO;
             }
+        } else if (o_status.equals("1")) {
+            SHOW_STATE = EVALUATE;
         }
         refreshState();
     }
@@ -498,6 +506,19 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             case R.id.tv_jump_employer_resign:
                 resign();
                 break;
+            case R.id.tv_jump_employer_evaluate:
+                ToEvaluateBean toEvaluateBean = new ToEvaluateBean();
+                toEvaluateBean.setTc_type("1");
+                toEvaluateBean.setTc_start("0");
+                toEvaluateBean.setT_id(jumpEmployerBean.getTaskId());
+                toEvaluateBean.setU_id(UserUtils.readUserData(JumpEmployerActivity.this).getId());
+                toEvaluateBean.setTc_u_id(jumpEmployerBean.getAuthorId());
+                toEvaluateBean.setTce_desc("");
+                toEvaluateBean.setSkill("");
+                Intent evaluateIntent = new Intent(JumpEmployerActivity.this, EvaluateActivity.class);
+                evaluateIntent.putExtra(IntentConfig.toEvaluate, toEvaluateBean);
+                startActivity(evaluateIntent);
+                break;
         }
     }
 
@@ -521,16 +542,25 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 waitEmployerLl.setVisibility(View.VISIBLE);
                 sureDoLl.setVisibility(View.GONE);
                 resignLl.setVisibility(View.GONE);
+                evaluateLl.setVisibility(View.GONE);
                 break;
             case SURE_DO:
                 waitEmployerLl.setVisibility(View.GONE);
                 sureDoLl.setVisibility(View.VISIBLE);
                 resignLl.setVisibility(View.GONE);
+                evaluateLl.setVisibility(View.GONE);
                 break;
             case RESIGN:
                 waitEmployerLl.setVisibility(View.GONE);
                 sureDoLl.setVisibility(View.GONE);
                 resignLl.setVisibility(View.VISIBLE);
+                evaluateLl.setVisibility(View.GONE);
+                break;
+            case EVALUATE:
+                waitEmployerLl.setVisibility(View.GONE);
+                sureDoLl.setVisibility(View.GONE);
+                resignLl.setVisibility(View.VISIBLE);
+                evaluateLl.setVisibility(View.GONE);
                 break;
         }
     }

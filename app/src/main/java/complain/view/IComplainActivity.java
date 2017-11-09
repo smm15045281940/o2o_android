@@ -6,10 +6,6 @@ public interface IComplainActivity {
 
     void userInfoFailure(String failure);
 
-    void userSkillSuccess(String json);
-
-    void userSkillFailure(String failure);
-
     void userIssueSuccess(String json);
 
     void userIssueFailure(String failure);

@@ -172,7 +172,20 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     private void loadData() {
         cpd.show();
-        talkWorkerPresenter.load(NetConfig.workerUrl + "?u_id=" + toTalkWorkerBean.getU_id() + "&fu_id=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&o_status=0,-3");
+        String talkWorkerUrl;
+        if (UserUtils.isUserLogin(TalkWorkerActivity.this)) {
+            talkWorkerUrl = NetConfig.workerUrl +
+                    "?u_id=" + toTalkWorkerBean.getU_id() +
+                    "&fu_id=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() +
+                    "&o_status=0,-3";
+        } else {
+            talkWorkerUrl = NetConfig.workerUrl +
+                    "?u_id=" + toTalkWorkerBean.getU_id() +
+                    "&fu_id=0" +
+                    "&o_status=0,-3";
+        }
+        Utils.log(TalkWorkerActivity.this, "talkWorkerUrl\n" + talkWorkerUrl);
+        talkWorkerPresenter.load(talkWorkerUrl);
     }
 
     private void notifyData() {
