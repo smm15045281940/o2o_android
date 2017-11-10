@@ -27,13 +27,11 @@ public class TimerService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e("TimerService", "onBind");
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("TimerService", "onStartCommand");
         if (intent.getStringExtra("flag").equals("1")) {
             int currentApiVersion = Build.VERSION.SDK_INT;
             if (currentApiVersion > 20) {
@@ -48,7 +46,6 @@ public class TimerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("TimerService", "onDestroy");
         pushthread = false;
     }
 
@@ -58,7 +55,7 @@ public class TimerService extends Service {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(10000);
                     getHttp();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -68,7 +65,6 @@ public class TimerService extends Service {
     }
 
     private void getHttp() {
-        Log.e("TimerService", "getHttp");
         timerCallBack.timerCall();
     }
 
@@ -83,7 +79,7 @@ public class TimerService extends Service {
             } else {
                 PendingIntent pIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 3000, pIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pIntent);
             }
         } catch (Exception e) {
             e.printStackTrace();

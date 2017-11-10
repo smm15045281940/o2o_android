@@ -101,6 +101,14 @@
             android:name="service.TimerService"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name="service.TaskTimerService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="service.MsgTimerService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name="identity.view.IdActivity" />
         <activity

@@ -19,6 +19,7 @@ import bean.EmployerToDoingBean;
 import bean.EmployerToTalkBean;
 import bean.EvaluateBean;
 import bean.LonLatBean;
+import bean.MessageBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.RedPacketBean;
@@ -38,6 +39,39 @@ import bean.UserInfoBean;
 import bean.WorkerManageBean;
 
 public class DataUtils {
+
+    //站内信
+    public static List<MessageBean> getMessageBeanList(String json) {
+        List<MessageBean> messageBeanList = new ArrayList<>();
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 1) {
+                JSONObject dataObj = beanObj.optJSONObject("data");
+                if (dataObj != null) {
+                    JSONArray dataArr = dataObj.optJSONArray("data");
+                    if (dataArr != null) {
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject o = dataArr.optJSONObject(i);
+                            if (o != null) {
+                                MessageBean messageBean = new MessageBean();
+                                messageBean.setWm_title(o.optString("wm_title"));
+                                messageBean.setUm_in_time(o.optString("um_in_time"));
+                                messageBean.setWm_type(o.optString("wm_type"));
+                                messageBean.setWm_id(o.optString("wm_id"));
+                                messageBean.setUm_id(o.optString("um_id"));
+                                messageBean.setWm_desc(o.optString("wm_desc"));
+                                messageBean.setUm_status(o.optString("um_status"));
+                                messageBeanList.add(messageBean);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return messageBeanList;
+    }
 
     //距离
     public static String getDistance(LonLatBean lonLatBean1, LonLatBean lonLatBean2) {
@@ -574,6 +608,14 @@ public class DataUtils {
 
     public static String times(String time) {
         SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd");
+        long lcc = Long.valueOf(time);
+        int i = Integer.parseInt(time);
+        String times = sdr.format(new Date(i * 1000L));
+        return times;
+    }
+
+    public static String msgTimes(String time) {
+        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         long lcc = Long.valueOf(time);
         int i = Integer.parseInt(time);
         String times = sdr.format(new Date(i * 1000L));

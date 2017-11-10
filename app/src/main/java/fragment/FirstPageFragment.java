@@ -26,10 +26,12 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.gjzg.R;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.jar.Manifest;
 
 import bean.LonLatBean;
+import bean.MessageBean;
 import city.bean.CityBean;
 import city.bean.CityBigBean;
 import activity.CityActivity;
@@ -39,20 +41,28 @@ import firstpage.presenter.FirstPagePresenter;
 import firstpage.presenter.IFirstPagePresenter;
 import firstpage.view.IFirstPageFragment;
 import leftright.view.LeftRightActivity;
+import listener.TimerCallBack;
 import login.view.LoginActivity;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import publishjob.view.PublishJobActivity;
 import activity.SkillsActivity;
+import service.TimerService;
 import task.view.TaskActivity;
+import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
-public class FirstPageFragment extends Fragment implements IFirstPageFragment, View.OnClickListener {
+public class FirstPageFragment extends Fragment implements IFirstPageFragment, View.OnClickListener, TimerCallBack {
 
     private View rootView;
-    private RelativeLayout cityRl, msgRl;
+    private RelativeLayout cityRl, msgRl, countRl;
     private ImageView findWorkerIv, findJobIv, sendJobIv;
-    private TextView cityTv;
+    private TextView cityTv, countTv;
     private CProgressDialog cpd;
     private LocationClient locationClient;
     private BDLocationListener bdLocationListener;
@@ -62,7 +72,9 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     private String hotJson, comJson, locCity, locId;
 
-    private final int HOT_DONE = 1, COM_DONE = 2, LOC_DONE = 3, ID_DONE = 4;
+    private final int HOT_DONE = 1, COM_DONE = 2, LOC_DONE = 3, ID_DONE = 4, COUNT_DONE = 5;
+    private int count = 0;
+    private boolean isLocated = true;
 
     private Handler handler = new Handler() {
         @Override
@@ -74,14 +86,23 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                         firstpagePresenter.loadComCity(NetConfig.comCityUrl);
                         break;
                     case COM_DONE:
-                        locationClient.start();
+                        loadCount();
+                        if (isLocated) {
+                            locationClient.start();
+                        } else {
+                            if (cpd.isShowing()) {
+                                cpd.dismiss();
+                            }
+                        }
                         break;
                     case LOC_DONE:
                         cityTv.setText(locCity);
                         firstpagePresenter.getLocId(getActivity().getResources().getStringArray(R.array.lowerletter), locCity, comJson);
                         break;
                     case ID_DONE:
-                        cpd.dismiss();
+                        if (cpd.isShowing()) {
+                            cpd.dismiss();
+                        }
                         UserUtils.saveLonLat(getActivity(), new LonLatBean(positionX + "", positionY + ""));
                         Utils.log(getActivity(), "positionX\n" + positionX + "\npositionY\n" + positionY);
                         Utils.log(getActivity(), "saveLonLat");
@@ -89,20 +110,18 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                             firstpagePresenter.changePosition(NetConfig.changePositionUrl + "?u_id=" + UserUtils.readUserData(getActivity()).getId() + "&ucp_posit_x=" + positionX + "&ucp_posit_y=" + positionY);
                         }
                         break;
+                    case COUNT_DONE:
+                        if (count == 0) {
+                            countRl.setVisibility(View.INVISIBLE);
+                        } else {
+                            countRl.setVisibility(View.VISIBLE);
+                            countTv.setText(count + "");
+                        }
+                        break;
                 }
             }
         }
     };
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (firstpagePresenter != null) {
-            firstpagePresenter.destroy();
-            firstpagePresenter = null;
-        }
-        locationClient.unRegisterLocationListener(bdLocationListener);
-    }
 
     @Nullable
     @Override
@@ -111,8 +130,22 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         initView();
         initData();
         setListener();
+        TimerService.getConnet(getActivity(), this);
         checkLocPermission();
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TimerService.stop(getActivity());
+        Intent intent = new Intent(getActivity(), TimerService.class);
+        getActivity().stopService(intent);
+        if (firstpagePresenter != null) {
+            firstpagePresenter.destroy();
+            firstpagePresenter = null;
+        }
+        locationClient.unRegisterLocationListener(bdLocationListener);
     }
 
     private void initView() {
@@ -127,6 +160,8 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         sendJobIv = (ImageView) rootView.findViewById(R.id.iv_frag_first_page_send_job);
         cityTv = (TextView) rootView.findViewById(R.id.tv_fp_city);
         cpd = Utils.initProgressDialog(getActivity(), cpd);
+        countRl = (RelativeLayout) rootView.findViewById(R.id.rl_fragment_first_page_count);
+        countTv = (TextView) rootView.findViewById(R.id.tv_fragment_first_page_count);
     }
 
     private void initData() {
@@ -175,7 +210,8 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     loadData();
                 } else {
-                    Utils.toast(getActivity(), "请在设置中开启定位权限");
+                    isLocated = false;
+                    loadData();
                 }
                 break;
         }
@@ -211,9 +247,14 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 break;
             case R.id.rl_frag_first_page_msg:
                 if (UserUtils.isUserLogin(getActivity())) {
-                    Intent msgIntent = new Intent(getActivity(), LeftRightActivity.class);
-                    msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
-                    startActivity(msgIntent);
+                    String idcard = UserUtils.readUserData(getActivity()).getIdcard();
+                    if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
+                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
+                    } else {
+                        Intent msgIntent = new Intent(getActivity(), LeftRightActivity.class);
+                        msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
+                        startActivity(msgIntent);
+                    }
                 } else {
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 }
@@ -258,7 +299,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     @Override
     public void showHotSuccess(String json) {
-        Utils.log(getActivity(), "hotJson=" + json);
+        Log.e("hotJson\n", json);
         hotJson = json;
         handler.sendEmptyMessage(HOT_DONE);
     }
@@ -270,7 +311,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     @Override
     public void showComSuccess(String json) {
-        Utils.log(getActivity(), "comJson=" + json);
+        Log.e("comJson\n", json);
         comJson = json;
         handler.sendEmptyMessage(COM_DONE);
     }
@@ -299,6 +340,44 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     @Override
     public void changePositionFailure(String failure) {
         Log.e("FirstPageFragment", failure);
+    }
+
+    @Override
+    public void timerCall() {
+        Log.e("FirstPage", "加载数据");
+        loadCount();
+    }
+
+    private void loadCount() {
+        Utils.log(getActivity(), "loadCount");
+        if (UserUtils.isUserLogin(getActivity())) {
+            String url = NetConfig.msgListUrl +
+                    "?u_id=" + UserUtils.readUserData(getActivity()).getId();
+            Request request = new Request.Builder().url(url).get().build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        Utils.log(getActivity(), "firstJson\n" + json);
+                        List<MessageBean> messageBeanList = DataUtils.getMessageBeanList(json);
+                        count = 0;
+                        for (int i = 0; i < messageBeanList.size(); i++) {
+                            if (messageBeanList.get(i).getUm_status().equals("0")) {
+                                count++;
+                            }
+                        }
+                        handler.sendEmptyMessage(COUNT_DONE);
+                    }
+                }
+            });
+        }
     }
 
     public class MyLocationListener implements BDLocationListener {

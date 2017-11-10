@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -435,34 +436,54 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void notifyData() {
-        beginDoPriceTv.setText(jumpEmployerBean.getPrice());
-        beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
-        Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).into(iconIv);
+        if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
+            beginDoPriceTv.setText(jumpEmployerBean.getPrice());
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getStartTime()) && !TextUtils.isEmpty(jumpEmployerBean.getEndTime())) {
+            beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getIcon())) {
+            Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).into(iconIv);
+        }
         if (jumpEmployerBean.getSex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
         } else if (jumpEmployerBean.getSex().equals("1")) {
             sexIv.setImageResource(R.mipmap.male);
         }
-        nameTv.setText(jumpEmployerBean.getName());
-        skillCountTv.setText("招" + jumpEmployerBean.getSkillName() + jumpEmployerBean.getCount() + "人");
-        priceTv.setText("工资" + jumpEmployerBean.getPrice() + "元/天");
-        addressTv.setText(jumpEmployerBean.getAddress());
-        timeTv.setText("工期" + DataUtils.times(jumpEmployerBean.getStartTime()) + "——" + DataUtils.times(jumpEmployerBean.getEndTime()));
-        map();
-        String o_status = jumpEmployerBean.getO_status();
-        String o_confirm = jumpEmployerBean.getO_confirm();
-        if (o_status.equals("0")) {
-            if (o_confirm.equals("0")) {
-                SHOW_STATE = WAIT_EMPLOYER;
-            } else if (o_confirm.equals("1")) {
-                SHOW_STATE = RESIGN;
-            } else if (o_confirm.equals("2")) {
-                SHOW_STATE = SURE_DO;
-            }
-        } else if (o_status.equals("1")) {
-            SHOW_STATE = EVALUATE;
+        if (TextUtils.isEmpty(jumpEmployerBean.getName())) {
+            nameTv.setText(jumpEmployerBean.getName());
         }
-        refreshState();
+        if (!TextUtils.isEmpty(jumpEmployerBean.getSkillName()) && !TextUtils.isEmpty(jumpEmployerBean.getCount())) {
+            skillCountTv.setText("招" + jumpEmployerBean.getSkillName() + jumpEmployerBean.getCount() + "人");
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
+            priceTv.setText("工资" + jumpEmployerBean.getPrice() + "元/天");
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getAddress())) {
+            addressTv.setText(jumpEmployerBean.getAddress());
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getStartTime()) && !TextUtils.isEmpty(jumpEmployerBean.getEndTime())) {
+            timeTv.setText("工期" + DataUtils.times(jumpEmployerBean.getStartTime()) + "——" + DataUtils.times(jumpEmployerBean.getEndTime()));
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getPosX()) && !TextUtils.isEmpty(jumpEmployerBean.getPosY())) {
+            map();
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getO_status()) && !TextUtils.isEmpty(jumpEmployerBean.getO_confirm())) {
+            String o_status = jumpEmployerBean.getO_status();
+            String o_confirm = jumpEmployerBean.getO_confirm();
+            if (o_status.equals("0")) {
+                if (o_confirm.equals("0")) {
+                    SHOW_STATE = WAIT_EMPLOYER;
+                } else if (o_confirm.equals("1")) {
+                    SHOW_STATE = RESIGN;
+                } else if (o_confirm.equals("2")) {
+                    SHOW_STATE = SURE_DO;
+                }
+            } else if (o_status.equals("1")) {
+                SHOW_STATE = EVALUATE;
+            }
+            refreshState();
+        }
     }
 
     @Override

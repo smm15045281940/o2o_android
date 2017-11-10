@@ -134,7 +134,8 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     }
 
     private void loadData() {
-        accountDetailPresenter.load(UrlUtils.getUsersFundsLogUrl(AccountDetailActivity.this, LOG_STATE));
+        String url = UrlUtils.getUsersFundsLogUrl(AccountDetailActivity.this, LOG_STATE);
+        accountDetailPresenter.load(url);
     }
 
     private void backgroundAlpha(float bgAlpha) {

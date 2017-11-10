@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -138,8 +139,14 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent();
+        CityBean cityBean = list.get(position);
         if (position == 0) {
-            intent.putExtra(IntentConfig.CITY, new CityBean());
+            String cityId = cityBean.getId();
+            if (cityId == null || cityId.equals("null") || TextUtils.isEmpty(cityId)) {
+                intent.putExtra(IntentConfig.CITY, new CityBean());
+            } else {
+                intent.putExtra(IntentConfig.CITY, cityBean);
+            }
         } else {
             intent.putExtra(IntentConfig.CITY, list.get(position));
         }

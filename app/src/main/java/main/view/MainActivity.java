@@ -1,6 +1,5 @@
 package main.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,10 +24,9 @@ import fragment.FirstPageFragment;
 import listener.TimerCallBack;
 import manage.view.ManageFragment;
 import mine.view.MineFragment;
-import service.TimerService;
 import utils.Utils;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, TimerCallBack {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private View rootView;
     private RelativeLayout fpRl, magRl, dcRl, meRl;
@@ -47,15 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         initData();
         setListener();
-        TimerService.getConnet(this, this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TimerService.stop(this);
-        Intent intent = new Intent(this, TimerService.class);
-        stopService(intent);
     }
 
     private void initView() {
@@ -181,8 +170,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void timerCall() {
-        Utils.log(MainActivity.this, "timerCall");
-    }
 }

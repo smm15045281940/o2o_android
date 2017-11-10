@@ -39,10 +39,15 @@ import view.CProgressDialog;
 public class Utils {
 
     public static String Bitmap2StrByBase64(Bitmap bit) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
-        byte[] bytes = bos.toByteArray();
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
+        if (bit != null) {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bit.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+            byte[] bytes = bos.toByteArray();
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } else {
+            Log.e("bit", "bit == null");
+            return null;
+        }
     }
 
     //吐司

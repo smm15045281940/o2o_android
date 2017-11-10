@@ -154,6 +154,7 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     }
 
     private void loadData() {
+        cpd.show();
         String url = NetConfig.redBagUrl +
                 "?action=list" +
                 "&uid=" + UserUtils.readUserData(RedPacketActivity.this).getId() +
@@ -162,9 +163,11 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     }
 
     private void notifyData() {
+        if (cpd.isShowing()) {
+            cpd.dismiss();
+        }
         switch (STATE) {
             case FIRST:
-                cpd.dismiss();
                 if (redPacketBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);

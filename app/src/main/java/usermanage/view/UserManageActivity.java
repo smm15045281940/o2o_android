@@ -1,6 +1,8 @@
 package usermanage.view;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -233,13 +236,55 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
         if (requestCode == PermissionConfig.GALLERY && resultCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
             if (uri != null) {
-                Utils.log(UserManageActivity.this, "uri=" + uri.toString());
+                Utils.log(UserManageActivity.this, "before_uri\n" + uri.toString());
+                uri = geturi(data);
+                Utils.log(UserManageActivity.this, "after_uri\n" + uri.toString());
                 UserBean userBean = UserUtils.readUserData(UserManageActivity.this);
                 if (userBean != null) {
                     userManagePresenter.up(UserManageActivity.this, userBean.getId(), uri);
                 }
             }
         }
+    }
+
+    /**
+     * 解决小米手机上获取图片路径为null的情况
+     * @param intent
+     * @return
+     */
+    public Uri geturi(android.content.Intent intent) {
+        Uri uri = intent.getData();
+        String type = intent.getType();
+        if (uri.getScheme().equals("file") && (type.contains("image/"))) {
+            String path = uri.getEncodedPath();
+            if (path != null) {
+                path = Uri.decode(path);
+                ContentResolver cr = this.getContentResolver();
+                StringBuffer buff = new StringBuffer();
+                buff.append("(").append(MediaStore.Images.ImageColumns.DATA).append("=")
+                        .append("'" + path + "'").append(")");
+                Cursor cur = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        new String[] { MediaStore.Images.ImageColumns._ID },
+                        buff.toString(), null, null);
+                int index = 0;
+                for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
+                    index = cur.getColumnIndex(MediaStore.Images.ImageColumns._ID);
+                    // set _id value
+                    index = cur.getInt(index);
+                }
+                if (index == 0) {
+                    // do nothing
+                } else {
+                    Uri uri_temp = Uri
+                            .parse("content://media/external/images/media/"
+                                    + index);
+                    if (uri_temp != null) {
+                        uri = uri_temp;
+                    }
+                }
+            }
+        }
+        return uri;
     }
 
     @Override

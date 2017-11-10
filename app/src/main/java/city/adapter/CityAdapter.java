@@ -25,10 +25,15 @@ public class CityAdapter extends CommonAdapter<CityBean> {
 
     @Override
     public boolean isEnabled(int position) {
-        if (list.get(position).getId().equals("-1")) {
-            return false;
-        } else {
+        String id = list.get(position).getId();
+        if (id == null || id.equals("null") || TextUtils.isEmpty(id)) {
             return true;
+        } else {
+            if (list.get(position).getId().equals("-1")) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -53,12 +58,18 @@ public class CityAdapter extends CommonAdapter<CityBean> {
             } else {
                 holder.tv.setText(cityBean.getName());
             }
-            if (cityBean.getId().equals("-1")) {
-                holder.rl.setBackgroundColor(ColorConfig.gray_c4ced3);
-                holder.tv.setTextColor(ColorConfig.gray_a0a0a0);
-            } else {
+            String id = cityBean.getId();
+            if (id == null || id.equals("null") || TextUtils.isEmpty(id)) {
                 holder.rl.setBackgroundColor(ColorConfig.white_ffffff);
                 holder.tv.setTextColor(ColorConfig.black_252323);
+            } else {
+                if (cityBean.getId().equals("-1")) {
+                    holder.rl.setBackgroundColor(ColorConfig.gray_c4ced3);
+                    holder.tv.setTextColor(ColorConfig.gray_a0a0a0);
+                } else {
+                    holder.rl.setBackgroundColor(ColorConfig.white_ffffff);
+                    holder.tv.setTextColor(ColorConfig.black_252323);
+                }
             }
         }
         return convertView;
