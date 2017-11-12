@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,7 +42,8 @@ import withdraw.presenter.WithDrawPresenter;
 
 public class WithDrawActivity extends AppCompatActivity implements IWithDrawActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private View rootView;
+    private View rootView, bankView;
+    private PopupWindow bankPop;
 
     private View inputPasswordView;
     private GridView inputPasswordGv;
@@ -55,6 +57,7 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
     private RelativeLayout returnRl;
     private EditText nameEt, numberEt, moneyEt;
     private TextView bankTv, limitTv, nextTv;
+    private LinearLayout bankLl;
     private CProgressDialog cpd;
     private IWithDrawPresenter withDrawPresenter;
 
@@ -114,6 +117,7 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         bankTv = (TextView) rootView.findViewById(R.id.tv_with_draw_bank);
         limitTv = (TextView) rootView.findViewById(R.id.tv_with_draw_limit);
         nextTv = (TextView) rootView.findViewById(R.id.tv_with_draw_next);
+        bankLl = (LinearLayout) rootView.findViewById(R.id.ll_with_draw_bank);
         cpd = Utils.initProgressDialog(WithDrawActivity.this, cpd);
     }
 
@@ -154,7 +158,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         inputPasswordAdapter = new InputPasswordAdapter(WithDrawActivity.this, inputPasswordBeanList);
         withDrawPresenter = new WithDrawPresenter(this);
         withDrawBean.setU_id(UserUtils.readUserData(WithDrawActivity.this).getId());
-        withDrawBean.setP_id("1");
     }
 
     private void setData() {
@@ -163,7 +166,7 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
 
     private void setListener() {
         returnRl.setOnClickListener(this);
-        bankTv.setOnClickListener(this);
+        bankLl.setOnClickListener(this);
         limitTv.setOnClickListener(this);
         nextTv.setOnClickListener(this);
         inputPasswordGv.setOnItemClickListener(this);
@@ -260,7 +263,8 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
             case R.id.rl_withdraw_return:
                 finish();
                 break;
-            case R.id.tv_with_draw_bank:
+            case R.id.ll_with_draw_bank:
+                Utils.log(WithDrawActivity.this, "bank");
                 break;
             case R.id.tv_with_draw_limit:
                 break;

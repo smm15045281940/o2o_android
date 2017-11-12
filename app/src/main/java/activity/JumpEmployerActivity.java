@@ -436,6 +436,9 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void notifyData() {
+        if (!TextUtils.isEmpty(jumpEmployerBean.getName())) {
+            nameTv.setText(jumpEmployerBean.getName());
+        }
         if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
             beginDoPriceTv.setText(jumpEmployerBean.getPrice());
         }
@@ -443,7 +446,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getIcon())) {
-            Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).into(iconIv);
+            Picasso.with(JumpEmployerActivity.this).load(jumpEmployerBean.getIcon()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
         }
         if (jumpEmployerBean.getSex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);

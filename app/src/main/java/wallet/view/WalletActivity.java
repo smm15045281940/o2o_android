@@ -15,21 +15,10 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 import accountdetail.view.AccountDetailActivity;
+import activity.RechargeActivity;
 import bean.WalletBean;
 import config.NetConfig;
-import config.StateConfig;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import pay.view.PayWayActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
@@ -75,6 +64,11 @@ public class WalletActivity extends AppCompatActivity implements IWalletActivity
         initView();
         initData();
         setListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -135,7 +129,7 @@ public class WalletActivity extends AppCompatActivity implements IWalletActivity
                 startActivity(new Intent(this, AccountDetailActivity.class));
                 break;
             case R.id.rl_wallet_recharge:
-                startActivity(new Intent(this, PayWayActivity.class));
+                startActivity(new Intent(this, RechargeActivity.class));
                 break;
             case R.id.rl_wallet_withdraw:
                 startActivity(new Intent(this, WithDrawActivity.class));

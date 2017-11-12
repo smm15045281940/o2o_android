@@ -274,4 +274,46 @@ public class Utils {
      layoutParams.alpha = f;
      getWindow().setAttributes(layoutParams);}
      * */
+
+    /**private void initEmptyView() {
+     fl = (FrameLayout) rootView.findViewById(R.id.fl);
+     emptyView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
+     fl.addView(emptyView);
+     emptyView.setVisibility(View.GONE);
+     netView = LayoutInflater.from(his).inflate(R.layout.empty_net, null);
+     netTv = (TextView) netView.findViewById(R.id.tv_no_net_refresh);
+     netTv.setOnClickListener(new View.OnClickListener() {
+    @Override public void onClick(View v) {
+    ptrl.setVisibility(View.VISIBLE);
+    netView.setVisibility(View.GONE);
+    STATE = FIRST;
+    loadData();
+    }
+    });
+     fl.addView(netView);
+     netView.setVisibility(View.GONE);
+     }
+     * */
+
+    /**private void notifyData() {
+     switch (STATE) {
+     case FIRST:
+     cpd.dismiss();
+     if (list.size() == 0) {
+     ptrl.setVisibility(View.GONE);
+     netView.setVisibility(View.GONE);
+     emptyView.setVisibility(View.VISIBLE);
+     } else {
+     ptrl.setVisibility(View.VISIBLE);
+     netView.setVisibility(View.GONE);
+     emptyView.setVisibility(View.GONE);
+     }
+     break;
+     case REFRESH:
+     ptrl.hideHeadView();
+     break;
+     }
+     adapter.notifyDataSetChanged();
+     }
+     * */
 }

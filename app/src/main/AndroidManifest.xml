@@ -63,9 +63,6 @@
             android:name="login.view.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="pay.view.PayWayActivity"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity
             android:name="publishjob.view.PublishJobActivity"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="wallet.view.WalletActivity" />
@@ -135,6 +132,21 @@
         <activity android:name="activity.JumpEmployerActivity" />
         <activity android:name="activity.FireActivity" />
         <activity android:name="activity.MessageTipActivity" />
+        <activity
+            android:name="activity.RechargeActivity"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="wx88a7414f850651c8" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

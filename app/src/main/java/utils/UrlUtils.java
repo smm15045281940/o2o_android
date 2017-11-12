@@ -36,16 +36,13 @@ public class UrlUtils {
         String url = null;
         switch (logState) {
             case 0:
-//                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=all";
-                url = NetConfig.usersFundsLogUrl + "?u_id=" + 12 + "&category=all";
+                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=all";
                 break;
             case 1:
-//                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=withdraw";
-                url = NetConfig.usersFundsLogUrl + "?u_id=" + 12 + "&category=withdraw";
+                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=withdraw";
                 break;
             case 2:
-//                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=recharge";
-                url = NetConfig.usersFundsLogUrl + "?u_id=" + 12 + "&category=recharge";
+                url = NetConfig.usersFundsLogUrl + "?u_id=" + UserUtils.readUserData(context).getId() + "&category=recharge";
                 break;
         }
         return url;

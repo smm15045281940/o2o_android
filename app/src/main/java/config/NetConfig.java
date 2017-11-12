@@ -50,6 +50,8 @@ public interface NetConfig {
     String msgListUrl = "http://api.gangjianwang.com/Users/msgList";
     //站内信修改
     String msgEditUrl = "http://api.gangjianwang.com/Users/msgReadEdit";
+    //充值申请
+    String toPayUrl = "http://api.gangjianwang.com/Users/applyRechargeLog";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
@@ -67,7 +69,7 @@ public interface NetConfig {
     String applyWithdrawUrl = "http://api.gangjianwang.com/Users/applyWithdraw";
     String useCplIs = "http://api.gangjianwang.com/Users/complaintsType?ct_type=";
     String selectAddressBaseUrl = "http://api.gangjianwang.com/Regions/index?action=list&r_pid=";
-    String usersFundsLogUrl = "http://api_zy.gangjianwang.com/Users/getUsersFundsLog";
+    String usersFundsLogUrl = "http://api.gangjianwang.com/Users/getUsersFundsLog";
     String favorateAddUrl = "http://api.gangjianwang.com/Users/favorateAdd";
     String favorateDelUrl = "http://api.gangjianwang.com/Users/favorateDel";
     String subTotalUrl = "http://api.gangjianwang.com/Tools/subTotal";

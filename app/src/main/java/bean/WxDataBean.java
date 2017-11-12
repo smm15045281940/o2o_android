@@ -14,20 +14,8 @@ public class WxDataBean implements Serializable {
     private String packageValue;
     private String noncestr;
     private String timestamp;
-    private String sign;
-
-    public WxDataBean() {
-    }
-
-    public WxDataBean(String appid, String partnerid, String prepayid, String packageValue, String noncestr, String timestamp, String sign) {
-        this.appid = appid;
-        this.partnerid = partnerid;
-        this.prepayid = prepayid;
-        this.packageValue = packageValue;
-        this.noncestr = noncestr;
-        this.timestamp = timestamp;
-        this.sign = sign;
-    }
+    private String signType;
+    private String paySign;
 
     public String getAppid() {
         return appid;
@@ -77,12 +65,20 @@ public class WxDataBean implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public String getSign() {
-        return sign;
+    public String getSignType() {
+        return signType;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setSignType(String signType) {
+        this.signType = signType;
+    }
+
+    public String getPaySign() {
+        return paySign;
+    }
+
+    public void setPaySign(String paySign) {
+        this.paySign = paySign;
     }
 
     @Override
@@ -94,7 +90,8 @@ public class WxDataBean implements Serializable {
                 ", packageValue='" + packageValue + '\'' +
                 ", noncestr='" + noncestr + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", sign='" + sign + '\'' +
+                ", signType='" + signType + '\'' +
+                ", paySign='" + paySign + '\'' +
                 '}';
     }
 }

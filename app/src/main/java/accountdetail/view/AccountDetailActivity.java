@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -28,13 +29,16 @@ import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
 import utils.UrlUtils;
 import utils.Utils;
+import view.CProgressDialog;
 
 public class AccountDetailActivity extends AppCompatActivity implements IAccountDetailActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
-    private View rootView;
+    private View rootView, emptyView, netView;
     private RelativeLayout returnRl;
     private LinearLayout menuLl;
     private View menuPopView;
+    private FrameLayout fl;
+    private TextView netTv;
     private PopupWindow menuPopWindow;
     private RelativeLayout menuAllRl, menuOutRl, menuInRl;
     private TextView menuContentTv;
@@ -42,9 +46,12 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     private PullableListView plv;
     private List<AccountDetailBean> list;
     private DetailAdapter adapter;
+    private CProgressDialog cProgressDialog;
 
     private final int ALL = 0, WITHDRAW = 1, RECHARGE = 2;
     private int LOG_STATE = ALL;
+    private final int FIRST = 0, REFRESH = 1;
+    private int STATE = FIRST;
     private IAccountDetailPresenter accountDetailPresenter;
 
     private Handler handler = new Handler() {
@@ -54,7 +61,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
-                        adapter.notifyDataSetChanged();
+                        notifyData();
                         break;
                 }
             }
@@ -85,6 +92,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
 
     private void initView() {
         initRootView();
+        initEmptyView();
         initPopWindowView();
     }
 
@@ -94,6 +102,27 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
         menuContentTv = (TextView) rootView.findViewById(R.id.tv_detail_menu_content);
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
+        cProgressDialog = Utils.initProgressDialog(AccountDetailActivity.this, cProgressDialog);
+    }
+
+    private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
+        emptyView = LayoutInflater.from(this).inflate(R.layout.empty_data, null);
+        fl.addView(emptyView);
+        emptyView.setVisibility(View.GONE);
+        netView = LayoutInflater.from(this).inflate(R.layout.empty_net, null);
+        netTv = (TextView) netView.findViewById(R.id.tv_no_net_refresh);
+        netTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ptrl.setVisibility(View.VISIBLE);
+                netView.setVisibility(View.GONE);
+                STATE = FIRST;
+                loadData();
+            }
+        });
+        fl.addView(netView);
+        netView.setVisibility(View.GONE);
     }
 
     private void initPopWindowView() {
@@ -134,8 +163,34 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     }
 
     private void loadData() {
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.show();
+                break;
+        }
         String url = UrlUtils.getUsersFundsLogUrl(AccountDetailActivity.this, LOG_STATE);
         accountDetailPresenter.load(url);
+    }
+
+    private void notifyData() {
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.dismiss();
+                if (list.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    netView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    netView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
+                }
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                break;
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void backgroundAlpha(float bgAlpha) {
@@ -161,6 +216,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                     menuPopWindow.dismiss();
                     menuContentTv.setText("全部");
                     LOG_STATE = ALL;
+                    STATE = FIRST;
                     loadData();
                 }
                 break;
@@ -169,6 +225,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                     menuPopWindow.dismiss();
                     menuContentTv.setText("支出");
                     LOG_STATE = RECHARGE;
+                    STATE = FIRST;
                     loadData();
                 }
                 break;
@@ -177,6 +234,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                     menuPopWindow.dismiss();
                     menuContentTv.setText("收入");
                     LOG_STATE = WITHDRAW;
+                    STATE = FIRST;
                     loadData();
                 }
                 break;
@@ -185,7 +243,8 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideHeadView();
+        STATE = REFRESH;
+        loadData();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package utils;
 
+import android.text.TextUtils;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 
@@ -7,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +23,7 @@ import bean.EmployerToTalkBean;
 import bean.EvaluateBean;
 import bean.LonLatBean;
 import bean.MessageBean;
+import bean.PayWayBean;
 import bean.PublishBean;
 import bean.PublishWorkerBean;
 import bean.RedPacketBean;
@@ -37,6 +41,8 @@ import bean.TalkEmployerBean;
 import bean.TalkEmployerWorkerBean;
 import bean.UserInfoBean;
 import bean.WorkerManageBean;
+import bean.WxDataBean;
+import config.AppConfig;
 
 public class DataUtils {
 
@@ -1004,6 +1010,86 @@ public class DataUtils {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    //支付方式
+    public static List<PayWayBean> getPayWayBeanList(String json) {
+        if (json == null || json.equals("null") || TextUtils.isEmpty(json)) {
+        } else {
+            List<PayWayBean> payWayBeanList = new ArrayList<>();
+            try {
+                JSONObject beanObj = new JSONObject(json);
+                if (beanObj.optInt("code") == 200) {
+                    JSONArray dataArr = beanObj.optJSONArray("data");
+                    if (dataArr != null && dataArr.length() != 0) {
+                        for (int i = 0; i < dataArr.length(); i++) {
+                            JSONObject o = dataArr.optJSONObject(i);
+                            if (o != null) {
+                                PayWayBean payWayBean = new PayWayBean();
+                                payWayBean.setP_id(o.optString("p_id"));
+                                payWayBean.setP_type(o.optString("p_type"));
+                                payWayBean.setP_name(o.optString("p_name"));
+                                payWayBean.setP_info(o.optString("p_info"));
+                                payWayBean.setP_status(o.optString("p_status"));
+                                payWayBean.setP_author(o.optString("p_author"));
+                                payWayBean.setP_last_editor(o.optString("p_last_editor"));
+                                payWayBean.setP_last_edit_time(o.optString("p_last_edit_time"));
+                                payWayBean.setP_default(o.optString("p_default"));
+                                payWayBeanList.add(payWayBean);
+                            }
+                        }
+                        return payWayBeanList;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //微信支付
+    public static WxDataBean getWxDataBean(String json) {
+        if (json == null || json.equals("null") || TextUtils.isEmpty(json)) {
+        } else {
+            try {
+                JSONObject beanObj = new JSONObject(json);
+                if (beanObj.optInt("code") == 1) {
+                    JSONObject dataObj = beanObj.optJSONObject("data");
+                    if (dataObj != null) {
+                        WxDataBean wxDataBean = new WxDataBean();
+                        wxDataBean.setAppid(dataObj.optString("appId"));
+                        wxDataBean.setNoncestr(dataObj.optString("nonceStr"));
+                        wxDataBean.setPackageValue(dataObj.optString("package"));
+                        wxDataBean.setPartnerid(dataObj.optString("partnerid"));
+                        wxDataBean.setPrepayid(dataObj.optString("prepay_id"));
+                        wxDataBean.setSignType(dataObj.optString("signType"));
+                        wxDataBean.setTimestamp(dataObj.optString("timeStamp"));
+                        wxDataBean.setPaySign(dataObj.optString("paySign"));
+                        return wxDataBean;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    //微信sign
+    public static String signNum(WxDataBean wxDataBean) {
+        if (wxDataBean != null) {
+            String stringA = "appid=" + AppConfig.APP_ID +
+                    "&noncestr=" + wxDataBean.getNoncestr() +
+                    "&package=" + wxDataBean.getPackageValue() +
+                    "&partnerid=" + wxDataBean.getPartnerid() +
+                    "&prepayid=" + wxDataBean.getPrepayid() +
+                    "&timestamp=" + wxDataBean.getTimestamp();
+            String stringSignTemp = stringA + "&key=" + AppConfig.WX_KEY;
+            String sign = MD5.getMessageDigest(stringSignTemp.getBytes()).toUpperCase();
+            return sign;
         }
         return null;
     }

@@ -61,7 +61,7 @@ public class TaskAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         TaskBean taskBean = list.get(position);
-        Picasso.with(context).load(taskBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).into(holder.iconIv);
+        Picasso.with(context).load(taskBean.getIcon()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(holder.iconIv);
         holder.titleTv.setText(taskBean.getTitle());
         holder.infoTv.setText(taskBean.getInfo());
         String status = taskBean.getStatus();

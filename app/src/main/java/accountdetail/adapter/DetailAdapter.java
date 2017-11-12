@@ -1,6 +1,7 @@
 package accountdetail.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
 import adapter.CommonAdapter;
+import utils.DataUtils;
 
 /**
  * 创建日期：2017/8/9 on 10:55
@@ -36,10 +38,19 @@ public class DetailAdapter extends CommonAdapter<AccountDetailBean> {
         }
         AccountDetailBean accountDetailBean = list.get(position);
         if (accountDetailBean != null) {
-            holer.titleTv.setText(accountDetailBean.getTitle());
-            holer.balanceTv.setText(accountDetailBean.getBalance());
-            holer.timeTv.setText(accountDetailBean.getTime());
-            holer.desTv.setText(accountDetailBean.getDes());
+            String title = accountDetailBean.getTitle();
+            if (title == null || title.equals("null") || TextUtils.isEmpty(title)) {
+            } else {
+                if (title.equals("recharge")) {
+                    holer.titleTv.setText("充值");
+                    holer.desTv.setText("+" + accountDetailBean.getDes());
+                } else if (title.equals("withdraw")) {
+                    holer.titleTv.setText("提现");
+                    holer.desTv.setText("-" + accountDetailBean.getDes());
+                }
+                holer.balanceTv.setText("余额" + accountDetailBean.getBalance() + "元");
+                holer.timeTv.setText(DataUtils.msgTimes(accountDetailBean.getTime()));
+            }
         }
         return convertView;
     }
