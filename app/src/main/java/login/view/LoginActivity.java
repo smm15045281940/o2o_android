@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
     private View rootView;
     private RelativeLayout returnRl, getMovePwdRl;
     private EditText phoneNumberEt, movePwdEt;
-    private TextView getMovePwdTv, loginTv;
+    private TextView getMovePwdTv, loginTv, agreeMentTv;
     private GradientDrawable getMovePwdGd, loginGd;
     private CProgressDialog cpd;
     private ILoginPresenter iLoginPresenter;
@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
         getMovePwdGd = (GradientDrawable) getMovePwdRl.getBackground();
         movePwdEt = (EditText) rootView.findViewById(R.id.et_login_move_pwd);
         loginTv = (TextView) rootView.findViewById(R.id.tv_login_log);
+        agreeMentTv = (TextView) rootView.findViewById(R.id.tv_login_agreement);
         loginGd = (GradientDrawable) loginTv.getBackground();
         cpd = Utils.initProgressDialog(LoginActivity.this, cpd);
     }
@@ -74,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
         getMovePwdRl.setOnClickListener(this);
         loginTv.setOnClickListener(this);
         loginTv.setEnabled(false);
+        agreeMentTv.setOnClickListener(this);
         movePwdEt.addTextChangedListener(textWatcher);
     }
 
@@ -95,7 +97,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
                 if (Utils.isPhonenumber(phone_number))
                     iLoginPresenter.login(phone_number, verify_code);
                 break;
-            default:
+            case R.id.tv_login_agreement:
+                Utils.log(LoginActivity.this, "agreement");
                 break;
         }
     }

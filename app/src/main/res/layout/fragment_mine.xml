@@ -85,7 +85,7 @@
                     <ImageView
                         android:id="@+id/iv_frag_me_login_online"
                         android:layout_width="@dimen/y26"
-                        android:layout_height="@dimen/y14"
+                        android:layout_height="@dimen/y13"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:scaleType="fitXY"

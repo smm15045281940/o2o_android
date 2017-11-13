@@ -151,16 +151,6 @@
             android:textCursorDrawable="@null"
             android:textSize="@dimen/y10" />
 
-        <TextView
-            android:id="@+id/tv_with_draw_limit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/y5"
-            android:layout_marginRight="@dimen/y5"
-            android:text="限额说明"
-            android:textColor="@color/blue_2681fc"
-            android:textSize="@dimen/y8" />
-
     </LinearLayout>
 
     <RelativeLayout

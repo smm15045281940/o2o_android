@@ -92,8 +92,14 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name="pic.view.PicActivity" />
 
-        <service android:name="service.CodeTimerService" />
-        <service android:name="service.GetLoginCodeTimerService" />
+        <service
+            android:name="service.CodeTimerService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="service.GetLoginCodeTimerService"
+            android:enabled="true"
+            android:exported="true" />
         <service
             android:name="service.TimerService"
             android:enabled="true"
@@ -139,14 +145,16 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="wx88a7414f850651c8" />
             </intent-filter>
-
         </activity>
+        <activity android:name="activity.AgreementActivity" />
+        <activity android:name="activity.ArticlesInfoActivity"></activity>
     </application>
 
 </manifest>

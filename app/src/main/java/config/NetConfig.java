@@ -52,6 +52,10 @@ public interface NetConfig {
     String msgEditUrl = "http://api.gangjianwang.com/Users/msgReadEdit";
     //充值申请
     String toPayUrl = "http://api.gangjianwang.com/Users/applyRechargeLog";
+    //文章
+    String articlesListUrl = "http://api.gangjianwang.com/Articles/articlesList?ac_id=29";
+    //文章详情
+    String articlesInfoUrl = "http://api.gangjianwang.com/Articles/articlesInfo";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";

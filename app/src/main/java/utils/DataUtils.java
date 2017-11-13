@@ -1,6 +1,7 @@
 package utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+import bean.ArticleBean;
 import bean.CollectWorkerBean;
 import bean.ComplainIssueBean;
 import bean.EmployerToDoingBean;
@@ -1088,8 +1090,41 @@ public class DataUtils {
                     "&prepayid=" + wxDataBean.getPrepayid() +
                     "&timestamp=" + wxDataBean.getTimestamp();
             String stringSignTemp = stringA + "&key=" + AppConfig.WX_KEY;
+            Log.e("DataUtils", "stringSignTemp\n" + stringSignTemp);
             String sign = MD5.getMessageDigest(stringSignTemp.getBytes()).toUpperCase();
             return sign;
+        }
+        return null;
+    }
+
+    //协议
+    public static List<ArticleBean> getArticleBeanList(String json) {
+        try {
+            JSONObject beanObj = new JSONObject(json);
+            if (beanObj.optInt("code") == 1) {
+                JSONArray dataArr = beanObj.optJSONArray("data");
+                if (dataArr != null && dataArr.length() != 0) {
+                    List<ArticleBean> articleBeanList = new ArrayList<>();
+                    for (int i = 0; i < dataArr.length(); i++) {
+                        JSONObject o = dataArr.optJSONObject(i);
+                        if (o != null) {
+                            ArticleBean articleBean = new ArticleBean();
+                            articleBean.setA_id(o.optString("a_id"));
+                            articleBean.setA_title(o.optString("a_title"));
+                            articleBean.setA_in_time(o.optString("a_in_time"));
+                            articleBean.setA_link(o.optString("a_link"));
+                            articleBean.setA_img(o.optString("a_img"));
+                            articleBean.setA_top(o.optString("a_top"));
+                            articleBean.setA_recommend(o.optString("a_recommend"));
+                            articleBean.setA_desc(o.optString("a_desc"));
+                            articleBeanList.add(articleBean);
+                        }
+                    }
+                    return articleBeanList;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return null;
     }

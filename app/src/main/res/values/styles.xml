@@ -95,8 +95,8 @@
     </style>
     <!--我的收藏ImageView样式-->
     <style name="iv_me_collect">
-        <item name="android:layout_width">@dimen/y24</item>
-        <item name="android:layout_height">@dimen/y24</item>
+        <item name="android:layout_width">@dimen/y20</item>
+        <item name="android:layout_height">@dimen/y20</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:scaleType">fitXY</item>
         <item name="android:layout_marginTop">@dimen/y5</item>
@@ -197,8 +197,8 @@
     </style>
     <!--返回图片样式-->
     <style name="iv_return">
-        <item name="android:layout_width">@dimen/y15</item>
-        <item name="android:layout_height">@dimen/y15</item>
+        <item name="android:layout_width">@dimen/y18</item>
+        <item name="android:layout_height">@dimen/y18</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:scaleType">fitXY</item>
         <item name="android:src">@mipmap/left</item>

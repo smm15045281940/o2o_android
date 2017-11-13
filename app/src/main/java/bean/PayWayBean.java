@@ -93,4 +93,20 @@ public class PayWayBean {
     public void setCheck(boolean check) {
         this.check = check;
     }
+
+    @Override
+    public String toString() {
+        return "PayWayBean{" +
+                "p_id='" + p_id + '\'' +
+                ", p_type='" + p_type + '\'' +
+                ", p_name='" + p_name + '\'' +
+                ", p_info='" + p_info + '\'' +
+                ", p_status='" + p_status + '\'' +
+                ", p_author='" + p_author + '\'' +
+                ", p_last_editor='" + p_last_editor + '\'' +
+                ", p_last_edit_time='" + p_last_edit_time + '\'' +
+                ", p_default='" + p_default + '\'' +
+                ", check=" + check +
+                '}';
+    }
 }

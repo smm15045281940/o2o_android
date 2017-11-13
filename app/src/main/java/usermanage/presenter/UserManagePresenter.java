@@ -55,31 +55,6 @@ public class UserManagePresenter implements IUserManagePresenter {
     }
 
     @Override
-    public void up(Context context, String id, Uri uri) {
-        userManageModule.up(context, id, uri, new UpLoadingIconListener() {
-            @Override
-            public void upLoadingIconFailure(final String failure) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        userManageActivity.upLoadIconFailure(failure);
-                    }
-                });
-            }
-
-            @Override
-            public void upLoadingIconSuccess(final String success, final Bitmap bitmap) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        userManageActivity.upLoadIconSuccess(success, bitmap);
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
     public void destroy() {
         if (userManageModule != null) {
             userManageModule.cancelTask();

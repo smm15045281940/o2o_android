@@ -1,5 +1,6 @@
 package withdraw.view;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,11 +30,21 @@ import com.gjzg.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import adapter.WithDrawAdapter;
+import bean.PayWayBean;
+import config.NetConfig;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import taskconfirm.adapter.InputPasswordAdapter;
 import taskconfirm.bean.InputPasswordBean;
+import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
@@ -44,6 +56,7 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
 
     private View rootView, bankView;
     private PopupWindow bankPop;
+    private ListView bankLv;
 
     private View inputPasswordView;
     private GridView inputPasswordGv;
@@ -56,10 +69,12 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
     private WithDrawBean withDrawBean = new WithDrawBean();
     private RelativeLayout returnRl;
     private EditText nameEt, numberEt, moneyEt;
-    private TextView bankTv, limitTv, nextTv;
+    private TextView bankTv, nextTv;
     private LinearLayout bankLl;
     private CProgressDialog cpd;
     private IWithDrawPresenter withDrawPresenter;
+    private List<PayWayBean> payWayBeanList = new ArrayList<>();
+    private WithDrawAdapter withDrawAdapter;
 
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
@@ -77,6 +92,13 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
                         finish();
                         break;
                     case LOAD_FAILURE:
+                        cpd.dismiss();
+                        Utils.toast(WithDrawActivity.this, tip);
+                        inputPasswordSb.delete(0, inputPasswordSb.length());
+                        notifyPoints(inputPasswordSb.length());
+                        break;
+                    case 3:
+                        notifyData();
                         break;
                 }
             }
@@ -93,6 +115,7 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         initData();
         setData();
         setListener();
+        loadData();
     }
 
     @Override
@@ -115,7 +138,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         numberEt = (EditText) rootView.findViewById(R.id.et_with_draw_card_number);
         moneyEt = (EditText) rootView.findViewById(R.id.et_with_draw_money);
         bankTv = (TextView) rootView.findViewById(R.id.tv_with_draw_bank);
-        limitTv = (TextView) rootView.findViewById(R.id.tv_with_draw_limit);
         nextTv = (TextView) rootView.findViewById(R.id.tv_with_draw_next);
         bankLl = (LinearLayout) rootView.findViewById(R.id.ll_with_draw_bank);
         cpd = Utils.initProgressDialog(WithDrawActivity.this, cpd);
@@ -152,27 +174,107 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
                 inputPasswordBeanList.clear();
             }
         });
+
+        bankView = LayoutInflater.from(WithDrawActivity.this).inflate(R.layout.dialog_scn, null);
+        ((TextView) bankView.findViewById(R.id.tv_dialog_scn_title)).setText("银行");
+        bankView.findViewById(R.id.iv_dialog_scn_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bankPop.isShowing()) {
+                    bankPop.dismiss();
+                }
+            }
+        });
+        bankLv = (ListView) bankView.findViewById(R.id.lv_dialog_scn);
+        bankLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PayWayBean payWayBean = payWayBeanList.get(position);
+                if (payWayBean != null) {
+                    String name = payWayBean.getP_name();
+                    if (name == null || name.equals("null") || TextUtils.isEmpty(name)) {
+                    } else {
+                        bankTv.setText(name);
+                    }
+                    String p_id = payWayBean.getP_id();
+                    if (p_id == null || p_id.equals("null") || TextUtils.isEmpty(p_id)) {
+                    } else {
+                        withDrawBean.setP_id(p_id);
+                    }
+                    if (bankPop.isShowing()) {
+                        bankPop.dismiss();
+                    }
+                }
+            }
+        });
+        bankPop = new PopupWindow(bankView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        bankPop.setFocusable(true);
+        bankPop.setTouchable(true);
+        bankPop.setOutsideTouchable(true);
+        bankPop.setBackgroundDrawable(new BitmapDrawable());
+        bankPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
     }
 
     private void initData() {
         inputPasswordAdapter = new InputPasswordAdapter(WithDrawActivity.this, inputPasswordBeanList);
         withDrawPresenter = new WithDrawPresenter(this);
         withDrawBean.setU_id(UserUtils.readUserData(WithDrawActivity.this).getId());
+        withDrawAdapter = new WithDrawAdapter(WithDrawActivity.this, payWayBeanList);
     }
 
     private void setData() {
         inputPasswordGv.setAdapter(inputPasswordAdapter);
+        bankLv.setAdapter(withDrawAdapter);
     }
 
     private void setListener() {
         returnRl.setOnClickListener(this);
         bankLl.setOnClickListener(this);
-        limitTv.setOnClickListener(this);
         nextTv.setOnClickListener(this);
         inputPasswordGv.setOnItemClickListener(this);
         nameEt.addTextChangedListener(nameTw);
         numberEt.addTextChangedListener(numberTw);
         moneyEt.addTextChangedListener(moneyTw);
+    }
+
+    private void loadData() {
+        cpd.show();
+        String url = NetConfig.payWayUrl + "?p_type=1";
+        Utils.log(WithDrawActivity.this, "url\n" + url);
+        Request request = new Request.Builder().url(url).get().build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    if (json == null || json.equals("null") || TextUtils.isEmpty(json)) {
+                    } else {
+                        Utils.log(WithDrawActivity.this, "json\n" + json);
+                        if (DataUtils.getPayWayBeanList(json) != null) {
+                            payWayBeanList.addAll(DataUtils.getPayWayBeanList(json));
+                            Utils.log(WithDrawActivity.this, "payWayBeanList\n" + payWayBeanList.toString());
+                            handler.sendEmptyMessage(3);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void notifyData() {
+        cpd.dismiss();
+        withDrawAdapter.notifyDataSetChanged();
     }
 
     private void judge() {
@@ -264,9 +366,10 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
                 finish();
                 break;
             case R.id.ll_with_draw_bank:
-                Utils.log(WithDrawActivity.this, "bank");
-                break;
-            case R.id.tv_with_draw_limit:
+                if (!bankPop.isShowing()) {
+                    backgroundAlpha(0.5f);
+                    bankPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
                 break;
             case R.id.tv_with_draw_next:
                 judge();
@@ -312,14 +415,17 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         try {
             JSONObject beanObj = new JSONObject(json);
             int code = beanObj.optInt("code");
-            switch (code) {
-                case 1:
-                    JSONObject dataObj = beanObj.optJSONObject("data");
-                    if (dataObj != null) {
-                        tip = dataObj.optString("msg");
+            JSONObject dataObj = beanObj.optJSONObject("data");
+            if (dataObj != null) {
+                tip = dataObj.optString("msg");
+                switch (code) {
+                    case 0:
+                        handler.sendEmptyMessage(LOAD_FAILURE);
+                        break;
+                    case 1:
                         handler.sendEmptyMessage(LOAD_SUCCESS);
-                    }
-                    break;
+                        break;
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -411,4 +517,5 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
             withDrawBean.setUwl_amount(s.toString());
         }
     };
+
 }
