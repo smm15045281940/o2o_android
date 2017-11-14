@@ -1,24 +1,33 @@
 package complain.view;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,10 +46,14 @@ import com.gjzg.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import adapter.ComplainImageAdapter;
 import adapter.ComplainIssueAdapter;
@@ -48,6 +61,7 @@ import bean.ComplainIssueBean;
 import bean.ToComplainBean;
 import complain.presenter.ComplainPresenter;
 import complain.presenter.IComplainPresenter;
+import config.AppConfig;
 import config.IntentConfig;
 import config.NetConfig;
 import config.PathConfig;
@@ -96,6 +110,14 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     private ImageView sexIv;
     private TextView nameTv, skillNameTv, evaluateTv;
     private EditText contentEt;
+
+    private static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
+    private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
+    private static final int PHOTO_REQUEST_CUT = 3;// 结果
+    private static final String PHOTO_FILE_NAME = "temp_photo.jpeg";
+    private File tempFile;
+    private static final String SD_PATH = "/sdcard/dskqxt/pic/";
+    private static final String IN_PATH = "/dskqxt/pic/";
 
     private Handler handler = new Handler() {
         @Override
@@ -202,18 +224,18 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             @Override
             public void onClick(View v) {
                 pop.dismiss();
-                if (Utils.hasSdcard()) {
-                    requestPhoto();
-                } else {
-                    Utils.toast(ComplainActivity.this, "Sd卡不可用");
-                }
+//                if (Utils.hasSdcard()) {
+//                    requestPhoto();
+//                } else {
+//                    Utils.toast(ComplainActivity.this, "Sd卡不可用");
+//                }
             }
         });
         mapTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pop.dismiss();
-                startActivityForResult(new Intent(ComplainActivity.this, PicActivity.class), IntentConfig.PIC_REQUEST);
+//                startActivityForResult(new Intent(ComplainActivity.this, PicActivity.class), IntentConfig.PIC_REQUEST);
             }
         });
         cancelTv.setOnClickListener(new View.OnClickListener() {
@@ -293,8 +315,16 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
         } else if (sex.equals("1")) {
             sexIv.setImageResource(R.mipmap.male);
         }
+        String type = toComplainBean.getCtType();
+        if (type == null || type.equals("null") || TextUtils.isEmpty(type)) {
+        } else {
+            if (type.equals("1")) {
+                skillNameTv.setText("雇主");
+            } else if (type.equals("2")) {
+                skillNameTv.setText(toComplainBean.getSkill());
+            }
+        }
         nameTv.setText(userInfoBean.getU_true_name());
-        skillNameTv.setText(toComplainBean.getSkill());
         evaluateTv.setText("好评" + userInfoBean.getU_high_opinions() + "次");
         complainIssueAdapter.notifyDataSetChanged();
     }
@@ -328,15 +358,45 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     }
 
     private void takePhoto() {
-        Intent cI = new Intent();
-        cI.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
-        String dateStr = sdf.format(new Date());
-        picPath = PathConfig.cameraPath + "IMG_" + dateStr + ".jpg";
-        File picFile = new File(picPath);
-        Uri picUri = Uri.fromFile(picFile);
-        cI.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
-        startActivityForResult(cI, PermissionConfig.CAMERA);
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        if (hasSdcard()) {
+            tempFile = new File(Environment.getExternalStorageDirectory(), PHOTO_FILE_NAME);
+            // 从文件中创建uri
+            Uri uri = null;
+            if (Build.VERSION.SDK_INT > 23) {
+                uri = FileProvider.getUriForFile(ComplainActivity.this, AppConfig.APP_ID + ".fileprovider", tempFile);
+            } else {
+                uri = Uri.fromFile(tempFile);
+            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.putExtra("return-data", true);
+            intent.putExtra("crop", true);
+        }
+        try {
+            startActivityForResult(intent, PHOTO_REQUEST_CAREMA);
+        } catch (SecurityException e) {
+
+        }
+
+
+//        Intent cI = new Intent();
+//        cI.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
+//        String dateStr = sdf.format(new Date());
+//        picPath = PathConfig.cameraPath + "IMG_" + dateStr + ".jpg";
+//        File picFile = new File(picPath);
+//        Uri picUri = Uri.fromFile(picFile);
+//        cI.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
+//        startActivityForResult(cI, PermissionConfig.CAMERA);
+    }
+
+    private boolean hasSdcard() {
+        //判断ＳＤ卡手否是安装好的　　　media_mounted
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -459,4 +519,237 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             toComplainBean.setContent(s.toString());
         }
     };
+
+    //计算图片的缩放值
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
+
+
+    // 根据路径获得图片并压缩，返回bitmap用于显示
+    public static Bitmap getSmallBitmap(String filePath) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+
+    /**
+     * 随机生产文件名
+     *
+     * @return
+     */
+    private static String generateFileName() {
+        return UUID.randomUUID().toString();
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @param context
+     * @param mBitmap
+     * @return
+     */
+    public static String saveBitmap(Context context, Bitmap mBitmap) {
+        String savePath;
+        File filePic;
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            savePath = SD_PATH;
+        } else {
+            savePath = context.getApplicationContext().getFilesDir()
+                    .getAbsolutePath()
+                    + IN_PATH;
+        }
+        try {
+            filePic = new File(savePath + generateFileName() + ".jpg");
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return filePic.getAbsolutePath();
+    }
+
+
+    public static String getImageAbsolutePath(Activity context, Uri imageUri) {
+        if (context == null || imageUri == null)
+            return null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, imageUri)) {
+            if (isExternalStorageDocument(imageUri)) {
+                String docId = DocumentsContract.getDocumentId(imageUri);
+                String[] split = docId.split(":");
+                String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+            } else if (isDownloadsDocument(imageUri)) {
+                String id = DocumentsContract.getDocumentId(imageUri);
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            } else if (isMediaDocument(imageUri)) {
+                String docId = DocumentsContract.getDocumentId(imageUri);
+                String[] split = docId.split(":");
+                String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                String selection = MediaStore.Images.Media._ID + "=?";
+                String[] selectionArgs = new String[]{split[1]};
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        } // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(imageUri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(imageUri))
+                return imageUri.getLastPathSegment();
+            return getDataColumn(context, imageUri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(imageUri.getScheme())) {
+            return imageUri.getPath();
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        String column = MediaStore.Images.Media.DATA;
+        String[] projection = {column};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+
+    public Bitmap convertToBitmap(String path) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        // 设置为ture只获取图片大小
+        opts.inJustDecodeBounds = true;
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        // 返回为空
+        BitmapFactory.decodeFile(path, opts);
+        int width = opts.outWidth;
+        int height = opts.outHeight;
+        float scaleWidth = 0.f, scaleHeight = 0.f;
+        opts.inJustDecodeBounds = false;
+        float scale = Math.max(scaleWidth, scaleHeight);
+        opts.inSampleSize = (int) scale;
+        WeakReference<Bitmap> weak = new WeakReference<Bitmap>(BitmapFactory.decodeFile(path, opts));
+        return Bitmap.createScaledBitmap(weak.get(), width, height, true);
+    }
+
+
+    //下面是红色字体的方法内容
+    public Uri getFileUri(Uri uri) {
+        if (uri.getScheme().equals("file")) {
+            String path = uri.getEncodedPath();
+            Log.d("=====", "path1 is " + path);
+            if (path != null) {
+                path = Uri.decode(path);
+                Log.d("===", "path2 is " + path);
+                ContentResolver cr = this.getContentResolver();
+                StringBuffer buff = new StringBuffer();
+                buff.append("(")
+                        .append(MediaStore.Images.ImageColumns.DATA)
+                        .append("=")
+                        .append("'" + path + "'")
+                        .append(")");
+                Cursor cur = cr.query(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        new String[]{MediaStore.Images.ImageColumns._ID},
+                        buff.toString(), null, null);
+                int index = 0;
+                for (cur.moveToFirst(); !cur.isAfterLast(); cur
+                        .moveToNext()) {
+                    index = cur.getColumnIndex(MediaStore.Images.ImageColumns._ID);
+                    // set _id value
+                    index = cur.getInt(index);
+                }
+                if (index == 0) {
+                    //do nothing
+                } else {
+                    Uri uri_temp = Uri
+                            .parse("content://media/external/images/media/"
+                                    + index);
+                    Log.d("========", "uri_temp is " + uri_temp);
+                    if (uri_temp != null) {
+                        uri = uri_temp;
+                    }
+                }
+            }
+        }
+        return uri;
+    }
 }

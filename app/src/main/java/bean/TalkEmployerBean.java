@@ -18,9 +18,18 @@ public class TalkEmployerBean implements Serializable {
     private String posX;
     private String posY;
     private String authorId;
+    private String t_status;
     private int relation;
     private int relationType;
     private List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList;
+
+    public String getT_status() {
+        return t_status;
+    }
+
+    public void setT_status(String t_status) {
+        this.t_status = t_status;
+    }
 
     public String getIcon() {
         return icon;
@@ -130,6 +139,7 @@ public class TalkEmployerBean implements Serializable {
                 ", posX='" + posX + '\'' +
                 ", posY='" + posY + '\'' +
                 ", authorId='" + authorId + '\'' +
+                ", t_status='" + t_status + '\'' +
                 ", relation=" + relation +
                 ", relationType=" + relationType +
                 ", talkEmployerWorkerBeanList=" + talkEmployerWorkerBeanList +

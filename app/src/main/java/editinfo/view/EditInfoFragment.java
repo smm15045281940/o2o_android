@@ -200,8 +200,8 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
         Log.e("EditInfoFragment", "userInfoBean\n" + userInfoBean.toString());
         if (TextUtils.isEmpty(userInfoBean.getU_true_name())) {
             Utils.toast(getActivity(), "请输入昵称");
-        } else if (TextUtils.isEmpty(userInfoBean.getU_idcard())) {
-            Utils.toast(getActivity(), "请输入身份证号");
+        } else if (!Utils.isLegalId(userInfoBean.getU_idcard())) {
+            Utils.toast(getActivity(), "身份证号格式不正确");
         } else if (TextUtils.isEmpty(userInfoBean.getUser_area_name())) {
             Utils.toast(getActivity(), "请选择现居地");
         } else if (TextUtils.isEmpty(userInfoBean.getUei_address())) {

@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -53,6 +54,7 @@ import utils.UrlUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
+import workermanage.view.WorkerManageActivity;
 
 public class EmployerManageActivity extends AppCompatActivity implements IEmployerManageActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
@@ -482,5 +484,14 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.alpha = f;
         getWindow().setAttributes(lp);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            startActivity(new Intent(EmployerManageActivity.this, MainActivity.class));
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

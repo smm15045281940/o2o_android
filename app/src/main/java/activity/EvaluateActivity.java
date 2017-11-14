@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import bean.ToComplainBean;
 import bean.ToEvaluateBean;
 import bean.UserInfoBean;
 import complain.view.ComplainActivity;
@@ -45,6 +46,7 @@ import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
+import workermanage.view.WorkerManageActivity;
 
 public class EvaluateActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -69,7 +71,7 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                     case 2:
                         cpd.dismiss();
                         Utils.toast(EvaluateActivity.this, "评论成功");
-                        startActivity(new Intent(EvaluateActivity.this, EmployerManageActivity.class));
+                        startActivity(new Intent(EvaluateActivity.this, WorkerManageActivity.class));
                         break;
                 }
             }
@@ -198,6 +200,7 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
+                    json = Utils.cutJson(json);
                     Utils.log(EvaluateActivity.this, "submitJson\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
@@ -219,8 +222,23 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.tv_evaluate_complain:
-                //TODO
-                startActivity(new Intent(this, ComplainActivity.class));
+                ToComplainBean toComplainBean = new ToComplainBean();
+                if (toEvaluateBean.getTc_type().equals("0")) {
+                    toComplainBean.setAuthorId(UserUtils.readUserData(EvaluateActivity.this).getId());
+                    toComplainBean.setAgainstId(userInfoBean.getU_id());
+                    toComplainBean.setContent("");
+                    toComplainBean.setCtType("2");
+                    toComplainBean.setSkill("");
+                } else if (toEvaluateBean.getTc_type().equals("1")) {
+                    toComplainBean.setAuthorId(UserUtils.readUserData(EvaluateActivity.this).getId());
+                    toComplainBean.setAgainstId(userInfoBean.getU_id());
+                    toComplainBean.setContent("");
+                    toComplainBean.setCtType("1");
+                    toComplainBean.setSkill("");
+                }
+                Intent intent = new Intent(EvaluateActivity.this, ComplainActivity.class);
+                intent.putExtra(IntentConfig.toComplain, toComplainBean);
+                startActivity(intent);
                 break;
             case R.id.iv_evaluate_praise_1:
                 toEvaluateBean.setTc_start("1");

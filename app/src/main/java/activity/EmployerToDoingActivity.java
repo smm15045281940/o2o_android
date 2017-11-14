@@ -2,6 +2,7 @@ package activity;
 
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -327,6 +328,11 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                         int in = innerPos;
                         TInfoOrderBean tInfoOrderBean = tInfoTaskBean.gettInfoWorkerBeanList().get(out).gettInfoOrderBeanList().get(in);
                         Utils.log(EmployerToDoingActivity.this, "tInfoOrderBean\n" + tInfoOrderBean.toString());
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + tInfoOrderBean.getU_mobile()));
+                        if (intent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intent);
+                        }
                         break;
                     }
                 }

@@ -46,9 +46,11 @@ import java.util.List;
 
 import bean.JumpEmployerBean;
 import bean.SkillsBean;
+import bean.ToComplainBean;
 import bean.ToEvaluateBean;
 import bean.ToJumpEmployerBean;
 import bean.ToResignBean;
+import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
 import okhttp3.Call;
@@ -497,6 +499,15 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.rl_jump_employer_complain:
                 Utils.log(JumpEmployerActivity.this, "complain");
+                ToComplainBean toComplainBean = new ToComplainBean();
+                toComplainBean.setAuthorId(UserUtils.readUserData(JumpEmployerActivity.this).getId());
+                toComplainBean.setAgainstId(jumpEmployerBean.getAuthorId());
+                toComplainBean.setCtType("1");
+                toComplainBean.setContent("");
+                toComplainBean.setSkill("");
+                Intent intent = new Intent(JumpEmployerActivity.this, ComplainActivity.class);
+                intent.putExtra(IntentConfig.toComplain, toComplainBean);
+                startActivity(intent);
                 break;
             case R.id.iv_jump_employer_icon:
                 Intent i = new Intent(JumpEmployerActivity.this, PersonDetailActivity.class);
@@ -583,8 +594,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             case EVALUATE:
                 waitEmployerLl.setVisibility(View.GONE);
                 sureDoLl.setVisibility(View.GONE);
-                resignLl.setVisibility(View.VISIBLE);
-                evaluateLl.setVisibility(View.GONE);
+                resignLl.setVisibility(View.GONE);
+                evaluateLl.setVisibility(View.VISIBLE);
                 break;
         }
     }

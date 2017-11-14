@@ -1,6 +1,7 @@
 package talkworker.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
     private View rootView;
     private RelativeLayout returnRl;
     private CProgressDialog cpd;
-    private CImageView iconIv;
+    private CImageView iconIv, phoneIv;
     private ImageView sexIv, statusIv;
     private TextView nameTv, skillTv, infoTv, addressTv;
     private MapView mapView;
@@ -144,6 +145,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         mapView = (MapView) rootView.findViewById(R.id.mv_talk_worker);
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_worker_return);
         iconIv = (CImageView) rootView.findViewById(R.id.iv_talk_worker_icon);
+        phoneIv = (CImageView) rootView.findViewById(R.id.iv_talk_worker_phone);
         sexIv = (ImageView) rootView.findViewById(R.id.iv_talk_worker_sex);
         statusIv = (ImageView) rootView.findViewById(R.id.iv_talk_worker_status);
         nameTv = (TextView) rootView.findViewById(R.id.tv_talk_worker_name);
@@ -168,6 +170,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
         returnRl.setOnClickListener(this);
         iconIv.setOnClickListener(this);
         waitRl.setOnClickListener(this);
+        phoneIv.setOnClickListener(this);
     }
 
     private void loadData() {
@@ -309,10 +312,29 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                     if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
                         Utils.toast(TalkWorkerActivity.this, "请在工作管理中完善个人信息");
                     } else {
-                        talkWorkerPresenter.check(NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id());
+                        String checkUrl = NetConfig.taskBaseUrl +
+                                "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() +
+                                "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id();
+                        Utils.log(TalkWorkerActivity.this, "checkUrl\n" + checkUrl);
+                        talkWorkerPresenter.check(checkUrl);
                     }
                 } else {
                     startActivity(new Intent(TalkWorkerActivity.this, LoginActivity.class));
+                }
+                break;
+            case R.id.iv_talk_worker_phone:
+                switch (SHOW_STATE) {
+                    case WAIT:
+                    case BUSY:
+                        Utils.toast(TalkWorkerActivity.this, "未邀约不能打电话！");
+                        break;
+                    default:
+                        Intent in = new Intent(Intent.ACTION_DIAL);
+                        in.setData(Uri.parse("tel:" + workerBean.getU_mobile()));
+                        if (in.resolveActivity(getPackageManager()) != null) {
+                            startActivity(in);
+                        }
+                        break;
                 }
                 break;
         }
@@ -333,6 +355,7 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
     @Override
     public void checkSuccess(String json) {
         Utils.log(TalkWorkerActivity.this, json);
+        Utils.log(TalkWorkerActivity.this, "DataUtils.getTask(json)\n" + DataUtils.getTaskBeanList(json).toString());
         if (DataUtils.getTaskBeanList(json).size() == 0) {
             handler.sendEmptyMessage(CHECK_NONE);
         } else {

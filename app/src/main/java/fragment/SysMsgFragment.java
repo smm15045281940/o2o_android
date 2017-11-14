@@ -1,6 +1,5 @@
 package fragment;
 
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,7 +7,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,20 +29,18 @@ import java.util.List;
 import adapter.MsgAdapter;
 import bean.MessageBean;
 import config.NetConfig;
-import listener.TimerCallBack;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import service.MsgTimerService;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
 //系统消息
-public class SysMsgFragment extends Fragment implements TimerCallBack, AdapterView.OnItemClickListener {
+public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private View rootView, emptyView, msgPopView;
     private TextView titleTv, timeTv, contentTv;
@@ -75,12 +71,6 @@ public class SysMsgFragment extends Fragment implements TimerCallBack, AdapterVi
         }
     };
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        MsgTimerService.getConnet(getActivity(), this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,9 +86,6 @@ public class SysMsgFragment extends Fragment implements TimerCallBack, AdapterVi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MsgTimerService.stop(getActivity());
-        Intent intent = new Intent(getActivity(), MsgTimerService.class);
-        getActivity().stopService(intent);
         if (handler != null) {
             handler.removeMessages(1);
             handler = null;
@@ -179,11 +166,6 @@ public class SysMsgFragment extends Fragment implements TimerCallBack, AdapterVi
 
     private void notifyData() {
         msgAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void timerCall() {
-        loadData();
     }
 
     private void backgroundAlpha(float f) {

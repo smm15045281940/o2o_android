@@ -1,6 +1,7 @@
 package talkemployer.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -75,8 +76,8 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
     private int clickPosition;
     private ToTalkEmployerBean toTalkEmployerBean;
 
-    private RelativeLayout waitRl, noYourselfRl, talkToyouRl, doingForyouRl;
-    private final int EMPLOYER_WIAT = 1, NO_YOURSELF = 2, TALK_TO_YOU = 3, DOING_FOR_YOU = 4;
+    private RelativeLayout waitRl, noYourselfRl, talkToyouRl, doingForyouRl, overRl;
+    private final int EMPLOYER_WIAT = 1, NO_YOURSELF = 2, TALK_TO_YOU = 3, DOING_FOR_YOU = 4, OVER = 5;
     private int SHOW_STATE;
 
     private Handler handler = new Handler() {
@@ -157,17 +158,34 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_return);
         talkLv = (ListView) rootView.findViewById(R.id.lv_talk_employer);
         cpd = Utils.initProgressDialog(TalkEmployerActivity.this, cpd);
-
         waitRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_wait);
         noYourselfRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_no_yourself);
         talkToyouRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_talk_to_you);
         doingForyouRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_doing_for_you);
+        overRl = (RelativeLayout) rootView.findViewById(R.id.rl_talk_employer_over);
     }
 
     private void initHeadView() {
         headMapView = LayoutInflater.from(TalkEmployerActivity.this).inflate(R.layout.head_talk_employer, null);
         iconIv = (CImageView) headMapView.findViewById(R.id.iv_head_talk_employer_icon);
         phoneIv = (CImageView) headMapView.findViewById(R.id.iv_head_talk_employer_phone);
+        phoneIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (SHOW_STATE) {
+                    case EMPLOYER_WIAT:
+                        Utils.toast(TalkEmployerActivity.this, "未邀约不能打电话！");
+                        break;
+                    default:
+                        Intent in = new Intent(Intent.ACTION_DIAL);
+                        in.setData(Uri.parse("tel:" + talkEmployerBean.getMobile()));
+                        if (in.resolveActivity(getPackageManager()) != null) {
+                            startActivity(in);
+                        }
+                        break;
+                }
+            }
+        });
         sexIv = (ImageView) headMapView.findViewById(R.id.iv_head_talk_employer_sex);
         nameTv = (TextView) headMapView.findViewById(R.id.tv_head_talk_employer_name);
         infoTv = (TextView) headMapView.findViewById(R.id.tv_head_talk_employer_info);
@@ -243,6 +261,13 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
                 }
             } else if (relation == 0) {
                 SHOW_STATE = EMPLOYER_WIAT;
+            }
+        }
+        String t_status = talkEmployerBean.getT_status();
+        if (t_status == null || t_status.equals("null") || TextUtils.isEmpty(t_status)) {
+        } else {
+            if (t_status.equals("3") || t_status.equals("4")) {
+                SHOW_STATE = OVER;
             }
         }
         refreshState();
@@ -359,24 +384,35 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
                 noYourselfRl.setVisibility(View.GONE);
                 talkToyouRl.setVisibility(View.GONE);
                 doingForyouRl.setVisibility(View.GONE);
+                overRl.setVisibility(View.GONE);
                 break;
             case NO_YOURSELF:
                 waitRl.setVisibility(View.GONE);
                 noYourselfRl.setVisibility(View.VISIBLE);
                 talkToyouRl.setVisibility(View.GONE);
                 doingForyouRl.setVisibility(View.GONE);
+                overRl.setVisibility(View.GONE);
                 break;
             case TALK_TO_YOU:
                 waitRl.setVisibility(View.GONE);
                 noYourselfRl.setVisibility(View.GONE);
                 talkToyouRl.setVisibility(View.VISIBLE);
                 doingForyouRl.setVisibility(View.GONE);
+                overRl.setVisibility(View.GONE);
                 break;
             case DOING_FOR_YOU:
                 waitRl.setVisibility(View.GONE);
                 noYourselfRl.setVisibility(View.GONE);
                 talkToyouRl.setVisibility(View.GONE);
                 doingForyouRl.setVisibility(View.VISIBLE);
+                overRl.setVisibility(View.GONE);
+                break;
+            case OVER:
+                waitRl.setVisibility(View.GONE);
+                noYourselfRl.setVisibility(View.GONE);
+                talkToyouRl.setVisibility(View.GONE);
+                doingForyouRl.setVisibility(View.VISIBLE);
+                overRl.setVisibility(View.VISIBLE);
                 break;
         }
     }

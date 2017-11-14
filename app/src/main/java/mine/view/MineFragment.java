@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import activity.AgreementActivity;
 import collect.view.CollectActivity;
 import config.IntentConfig;
 import config.NetConfig;
@@ -47,7 +48,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import passwordset.view.SetPwdActivity;
 import redpacket.view.RedPacketActivity;
-import serviceclause.view.ServiceTermActivity;
 import set.view.SetActivity;
 import bean.UserInfoBean;
 import usermanage.view.UserManageActivity;
@@ -343,7 +343,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                     }
                     break;
                 case R.id.ll_mine_service_term:
-                    startActivity(new Intent(getActivity(), ServiceTermActivity.class));
+                    startActivity(new Intent(getActivity(), AgreementActivity.class));
                     break;
                 case R.id.ll_mine_setting:
                     startActivity(new Intent(getActivity(), SetActivity.class));

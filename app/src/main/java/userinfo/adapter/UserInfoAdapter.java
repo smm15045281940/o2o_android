@@ -89,9 +89,9 @@ public class UserInfoAdapter extends BaseAdapter {
                     case 2:
                         holder0.titleTv.setText("身份证号");
                         String idCard = userInfoBean.getU_idcard();
-//                        if (!TextUtils.isEmpty(idCard)) {
-//                            idCard = idCard.substring(0, 3) + "***********" + idCard.substring(13, idCard.length());
-//                        }
+                        if (!TextUtils.isEmpty(idCard)) {
+                            idCard = idCard.substring(0, 6) + "********" + idCard.substring(14, idCard.length());
+                        }
                         holder0.contentTv.setText(idCard);
                         break;
                     case 3:

@@ -1,6 +1,5 @@
 package fragment;
 
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,19 +29,17 @@ import java.util.List;
 import adapter.MsgAdapter;
 import bean.MessageBean;
 import config.NetConfig;
-import listener.TimerCallBack;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import service.TaskTimerService;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
-public class JobOfferFragment extends Fragment implements TimerCallBack, AdapterView.OnItemClickListener {
+public class JobOfferFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private View rootView, emptyView, msgPopView;
     private TextView titleTv, timeTv, contentTv;
@@ -75,12 +72,6 @@ public class JobOfferFragment extends Fragment implements TimerCallBack, Adapter
         }
     };
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        TaskTimerService.getConnet(getActivity(), this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,9 +87,6 @@ public class JobOfferFragment extends Fragment implements TimerCallBack, Adapter
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TaskTimerService.stop(getActivity());
-        Intent intent = new Intent(getActivity(), TaskTimerService.class);
-        getActivity().stopService(intent);
         if (handler != null) {
             handler.removeMessages(1);
             handler = null;
@@ -180,11 +168,6 @@ public class JobOfferFragment extends Fragment implements TimerCallBack, Adapter
 
     private void notifyData() {
         msgAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void timerCall() {
-        loadData();
     }
 
     @Override

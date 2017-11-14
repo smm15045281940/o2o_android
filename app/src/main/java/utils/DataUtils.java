@@ -117,6 +117,7 @@ public class DataUtils {
                             skillsBean.setS_info(o.optString("s_info"));
                             skillsBean.setS_desc(o.optString("s_desc"));
                             skillsBean.setS_status(o.optString("s_status"));
+                            skillsBean.setImg(o.optString("img"));
                             resultList.add(skillsBean);
                         }
                     }
@@ -821,6 +822,7 @@ public class DataUtils {
                 talkEmployerBean.setAuthorId(dataObj.optString("t_author"));
                 talkEmployerBean.setRelation(dataObj.optInt("relation"));
                 talkEmployerBean.setRelationType(dataObj.optInt("relation_type"));
+                talkEmployerBean.setT_status(dataObj.optString("t_status"));
                 JSONArray workerArr = dataObj.optJSONArray("t_workers");
                 if (workerArr != null) {
                     List<TalkEmployerWorkerBean> talkEmployerWorkerBeanList = new ArrayList<>();
@@ -1039,6 +1041,7 @@ public class DataUtils {
                                 payWayBean.setP_last_editor(o.optString("p_last_editor"));
                                 payWayBean.setP_last_edit_time(o.optString("p_last_edit_time"));
                                 payWayBean.setP_default(o.optString("p_default"));
+                                payWayBean.setImg(o.optString("img"));
                                 payWayBeanList.add(payWayBean);
                             }
                         }

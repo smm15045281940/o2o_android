@@ -17,17 +17,16 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import config.AppConfig;
 import utils.Utils;
+import wallet.view.WalletActivity;
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private IWXAPI api;
-    private TextView resultTv;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wx_pay_result);
-        resultTv = (TextView) findViewById(R.id.tv_result);
         api = WXAPIFactory.createWXAPI(this, AppConfig.APP_ID);
         api.handleIntent(getIntent(), this);
     }
@@ -49,24 +48,16 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         Utils.log(WXPayEntryActivity.this, "onPayFinish,errStr\n" + resp.errStr);
         switch (resp.errCode) {
             case 0:
-                Utils.toast(WXPayEntryActivity.this, "成功");
-                resultTv.setText("成功");
+                Utils.toast(WXPayEntryActivity.this, "支付成功");
+                startActivity(new Intent(WXPayEntryActivity.this, WalletActivity.class));
                 break;
             case -1:
-                Utils.toast(WXPayEntryActivity.this, "错误");
-                resultTv.setText("错误");
+                Utils.toast(WXPayEntryActivity.this, "支付失败");
+                startActivity(new Intent(WXPayEntryActivity.this, WalletActivity.class));
                 break;
             case -2:
-                Utils.toast(WXPayEntryActivity.this, "用户取消");
-                resultTv.setText("用户取消");
+                startActivity(new Intent(WXPayEntryActivity.this, WalletActivity.class));
                 break;
         }
-//		Log.e(T, "onPayFinish, errCode = " + resp.errCode);
-//		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//			builder.setTitle(R.string.app_tip);
-//			builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
-//			builder.show();
-//		}
     }
 }

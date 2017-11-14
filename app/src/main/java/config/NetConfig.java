@@ -45,7 +45,7 @@ public interface NetConfig {
     //时间
     String timeUrl = "http://api.gangjianwang.com/Tools/index";
     //文章
-    String articleUrl = "http://api.gangjianwang.com/Articles/articlesInfo?a_id=13";
+    String articleUrl = "http://api.gangjianwang.com/Articles/articlesInfo?ac_id=29";
     //站内信
     String msgListUrl = "http://api.gangjianwang.com/Users/msgList";
     //站内信修改

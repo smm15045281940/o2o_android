@@ -63,8 +63,6 @@ public class TInfoTaskAdapter extends BaseAdapter implements TInfoClickHelp {
         TInfoWorkerBean tInfoWorkerBean = tInfoTaskBean.gettInfoWorkerBeanList().get(position);
         if (tInfoWorkerBean != null) {
             holder.skillTv.setText(tInfoWorkerBean.getSkill());
-            Log.e("TInfoTaskAdapter", tInfoWorkerBean.getTew_start_time());
-            Log.e("TInfoTaskAdapter", tInfoWorkerBean.getTew_end_time());
             holder.timeTv.setText(DataUtils.times(tInfoWorkerBean.getTew_start_time()) + "——" + DataUtils.times(tInfoWorkerBean.getTew_end_time()));
             boolean pay = true;
             for (int i = 0; i < tInfoWorkerBean.gettInfoOrderBeanList().size(); i++) {

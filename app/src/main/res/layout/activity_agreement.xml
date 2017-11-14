@@ -17,10 +17,6 @@
 
         </RelativeLayout>
 
-        <TextView
-            style="@style/tv_top_title"
-            android:text="用户协议" />
-
     </RelativeLayout>
 
     <View style="@style/v_split" />

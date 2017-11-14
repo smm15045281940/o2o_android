@@ -1,5 +1,6 @@
 package collectworker.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,16 +20,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import activity.WorkerActivity;
 import adapter.CollectWorkerAdapter;
 import bean.CollectWorkerBean;
+import bean.ToTalkWorkerBean;
 import bean.WorkerBean;
 import collectworker.presenter.CollectWorkerPresenter;
 import collectworker.presenter.ICollectWorkerPresenter;
+import config.IntentConfig;
 import config.NetConfig;
 import config.VarConfig;
 import listener.IdPosClickHelp;
 import refreshload.PullToRefreshLayout;
 import refreshload.PullableListView;
+import talkworker.view.TalkWorkerActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;

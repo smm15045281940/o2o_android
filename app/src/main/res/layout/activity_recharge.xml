@@ -88,7 +88,7 @@
                     android:inputType="number|numberDecimal"
                     android:maxLines="1"
                     android:textCursorDrawable="@null"
-                    android:textSize="@dimen/y20" />
+                    android:textSize="@dimen/y16" />
 
             </LinearLayout>
 

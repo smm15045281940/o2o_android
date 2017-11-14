@@ -50,14 +50,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import publishjob.view.PublishJobActivity;
 import activity.SkillsActivity;
-import service.TimerService;
 import task.view.TaskActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
-public class FirstPageFragment extends Fragment implements IFirstPageFragment, View.OnClickListener, TimerCallBack {
+public class FirstPageFragment extends Fragment implements IFirstPageFragment, View.OnClickListener {
 
     private View rootView;
     private RelativeLayout cityRl, msgRl, countRl;
@@ -130,7 +129,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
         initView();
         initData();
         setListener();
-        TimerService.getConnet(getActivity(), this);
         checkLocPermission();
         return rootView;
     }
@@ -138,14 +136,27 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     @Override
     public void onDestroy() {
         super.onDestroy();
-        TimerService.stop(getActivity());
-        Intent intent = new Intent(getActivity(), TimerService.class);
-        getActivity().stopService(intent);
         if (firstpagePresenter != null) {
             firstpagePresenter.destroy();
             firstpagePresenter = null;
         }
         locationClient.unRegisterLocationListener(bdLocationListener);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            Utils.log(getActivity(), "!hidden=" + "加载小红点");
+            loadCount();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Utils.log(getActivity(), "resume" + "加载小红点");
+        loadCount();
     }
 
     private void initView() {
@@ -340,12 +351,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     @Override
     public void changePositionFailure(String failure) {
         Log.e("FirstPageFragment", failure);
-    }
-
-    @Override
-    public void timerCall() {
-        Log.e("FirstPage", "加载数据");
-        loadCount();
     }
 
     private void loadCount() {

@@ -3,6 +3,7 @@ package activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -288,6 +289,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         returnRl.setOnClickListener(this);
         complainRl.setOnClickListener(this);
         iconIv.setOnClickListener(this);
+        phoneIv.setOnClickListener(this);
         cancelWorkerTv.setOnClickListener(this);
         cancelWorker2Tv.setOnClickListener(this);
         surePriceTv.setOnClickListener(this);
@@ -337,6 +339,13 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 if (!fireWorkerPop.isShowing()) {
                     backgroundAlpha(0.5f);
                     fireWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
+                break;
+            case R.id.iv_jump_worker_phone:
+                Intent in = new Intent(Intent.ACTION_DIAL);
+                in.setData(Uri.parse("tel:" + workerBean.getU_mobile()));
+                if (in.resolveActivity(getPackageManager()) != null) {
+                    startActivity(in);
                 }
                 break;
         }

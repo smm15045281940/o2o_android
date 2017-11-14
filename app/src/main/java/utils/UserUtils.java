@@ -102,6 +102,27 @@ public class UserUtils {
         return false;
     }
 
+    //第一次使用
+    public static boolean isFirstUse(Context context) {
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            if (TextUtils.isEmpty(sp.getString("use", null))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //保存使用记录
+    public static void saveUse(Context context) {
+        if (context != null) {
+            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
+            SharedPreferences.Editor et = sp.edit();
+            et.putString("use", "1");
+            et.commit();
+        }
+    }
+
     //清除用户数据
     public static void clearUserData(Context context) {
         SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);

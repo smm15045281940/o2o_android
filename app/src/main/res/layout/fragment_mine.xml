@@ -295,9 +295,13 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout style="@style/rl_main" />
+                    <RelativeLayout
+                        style="@style/rl_main"
+                        android:visibility="invisible" />
 
-                    <RelativeLayout style="@style/rl_main" />
+                    <RelativeLayout
+                        style="@style/rl_main"
+                        android:visibility="invisible" />
 
                 </LinearLayout>
 

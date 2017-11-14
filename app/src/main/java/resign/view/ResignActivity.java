@@ -54,7 +54,7 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
     private OkHttpClient okHttpClient;
     private ToResignBean toResignBean;
     private UserInfoBean userInfoBean;
-    private int praiseCount = 1;
+    private int praiseCount = 0;
 
     private Handler handler = new Handler() {
         @Override
@@ -123,6 +123,7 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
     private void loadData() {
         cpd.show();
         String infoUrl = NetConfig.userInfoUrl + toResignBean.getAuthorId();
+        Utils.log(ResignActivity.this, "infoUrl\n" + infoUrl);
         Request infoRequest = new Request.Builder().url(infoUrl).get().build();
         okHttpClient.newCall(infoRequest).enqueue(new Callback() {
             @Override
@@ -185,6 +186,11 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
 
     private void refreshPraise() {
         switch (praiseCount) {
+            case 0:
+                praise1Iv.setImageResource(R.mipmap.praise_no);
+                praise2Iv.setImageResource(R.mipmap.praise_no);
+                praise3Iv.setImageResource(R.mipmap.praise_no);
+                break;
             case 1:
                 praise1Iv.setImageResource(R.mipmap.praise_yes);
                 praise2Iv.setImageResource(R.mipmap.praise_no);

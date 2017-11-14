@@ -51,7 +51,7 @@
 
             <ImageView
                 style="@style/iv_return"
-                android:src="@mipmap/message" />
+                android:src="@mipmap/message_noti" />
 
             <RelativeLayout
                 android:id="@+id/rl_fragment_first_page_count"

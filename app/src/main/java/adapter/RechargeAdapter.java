@@ -1,6 +1,7 @@
 package adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gjzg.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -32,8 +34,18 @@ public class RechargeAdapter extends CommonAdapter<PayWayBean> {
         }
         PayWayBean payWayBean = list.get(position);
         if (payWayBean != null) {
-            holder.nameTv.setText(payWayBean.getP_name());
-            if (payWayBean.isCheck()) {
+            String img = payWayBean.getImg();
+            if (img == null || img.equals("null") || TextUtils.isEmpty(img)) {
+            } else {
+                Picasso.with(context).load(img).into(holder.iconIv);
+            }
+            String name = payWayBean.getP_name();
+            if (name == null || name.equals("null") || TextUtils.isEmpty(name)) {
+            } else {
+                holder.nameTv.setText(name);
+            }
+            boolean check = payWayBean.isCheck();
+            if (check) {
                 holder.checkIv.setImageResource(R.mipmap.pay_choosed);
             } else {
                 holder.checkIv.setImageResource(R.mipmap.point_gray);

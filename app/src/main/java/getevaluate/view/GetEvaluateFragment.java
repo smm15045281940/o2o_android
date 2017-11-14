@@ -26,6 +26,7 @@ import refreshload.PullableListView;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
+import view.CProgressDialog;
 
 public class GetEvaluateFragment extends Fragment implements IGetEvaluateFragment, PullToRefreshLayout.OnRefreshListener {
 
@@ -33,12 +34,16 @@ public class GetEvaluateFragment extends Fragment implements IGetEvaluateFragmen
     private TextView countTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
+    private CProgressDialog cProgressDialog;
     private List<EvaluateBean> evaluateBeanList = new ArrayList<>();
     private EvaluateAdapter evaluateAdapter;
     private IGetEvaluatePresenter getEvaluatePresenter;
 
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
+
+    private final int FIRST = 1, REFRESH = 2;
+    private int STATE = FIRST;
 
     private Handler handler = new Handler() {
         @Override
@@ -86,6 +91,7 @@ public class GetEvaluateFragment extends Fragment implements IGetEvaluateFragmen
     private void initRootView() {
         ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
         plv = (PullableListView) rootView.findViewById(R.id.plv);
+        cProgressDialog = Utils.initProgressDialog(getActivity(), cProgressDialog);
     }
 
     private void initEmptyView() {
@@ -108,16 +114,30 @@ public class GetEvaluateFragment extends Fragment implements IGetEvaluateFragmen
     }
 
     private void loadData() {
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.show();
+                break;
+        }
         getEvaluatePresenter.load(NetConfig.otherEvaluateUrl + "?tc_u_id=" + UserUtils.readUserData(getActivity()).getId());
     }
 
     private void notifyData() {
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.dismiss();
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                break;
+        }
         countTv.setText("我收到的评价（" + evaluateBeanList.size() + "）");
         evaluateAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void loadSuccess(String json) {
+        evaluateBeanList.clear();
         evaluateBeanList.addAll(DataUtils.getEvaluateBeanList(json));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
@@ -129,7 +149,8 @@ public class GetEvaluateFragment extends Fragment implements IGetEvaluateFragmen
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideHeadView();
+        STATE = REFRESH;
+        loadData();
     }
 
     @Override

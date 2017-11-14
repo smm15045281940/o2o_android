@@ -121,7 +121,7 @@ public class AgreementActivity extends AppCompatActivity implements View.OnClick
                             } else {
                                 isList = false;
                             }
-
+                            handler.sendEmptyMessage(1);
                         }
                     }
                 }
@@ -140,6 +140,7 @@ public class AgreementActivity extends AppCompatActivity implements View.OnClick
             agreementLv.setVisibility(View.GONE);
             if (articleBeanList.size() != 0) {
                 String desc = articleBeanList.get(0).getA_desc();
+                Utils.log(AgreementActivity.this, "desc\n" + desc);
                 if (desc == null || desc.equals("null") || TextUtils.isEmpty(desc)) {
                 } else {
                     agreementDescTv.setText(desc);

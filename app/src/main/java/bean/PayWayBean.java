@@ -12,7 +12,16 @@ public class PayWayBean {
     private String p_last_editor;
     private String p_last_edit_time;
     private String p_default;
+    private String img;
     private boolean check;
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
 
     public String getP_id() {
         return p_id;

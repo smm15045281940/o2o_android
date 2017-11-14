@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -179,7 +180,9 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         if (STATE == FIRST) {
             cpd.show();
         }
-        workerManagePresenter.load(Utils.getWorkerManageUrl(WorkerManageActivity.this, curState));
+        String workerManageUrl = Utils.getWorkerManageUrl(WorkerManageActivity.this, curState);
+        Utils.log(WorkerManageActivity.this, "workerManageUrl\n" + workerManageUrl);
+        workerManagePresenter.load(workerManageUrl);
     }
 
     private void notifyData() {
@@ -314,15 +317,11 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         clickPosition = pos;
         switch (id) {
             case R.id.ll_item_worker_manage:
-                if (workerManageBeanList.get(clickPosition).getO_status().equals("0")) {
-                    Intent talkIntent = new Intent(WorkerManageActivity.this, JumpEmployerActivity.class);
-                    ToJumpEmployerBean toJumpEmployerBean = new ToJumpEmployerBean();
-                    toJumpEmployerBean.setTaskId(workerManageBeanList.get(clickPosition).getTaskId());
-                    talkIntent.putExtra(IntentConfig.toJumpEmployer, toJumpEmployerBean);
-                    startActivity(talkIntent);
-                } else if (workerManageBeanList.get(clickPosition).getO_status().equals("1")) {
-                    Utils.log(WorkerManageActivity.this, "over");
-                }
+                Intent talkIntent = new Intent(WorkerManageActivity.this, JumpEmployerActivity.class);
+                ToJumpEmployerBean toJumpEmployerBean = new ToJumpEmployerBean();
+                toJumpEmployerBean.setTaskId(workerManageBeanList.get(clickPosition).getTaskId());
+                talkIntent.putExtra(IntentConfig.toJumpEmployer, toJumpEmployerBean);
+                startActivity(talkIntent);
                 break;
             case R.id.tv_item_worker_manage_delete:
                 delete();
@@ -349,5 +348,14 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            startActivity(new Intent(WorkerManageActivity.this, MainActivity.class));
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -19,6 +19,7 @@ import accountdetail.view.AccountDetailActivity;
 import activity.RechargeActivity;
 import bean.WalletBean;
 import config.NetConfig;
+import main.view.MainActivity;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
@@ -123,7 +124,7 @@ public class WalletActivity extends AppCompatActivity implements IWalletActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_wallet_return:
-                finish();
+                startActivity(new Intent(WalletActivity.this, MainActivity.class));
                 break;
             case R.id.rl_wallet_detail:
                 startActivity(new Intent(this, AccountDetailActivity.class));

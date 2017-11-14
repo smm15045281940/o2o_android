@@ -38,6 +38,26 @@ import view.CProgressDialog;
 //工具类
 public class Utils {
 
+    /**Intent in = new Intent(Intent.ACTION_DIAL);
+     in.setData(Uri.parse("tel:" + "?"));
+     if (in.resolveActivity(getPackageManager()) != null) {
+     startActivity(in);}
+     */
+
+    /**
+     * 验证输入的身份证号是否合法
+     */
+    public static boolean isLegalId(String id) {
+        if (id == null || id.equals("null") || TextUtils.isEmpty(id)) {
+            return false;
+        }
+        if (id.matches("(^\\d{15}$)|(^\\d{17}([0-9]|X)$)")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static String Bitmap2StrByBase64(Bitmap bit) {
         if (bit != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();

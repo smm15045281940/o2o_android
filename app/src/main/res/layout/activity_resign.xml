@@ -167,7 +167,7 @@
                 android:layout_width="@dimen/y25"
                 android:layout_height="@dimen/y25"
                 android:scaleType="fitXY"
-                android:src="@mipmap/praise_yes" />
+                android:src="@mipmap/praise_no" />
 
             <ImageView
                 android:id="@+id/iv_resign_praise_2"

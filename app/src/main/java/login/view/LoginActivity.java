@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
+import activity.AgreementActivity;
 import config.ColorConfig;
 import config.VarConfig;
 import login.bean.UserBean;
@@ -99,6 +100,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity, 
                 break;
             case R.id.tv_login_agreement:
                 Utils.log(LoginActivity.this, "agreement");
+                startActivity(new Intent(LoginActivity.this, AgreementActivity.class));
                 break;
         }
     }

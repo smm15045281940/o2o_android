@@ -9,7 +9,16 @@ public class SkillsBean implements Serializable {
     private String s_info;
     private String s_desc;
     private String s_status;
+    private String img;
     private boolean check;
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
 
     public boolean isCheck() {
         return check;
@@ -67,6 +76,7 @@ public class SkillsBean implements Serializable {
                 ", s_info='" + s_info + '\'' +
                 ", s_desc='" + s_desc + '\'' +
                 ", s_status='" + s_status + '\'' +
+                ", img='" + img + '\'' +
                 ", check=" + check +
                 '}';
     }
