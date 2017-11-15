@@ -404,15 +404,13 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void map() {
-//        mapView.showScaleControl(false);
-//        mapView.showZoomControls(false);
         BaiduMap baiduMap = mapView.getMap();
         UiSettings settings = baiduMap.getUiSettings();
         settings.setAllGesturesEnabled(false);
         settings.setOverlookingGesturesEnabled(false);
         settings.setZoomGesturesEnabled(false);
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.point_blue);
-        LatLng point = new LatLng(Double.parseDouble("0"), Double.parseDouble("0"));
+        LatLng point = new LatLng(Double.parseDouble(workerBean.getUcp_posit_y()), Double.parseDouble(workerBean.getUcp_posit_x()));
         OverlayOptions overlayOptions = new MarkerOptions().position(point).icon(bitmap);
         MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(point, Float.parseFloat("15"));
         baiduMap.animateMapStatus(mapStatusUpdate);

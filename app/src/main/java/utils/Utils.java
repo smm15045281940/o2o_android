@@ -292,6 +292,7 @@ public class Utils {
      * private void backgroundAlpha(float f) {
      WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
      layoutParams.alpha = f;
+     getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
      getWindow().setAttributes(layoutParams);}
      * */
 

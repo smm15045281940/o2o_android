@@ -2,6 +2,7 @@ package editinfo.adapter;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gjzg.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -57,7 +59,13 @@ public class AddSkillAdapter extends BaseAdapter {
         }
         SkillsBean skillsBean = list.get(position);
         if (skillsBean != null) {
+            String icon = skillsBean.getImg();
+            if (icon == null || icon.equals("null") || TextUtils.isEmpty(icon)) {
+            } else {
+                Picasso.with(context).load(icon).into(holder.iconIv);
+            }
             holder.nameTv.setText(skillsBean.getS_name());
+            holder.checkCb.setChecked(skillsBean.isCheck());
         }
         final int checkId = holder.checkCb.getId();
         final int p = position;

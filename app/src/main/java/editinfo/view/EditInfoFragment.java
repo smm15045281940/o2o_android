@@ -149,6 +149,10 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
                     }
                     changeSkill(skillsBeanList);
                     editInfoAdapter.notifyDataSetChanged();
+                    for (int i = 0; i < selectSkillList.size(); i++) {
+                        selectSkillList.get(i).setCheck(false);
+                    }
+                    addSkillAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -333,6 +337,7 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     private void backgroundAlpha(float f) {
         WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
         layoutParams.alpha = f;
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getActivity().getWindow().setAttributes(layoutParams);
     }
 

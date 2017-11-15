@@ -277,6 +277,7 @@
             android:name="activity.GuideActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+        <activity android:name="activity.NeiceActivity"></activity>
     </application>
 
 </manifest>

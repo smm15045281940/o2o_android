@@ -244,6 +244,7 @@ public class JobOfferFragment extends Fragment implements AdapterView.OnItemClic
     private void backgroundAlpha(float f) {
         WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
         layoutParams.alpha = f;
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getActivity().getWindow().setAttributes(layoutParams);
     }
 }

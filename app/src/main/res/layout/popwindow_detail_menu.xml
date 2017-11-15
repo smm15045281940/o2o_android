@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sl_detail_menu"
-            android:padding="@dimen/y10">
+            android:padding="@dimen/y5">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sl_detail_menu"
-            android:padding="@dimen/y10">
+            android:padding="@dimen/y5">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sl_detail_menu"
-            android:padding="@dimen/y10">
+            android:padding="@dimen/y5">
 
             <TextView
                 android:layout_width="wrap_content"

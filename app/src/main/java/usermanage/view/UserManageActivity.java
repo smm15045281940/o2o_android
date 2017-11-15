@@ -167,6 +167,7 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
     private void backgroundAlpha(float f) {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.alpha = f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(layoutParams);
     }
 

@@ -112,7 +112,7 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
                 break;
             case R.id.rl_set_cache_clear:
                 if (!cachePop.isShowing()) {
-                    ((TextView) cachePopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("缓存大小为" + lruJsonCache.getCacheSize() + "，是否清理缓存？");
+                    ((TextView) cachePopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("是否清理缓存？");
                     cachePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                     backgroundAlpha(0.5f);
                 }
@@ -133,6 +133,7 @@ public class SetActivity extends AppCompatActivity implements ISetActivity, View
     private void backgroundAlpha(float f) {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.alpha = f;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(layoutParams);
     }
 
