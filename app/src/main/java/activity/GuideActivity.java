@@ -62,12 +62,15 @@ public class GuideActivity extends AppCompatActivity {
                         Utils.toast(GuideActivity.this, "密码不正确");
                         break;
                     case 1:
-                        UserUtils.saveNeicePwd(GuideActivity.this);
                         correct = true;
-                        pop.dismiss();
+                        if (pop.isShowing()) {
+                            pop.dismiss();
+                        }
                         break;
                     case 2:
-                        pop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                        if (!pop.isShowing()) {
+                            pop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                        }
                         break;
                 }
             }
@@ -82,8 +85,13 @@ public class GuideActivity extends AppCompatActivity {
         setContentView(rootView);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         initView();
-        initData();
         setListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadData();
     }
 
     @Override
@@ -92,6 +100,7 @@ public class GuideActivity extends AppCompatActivity {
         if (handler != null) {
             handler.removeMessages(0);
             handler.removeMessages(1);
+            handler.removeMessages(2);
             handler = null;
         }
     }
@@ -126,19 +135,13 @@ public class GuideActivity extends AppCompatActivity {
             @Override
             public void onDismiss() {
                 if (correct) {
-
+                    editText.setText("");
                 } else {
+                    editText.setText("");
                     finish();
                 }
             }
         });
-    }
-
-    private void initData() {
-        if (UserUtils.isPassNeice(GuideActivity.this)) {
-        } else {
-            handler.sendEmptyMessageDelayed(2, 100);
-        }
     }
 
     private void setListener() {
@@ -186,6 +189,39 @@ public class GuideActivity extends AppCompatActivity {
                             }
                         }
                     });
+                }
+            }
+        });
+    }
+
+    private void loadData() {
+        String url = NetConfig.lockUrl;
+        Request request = new Request.Builder().url(url).get().build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Utils.log(GuideActivity.this, "json\n" + json);
+                    try {
+                        JSONObject beanObj = new JSONObject(json);
+                        if (beanObj.optInt("code") == 200) {
+                            int data = beanObj.optInt("data");
+                            switch (data) {
+                                case 2:
+                                    handler.sendEmptyMessageDelayed(2, 100);
+                                    break;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

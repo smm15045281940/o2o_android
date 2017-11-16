@@ -123,27 +123,6 @@ public class UserUtils {
         }
     }
 
-    //保存内测密码
-    public static void saveNeicePwd(Context context) {
-        if (context != null) {
-            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
-            SharedPreferences.Editor et = sp.edit();
-            et.putString("neice", "1");
-            et.commit();
-        }
-    }
-
-    //判断内测
-    public static boolean isPassNeice(Context context) {
-        if (context != null) {
-            SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);
-            if (!TextUtils.isEmpty(sp.getString("neice", null))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     //清除用户数据
     public static void clearUserData(Context context) {
         SharedPreferences sp = context.getSharedPreferences("userData", Context.MODE_PRIVATE);

@@ -46,6 +46,7 @@ import com.gjzg.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -57,7 +58,9 @@ import java.util.UUID;
 
 import adapter.ComplainImageAdapter;
 import adapter.ComplainIssueAdapter;
+import adapter.PhotoAdapter;
 import bean.ComplainIssueBean;
+import bean.PhotoBean;
 import bean.ToComplainBean;
 import complain.presenter.ComplainPresenter;
 import complain.presenter.IComplainPresenter;
@@ -66,6 +69,7 @@ import config.IntentConfig;
 import config.NetConfig;
 import config.PathConfig;
 import config.PermissionConfig;
+import listener.IdPosClickHelp;
 import pic.view.PicActivity;
 import bean.UserInfoBean;
 import utils.DataUtils;
@@ -111,13 +115,18 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     private TextView nameTv, skillNameTv, evaluateTv;
     private EditText contentEt;
 
+    private static final int REQUEST_WRITE = 0;//写
     private static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
-    private static final String PHOTO_FILE_NAME = "temp_photo.jpeg";
+    private static final String PHOTO_FILE_NAME = "temp_photo";
     private File tempFile;
+    private String path;
+    private Uri uri;
     private static final String SD_PATH = "/sdcard/dskqxt/pic/";
     private static final String IN_PATH = "/dskqxt/pic/";
+    private List<PhotoBean> photoBeanList = new ArrayList<>();
+    private PhotoAdapter photoAdapter;
 
     private Handler handler = new Handler() {
         @Override
@@ -125,6 +134,10 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             super.handleMessage(msg);
             if (msg != null) {
                 switch (msg.what) {
+                    case 0:
+                        photoAdapter.notifyDataSetChanged();
+                        Utils.setGridViewHeight(gv, 3);
+                        break;
                     case USER_INFO_SUCCESS:
                         complainPresenter.userIssue(NetConfig.complainTypeUrl + "?ct_type=" + toComplainBean.getCtType());
                         break;
@@ -153,6 +166,11 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         rootView = LayoutInflater.from(this).inflate(R.layout.activity_complain, null);
         setContentView(rootView);
+        if (Build.VERSION.SDK_INT > 22) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE);
+            }
+        }
         initView();
         initData();
         setData();
@@ -224,18 +242,18 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             @Override
             public void onClick(View v) {
                 pop.dismiss();
-//                if (Utils.hasSdcard()) {
-//                    requestPhoto();
-//                } else {
-//                    Utils.toast(ComplainActivity.this, "Sd卡不可用");
-//                }
+                if (Utils.hasSdcard()) {
+                    requestTakePhoto();
+                } else {
+                    Utils.toast(ComplainActivity.this, "Sd卡不可用");
+                }
             }
         });
         mapTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pop.dismiss();
-//                startActivityForResult(new Intent(ComplainActivity.this, PicActivity.class), IntentConfig.PIC_REQUEST);
+                requestGallery();
             }
         });
         cancelTv.setOnClickListener(new View.OnClickListener() {
@@ -253,10 +271,11 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
         adapter = new ComplainImageAdapter(this, list);
         upLoadImageList = new ArrayList<>();
         complainPresenter = new ComplainPresenter(this);
+        photoAdapter = new PhotoAdapter(ComplainActivity.this, photoBeanList);
     }
 
     private void setData() {
-        gv.setAdapter(adapter);
+        gv.setAdapter(photoAdapter);
     }
 
     private void setListener() {
@@ -332,6 +351,8 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     private void submitData() {
         if (TextUtils.isEmpty(toComplainBean.getCtId())) {
             Utils.toast(ComplainActivity.this, "请选择投诉问题");
+        } else if (TextUtils.isEmpty(toComplainBean.getContent())) {
+            Utils.toast(ComplainActivity.this, "请详细描述您要投诉的问题");
         } else {
             cpd.show();
             complainPresenter.submit(NetConfig.complainSubmitUrl, toComplainBean);
@@ -344,50 +365,44 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
         getWindow().setAttributes(lp);
     }
 
-    private void requestPhoto() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int p = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-            if (p != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PermissionConfig.CAMERA);
+    private void requestTakePhoto() {
+        if (hasSdcard()) {
+            if (Build.VERSION.SDK_INT > 22) {
+                int p = ContextCompat.checkSelfPermission(ComplainActivity.this, Manifest.permission.CAMERA);
+                if (p != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ComplainActivity.this, new String[]{Manifest.permission.CAMERA}, PHOTO_REQUEST_CAREMA);
+                } else {
+                    takePhoto();
+                }
             } else {
                 takePhoto();
             }
         } else {
-            takePhoto();
+            Utils.toast(ComplainActivity.this, "没有Sd卡！");
         }
     }
 
     private void takePhoto() {
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        if (hasSdcard()) {
-            tempFile = new File(Environment.getExternalStorageDirectory(), PHOTO_FILE_NAME);
-            // 从文件中创建uri
-            Uri uri = null;
-            if (Build.VERSION.SDK_INT > 23) {
-                uri = FileProvider.getUriForFile(ComplainActivity.this, AppConfig.APP_ID + ".fileprovider", tempFile);
-            } else {
-                uri = Uri.fromFile(tempFile);
-            }
+        Utils.log(this, "调用照相机");
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        tempFile = new File(Environment.getExternalStorageDirectory() + File.separator + "temp", PHOTO_FILE_NAME);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = FileProvider.getUriForFile(this, AppConfig.APPLICATION_ID + ".fileProvider", tempFile);
+        } else {
+            uri = Uri.fromFile(tempFile);
+        }
+        if (uri != null) {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             intent.putExtra("return-data", true);
             intent.putExtra("crop", true);
-        }
-        try {
             startActivityForResult(intent, PHOTO_REQUEST_CAREMA);
-        } catch (SecurityException e) {
-
         }
+    }
 
-
-//        Intent cI = new Intent();
-//        cI.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_hhmmss");
-//        String dateStr = sdf.format(new Date());
-//        picPath = PathConfig.cameraPath + "IMG_" + dateStr + ".jpg";
-//        File picFile = new File(picPath);
-//        Uri picUri = Uri.fromFile(picFile);
-//        cI.putExtra(MediaStore.EXTRA_OUTPUT, picUri);
-//        startActivityForResult(cI, PermissionConfig.CAMERA);
+    private void requestGallery() {
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, PHOTO_REQUEST_GALLERY);
     }
 
     private boolean hasSdcard() {
@@ -416,7 +431,7 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
                 });
                 break;
             case R.id.rl_complain_add_image:
-                if (list.size() < 5) {
+                if (photoBeanList.size() < 5) {
                     if (pop.isShowing()) {
                         pop.dismiss();
                     } else {
@@ -446,11 +461,17 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case PermissionConfig.CAMERA:
+            case REQUEST_WRITE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    Utils.log(ComplainActivity.this, "没有读写权限！");
+                }
+                break;
+            case PHOTO_REQUEST_CAREMA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     takePhoto();
                 } else {
-                    Utils.toast(ComplainActivity.this, "请在系统设置里打开相机功能");
+                    Utils.log(ComplainActivity.this, "没有打开照相机权限！");
                 }
                 break;
         }
@@ -459,31 +480,88 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PermissionConfig.CAMERA && resultCode == RESULT_OK) {
-            Utils.log(ComplainActivity.this, "camera=" + picPath);
-            upLoadImageList.add(picPath);
-            Utils.log(ComplainActivity.this, "upLoadImageList=" + upLoadImageList.toString());
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 10;
-            options.inTempStorage = new byte[1024];
-            Bitmap bitmap = BitmapFactory.decodeFile(picPath, options);
-            list.add(bitmap);
-            adapter.notifyDataSetChanged();
-        }
-        if (requestCode == IntentConfig.PIC_REQUEST && resultCode == IntentConfig.PIC_RESULT && data != null) {
-            List<String> l = new ArrayList<>();
-            l.addAll(data.getStringArrayListExtra(IntentConfig.PIC));
-            upLoadImageList.addAll(l);
-            Utils.log(ComplainActivity.this, "upLoadImageList=" + upLoadImageList.toString());
-            Utils.log(ComplainActivity.this, "l=" + l.toString());
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 10;
-            options.inTempStorage = new byte[1024];
-            for (int i = 0; i < l.size(); i++) {
-                Bitmap bitmap = BitmapFactory.decodeFile(l.get(i), options);
-                list.add(bitmap);
-            }
-            adapter.notifyDataSetChanged();
+        switch (requestCode) {
+            case PHOTO_REQUEST_CAREMA:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        FileOutputStream fileOutputStream = null;
+                        String saveDir = Environment.getExternalStorageDirectory().toString() + "/meitian_photos";
+                        File dir = new File(saveDir);
+                        if (dir.exists()) {
+                        } else {
+                            dir.mkdir();
+                        }
+                        SimpleDateFormat t = new SimpleDateFormat("yyyyMmddssSSS");
+                        String filename = "MT" + (t.format(new Date())) + ".jpg";
+                        File file = new File(saveDir, filename);
+                        try {
+                            fileOutputStream = new FileOutputStream(file);
+                            Bitmap bitmap = null;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                bitmap = MediaStore.Images.Media.getBitmap(ComplainActivity.this.getContentResolver(), FileProvider.getUriForFile(ComplainActivity.this, AppConfig.APPLICATION_ID + ".fileProvider", tempFile));
+                            } else {
+                                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.fromFile(tempFile));
+                            }
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                            path = file.getPath();
+                            String path_ys = saveBitmap(ComplainActivity.this, getSmallBitmap(path));
+                            PhotoBean photoBean = new PhotoBean();
+                            photoBean.setCheck(false);
+                            photoBean.setPath(path_ys);
+                            photoBeanList.add(photoBean);
+                            handler.sendEmptyMessage(0);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+                break;
+            case PHOTO_REQUEST_GALLERY:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        //从相册返回的数据
+                        if (data != null) {
+                            Bitmap bitmap = null;
+                            Uri uri = null;
+                            String path = null;
+                            Bundle bundle = data.getExtras();
+                            if (data.getData() != null) {
+                                uri = data.getData();
+                            } else {
+                                if (bundle != null) {
+                                    bitmap = (Bitmap) bundle.get("data");
+                                    if (bitmap != null) {
+                                        uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null, null));
+                                    }
+                                }
+                            }
+                            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                            if (uri != null) {
+                                ContentResolver cr = getContentResolver();
+                                Cursor cursor = null;
+                                if (uri.getScheme().equals("content")) {
+                                    cursor = cr.query(uri, null, null, null, null);
+                                } else {
+                                    cursor = cr.query(getFileUri(uri), null, null, null, null);
+                                }
+                                if (cursor != null) {
+                                    cursor.moveToFirst();
+                                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                    path = cursor.getString(columnIndex);
+                                    cursor.close();
+                                    PhotoBean photoBean = new PhotoBean();
+                                    photoBean.setCheck(false);
+                                    photoBean.setPath(path);
+                                    photoBeanList.add(photoBean);
+                                    handler.sendEmptyMessage(0);
+                                }
+                            }
+                        }
+                        break;
+                }
+                break;
         }
     }
 
@@ -496,9 +574,9 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
                 cplIsPop.dismiss();
                 break;
             case R.id.gv_complain_image:
-                list.remove(position);
-                upLoadImageList.remove(position);
-                adapter.notifyDataSetChanged();
+                photoBeanList.remove(position);
+                photoAdapter.notifyDataSetChanged();
+                Utils.setGridViewHeight(gv, 3);
                 break;
         }
     }

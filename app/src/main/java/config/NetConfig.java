@@ -58,6 +58,8 @@ public interface NetConfig {
     String articlesInfoUrl = "http://api.gangjianwang.com/Articles/articlesInfo";
     //引导密码
     String guidePwdUrl = "http://api.gangjianwang.com/tools/internal";
+    //锁
+    String lockUrl = "http://api.gangjianwang.com/Tools/lock";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
