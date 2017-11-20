@@ -224,10 +224,10 @@
     </style>
     <!--自定义进度对话框样式-->
     <style name="dialog_cprogress" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground">@drawable/sl_pg</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:background">@drawable/sl_pg</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
     <!--雇主工作管理-->
     <style name="rl_manage">
