@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray_c4ced3"
     android:orientation="vertical"
-    tools:context="task.view.TaskActivity">
+    tools:mContext=".activity.TaskActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 
@@ -21,18 +21,6 @@
         <TextView
             style="@style/tv_top_title"
             android:text="工作信息" />
-
-        <RelativeLayout
-            android:id="@+id/rl_task_screen"
-            style="@style/rl_return"
-            android:layout_alignParentRight="true"
-            android:visibility="gone">
-
-            <ImageView
-                style="@style/iv_return"
-                android:src="@mipmap/screen" />
-
-        </RelativeLayout>
 
     </RelativeLayout>
 

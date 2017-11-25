@@ -30,9 +30,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import config.NetConfig;
-import login.view.LoginActivity;
+import com.gjzg.activity.LoginActivity;
 import taskscreen.bean.TaskScreenBean;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 import view.CProgressDialog;
 
 //工具类
@@ -263,7 +263,7 @@ public class Utils {
             int a = str.indexOf(",");
             int b = str.lastIndexOf(",");
             String skill = str.substring(a + 1, b);
-            return NetConfig.skillsUrl + "?s_id=" + skill;
+            return NetConfig.skillUrl + "?s_id=" + skill;
         }
         return null;
     }

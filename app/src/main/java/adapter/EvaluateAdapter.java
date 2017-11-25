@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.EvaluateBean;
+import com.gjzg.bean.EvaluateBean;
 import utils.DataUtils;
 import view.CImageView;
 

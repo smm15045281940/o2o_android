@@ -5,21 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.gjzg.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.TalkEmployerBean;
-import bean.TalkEmployerWorkerBean;
+import com.gjzg.bean.TalkEmployerWorkerBean;
 import listener.IdPosClickHelp;
 import utils.DataUtils;
-import utils.Utils;
-import view.CImageView;
 
 /**
  * Created by Administrator on 2017/10/26.

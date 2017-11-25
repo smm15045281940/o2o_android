@@ -1,7 +1,7 @@
 package editinfo.presenter;
 
 
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 
 public interface IEditInfoPresenter {
 

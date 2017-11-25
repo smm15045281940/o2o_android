@@ -12,7 +12,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import bean.WithDrawBean;
+import com.gjzg.bean.WithDrawBean;
 
 /**
  * Created by Administrator on 2017/10/24.

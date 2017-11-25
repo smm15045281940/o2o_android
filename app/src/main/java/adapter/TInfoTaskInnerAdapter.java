@@ -14,9 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.TInfoOrderBean;
+import com.gjzg.bean.TInfoOrderBean;
 import config.ColorConfig;
-import listener.IdPosClickHelp;
 import listener.TInfoClickHelp;
 import view.CImageView;
 

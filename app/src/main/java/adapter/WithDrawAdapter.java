@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.PayWayBean;
+import com.gjzg.bean.PayWayBean;
 
 /**
  * Created by Administrator on 2017/11/13.

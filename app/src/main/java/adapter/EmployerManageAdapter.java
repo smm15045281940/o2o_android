@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.EmployerManageBean;
+import com.gjzg.bean.EmployerManageBean;
 import listener.IdPosClickHelp;
 
 /**

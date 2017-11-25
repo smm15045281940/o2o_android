@@ -1,14 +1,10 @@
 package com.gjzg.wxapi;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 
 import com.gjzg.R;
-import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -17,7 +13,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import config.AppConfig;
 import utils.Utils;
-import wallet.view.WalletActivity;
+import com.gjzg.activity.WalletActivity;
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 

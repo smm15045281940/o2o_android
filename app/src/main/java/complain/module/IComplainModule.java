@@ -1,7 +1,7 @@
 package complain.module;
 
 
-import bean.ToComplainBean;
+import com.gjzg.bean.ToComplainBean;
 import listener.JsonListener;
 
 public interface IComplainModule {

@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.Pic;
+import com.gjzg.bean.Pic;
 
 public class ComplainPicAdapter extends CommonAdapter<Pic> {
 

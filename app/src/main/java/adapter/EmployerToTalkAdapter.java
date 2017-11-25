@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.EmployerToTalkBean;
+import com.gjzg.bean.EmployerToTalkBean;
 import listener.IdPosClickHelp;
 import utils.DataUtils;
 import view.CImageView;

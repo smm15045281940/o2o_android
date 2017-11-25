@@ -17,7 +17,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.PublishWorkerBean;
+import com.gjzg.bean.PublishWorkerBean;
 import publishjob.listener.PublishJobClickHelp;
 
 public class PublishKindAdapter extends BaseAdapter {

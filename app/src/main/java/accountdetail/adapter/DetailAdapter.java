@@ -41,14 +41,36 @@ public class DetailAdapter extends CommonAdapter<AccountDetailBean> {
             String title = accountDetailBean.getTitle();
             if (title == null || title.equals("null") || TextUtils.isEmpty(title)) {
             } else {
+                String money = accountDetailBean.getDes();
                 if (title.equals("recharge")) {
                     holer.titleTv.setText("充值");
-                    holer.desTv.setText("+" + accountDetailBean.getDes());
+                    if (TextUtils.isEmpty(money)) {
+                        holer.desTv.setText("");
+                    } else {
+                        if (money.contains(".")) {
+                            int point = money.indexOf(".");
+                            int last = money.length();
+                            if (last - point > 2) {
+                                money = money.substring(0, point + 3);
+                            }
+                        }
+                        holer.desTv.setText("+" + money);
+                    }
                 } else if (title.equals("withdraw")) {
                     holer.titleTv.setText("提现");
-                    holer.desTv.setText("-" + accountDetailBean.getDes());
+                    if (TextUtils.isEmpty(money)) {
+                        holer.desTv.setText("");
+                    } else {
+                        if (money.contains(".")) {
+                            int point = money.indexOf(".");
+                            int last = money.length();
+                            if (last - point > 2) {
+                                money = money.substring(0, point + 3);
+                            }
+                        }
+                        holer.desTv.setText("-" + money);
+                    }
                 }
-                holer.balanceTv.setText("余额" + accountDetailBean.getBalance() + "元");
                 holer.timeTv.setText(DataUtils.msgTimes(accountDetailBean.getTime()));
             }
         }
@@ -57,11 +79,10 @@ public class DetailAdapter extends CommonAdapter<AccountDetailBean> {
 
     private class ViewHoler {
 
-        private TextView titleTv, balanceTv, timeTv, desTv;
+        private TextView titleTv, timeTv, desTv;
 
         public ViewHoler(View itemView) {
             titleTv = (TextView) itemView.findViewById(R.id.tv_item_detail_title);
-            balanceTv = (TextView) itemView.findViewById(R.id.tv_item_detail_balance);
             timeTv = (TextView) itemView.findViewById(R.id.tv_item_detail_time);
             desTv = (TextView) itemView.findViewById(R.id.tv_item_detail_des);
         }

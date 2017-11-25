@@ -21,7 +21,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 import utils.DataUtils;
 
 public class EditInfoModule implements IEditInfoModule {

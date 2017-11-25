@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.gjzg.R;
 
-import bean.PublishBean;
-import bean.PublishWorkerBean;
+import com.gjzg.bean.PublishBean;
+import com.gjzg.bean.PublishWorkerBean;
 
 public class TaskConfirmAdapter extends BaseAdapter {
 

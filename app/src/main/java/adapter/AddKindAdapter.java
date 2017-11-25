@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.AddKindBean;
+import com.gjzg.bean.AddKindBean;
 import listener.ListItemClickHelp;
 
 /**

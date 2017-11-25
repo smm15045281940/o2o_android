@@ -1,7 +1,7 @@
 package complain.presenter;
 
 
-import bean.ToComplainBean;
+import com.gjzg.bean.ToComplainBean;
 
 public interface IComplainPresenter {
 

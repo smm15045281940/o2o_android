@@ -4,7 +4,6 @@ package usermanage.module;
 import android.content.Context;
 import android.net.Uri;
 
-import bean.UserInfoBean;
 import listener.JsonListener;
 import usermanage.listener.UpLoadingIconListener;
 

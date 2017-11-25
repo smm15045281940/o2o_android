@@ -3,7 +3,7 @@ package editinfo.module;
 
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 import listener.JsonListener;
 
 public interface IEditInfoModule {

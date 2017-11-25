@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gjzg"
-    android:versionName="1.0">
+    package="com.gjzg">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,9 +23,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="dN4Fk4zH7UukSYGgGuytm391lB5wqirE" />
+
+        <meta-data
+            android:name="com.gjzg.config.GlideConfiguration"
+            android:value="GlideModule" />
 
         <service
             android:name="com.baidu.location.f"
@@ -34,7 +38,7 @@
             android:process=":remote" />
 
         <activity
-            android:name="activity.LaunchActivity"
+            android:name=".activity.LaunchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TranslucentFullScreenTheme"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
@@ -45,99 +49,91 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="main.view.MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.SkillsActivity"
+            android:name=".activity.SkillActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.WorkerActivity"
+            android:name=".activity.WorkerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="leftright.view.LeftRightActivity"
+            android:name=".activity.LeftRightActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.CityActivity"
+            android:name=".activity.CityActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="talkemployer.view.TalkEmployerActivity"
+            android:name=".activity.TalkEmployerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="workermanage.view.WorkerManageActivity"
+            android:name=".activity.WorkerManageActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="employermanage.view.EmployerManageActivity"
+            android:name=".activity.EmployerManageActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="usermanage.view.UserManageActivity"
+            android:name=".activity.UserManageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="task.view.TaskActivity"
+            android:name=".activity.TaskActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="set.view.SetActivity"
+            android:name=".activity.SetActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="login.view.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="publishjob.view.PublishJobActivity"
+            android:name=".activity.PublishJobActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="wallet.view.WalletActivity"
+            android:name=".activity.WalletActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="accountdetail.view.AccountDetailActivity"
+            android:name=".activity.AccountDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="withdraw.view.WithDrawActivity"
+            android:name=".activity.WithDrawActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="workerscreen.view.WorkerScreenActivity"
+            android:name=".activity.SetPwdActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="taskscreen.view.TaskScreenActivity"
+            android:name=".activity.PwdActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="passwordset.view.SetPwdActivity"
+            android:name=".activity.PhoneProveActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="password.view.PwdActivity"
+            android:name=".activity.SelectTaskActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="phoneprove.view.PhoneProveActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity
-            android:name="selecttask.view.SelectTaskActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity
-            android:name="resign.view.ResignActivity"
+            android:name=".activity.ResignActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
@@ -145,7 +141,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="pic.view.PicActivity"
+            android:name=".activity.PicActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
 
@@ -159,91 +155,91 @@
             android:exported="true" />
 
         <activity
-            android:name="identity.view.IdActivity"
+            android:name=".activity.IdActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="phonebind.view.PhoneBindActivity"
+            android:name=".activity.PhoneBindActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="refuseorder.view.RefuseOrderActivity"
+            android:name=".activity.RefuseOrderActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.EvaluateActivity"
+            android:name=".activity.EvaluateActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="redpacket.view.RedPacketActivity"
+            android:name=".activity.RedPacketActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="voucher.view.VoucherActivity"
+            android:name=".activity.VoucherActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="collect.view.CollectActivity"
+            android:name=".activity.CollectActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="myevaluate.view.MyEvaluateActivity"
+            android:name=".activity.MyEvaluateActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="aboutus.view.AboutUsActivity"
+            android:name=".activity.AboutUsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="selectaddress.view.SelectAddressActivity"
+            android:name=".activity.SelectAddressActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="taskconfirm.view.TaskConfirmActivity"
+            android:name=".activity.TaskConfirmActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="idcard.view.IdCardActivity"
+            android:name=".activity.IdCardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="talkworker.view.TalkWorkerActivity"
+            android:name=".activity.TalkWorkerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="persondetail.view.PersonDetailActivity"
+            android:name=".activity.PersonDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.EmployerToTalkActivity"
+            android:name=".activity.EmployerToTalkActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.ChangePriceActivity"
+            android:name=".activity.ChangePriceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.EmployerToDoingActivity"
+            android:name=".activity.EmployerToDoingActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.JumpWorkerActivity"
+            android:name=".activity.JumpWorkerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.JumpEmployerActivity"
+            android:name=".activity.JumpEmployerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.FireActivity"
+            android:name=".activity.FireActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.MessageTipActivity"
+            android:name=".activity.MessageTipActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.RechargeActivity"
+            android:name=".activity.RechargeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
@@ -262,22 +258,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="activity.AgreementActivity"
+            android:name=".activity.AgreementActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.ArticlesInfoActivity"
+            android:name=".activity.ArticlesInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name="activity.GuideActivity"
+            android:name=".activity.GuideActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
-        <activity android:name="activity.NeiceActivity"/>
+        <activity android:name=".activity.NeiceActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

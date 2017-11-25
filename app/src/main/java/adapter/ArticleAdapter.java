@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.ArticleBean;
+import com.gjzg.bean.ArticleBean;
 
 /**
  * Created by Administrator on 2017/11/13.

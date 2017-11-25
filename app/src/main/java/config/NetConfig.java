@@ -5,7 +5,7 @@ public interface NetConfig {
     //地区
     String regionUrl = "http://api.gangjianwang.com/Regions/index";
     //工种
-    String skillsUrl = "http://api.gangjianwang.com/Skills/index";
+    String skillUrl = "http://api.gangjianwang.com/Skills/index";
     //工人
     String workerUrl = "http://api.gangjianwang.com/Users/getUsers";
     //收藏的工人

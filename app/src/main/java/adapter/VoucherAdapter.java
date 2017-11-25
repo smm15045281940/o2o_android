@@ -11,8 +11,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import listener.ListItemClickHelp;
-import bean.VoucherBean;
+import com.gjzg.bean.VoucherBean;
 
 public class VoucherAdapter extends BaseAdapter {
 

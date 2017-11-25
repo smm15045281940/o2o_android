@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.ComplainIssueBean;
+import com.gjzg.bean.ComplainIssueBean;
 
 public class ComplainIssueAdapter extends BaseAdapter {
 

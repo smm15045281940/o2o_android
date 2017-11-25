@@ -2,9 +2,6 @@ package employermanage.presenter;
 
 import android.os.Handler;
 
-import java.util.List;
-
-import bean.EmployerManageBean;
 import employermanage.module.EmployerManageModule;
 import employermanage.module.IEmployerManageModule;
 import employermanage.view.IEmployerManageActivity;

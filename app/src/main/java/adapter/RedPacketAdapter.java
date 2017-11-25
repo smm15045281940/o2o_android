@@ -13,8 +13,8 @@ import com.gjzg.R;
 import java.util.List;
 
 import listener.IdPosClickHelp;
-import listener.ListItemClickHelp;
-import bean.RedPacketBean;
+
+import com.gjzg.bean.RedPacketBean;
 
 public class RedPacketAdapter extends BaseAdapter {
 

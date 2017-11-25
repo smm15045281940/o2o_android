@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.TaskBean;
+import com.gjzg.bean.TaskBean;
 import listener.IdPosClickHelp;
 import view.CImageView;
 

@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.DistanceUtil;
-
-import bean.LonLatBean;
+import com.gjzg.bean.LonLatBean;
 import login.bean.UserBean;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 
 /**
  * Created by Administrator on 2017/10/23.

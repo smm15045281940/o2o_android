@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import editinfo.listener.AddSkillClickHelp;
-import bean.SkillsBean;
+import com.gjzg.bean.SkillsBean;
 
 public class AddSkillAdapter extends BaseAdapter {
 

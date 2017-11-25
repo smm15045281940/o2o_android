@@ -5,13 +5,13 @@ import android.os.Handler;
 
 import java.util.List;
 
-import bean.SkillsBean;
+import com.gjzg.bean.SkillsBean;
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
 import editinfo.module.EditInfoModule;
 import editinfo.module.IEditInfoModule;
 import editinfo.view.IEditInfoFragment;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 import listener.JsonListener;
 
 public class EditInfoPresenter implements IEditInfoPresenter {

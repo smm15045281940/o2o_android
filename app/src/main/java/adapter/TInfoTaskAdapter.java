@@ -1,19 +1,17 @@
 package adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gjzg.R;
 
-import bean.TInfoTaskBean;
-import bean.TInfoWorkerBean;
+import com.gjzg.bean.TInfoTaskBean;
+import com.gjzg.bean.TInfoWorkerBean;
 import config.ColorConfig;
 import listener.TInfoClickHelp;
 import utils.DataUtils;

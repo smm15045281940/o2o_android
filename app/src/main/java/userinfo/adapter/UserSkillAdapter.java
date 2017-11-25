@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillsBean;
+import com.gjzg.bean.SkillsBean;
 
 public class UserSkillAdapter extends BaseAdapter {
 

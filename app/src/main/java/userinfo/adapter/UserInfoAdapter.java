@@ -14,8 +14,8 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillsBean;
-import bean.UserInfoBean;
+import com.gjzg.bean.SkillsBean;
+import com.gjzg.bean.UserInfoBean;
 import utils.Utils;
 
 public class UserInfoAdapter extends BaseAdapter {

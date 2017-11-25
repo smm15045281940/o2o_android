@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.PayWayBean;
+import com.gjzg.bean.PayWayBean;
 
 //支付方式适配器
 public class RechargeAdapter extends CommonAdapter<PayWayBean> {

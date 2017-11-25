@@ -12,7 +12,7 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.MessageBean;
+import com.gjzg.bean.MessageBean;
 import utils.DataUtils;
 
 /**

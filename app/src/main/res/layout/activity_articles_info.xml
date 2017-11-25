@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="activity.ArticlesInfoActivity">
+    tools:mContext=".activity.ArticlesInfoActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 

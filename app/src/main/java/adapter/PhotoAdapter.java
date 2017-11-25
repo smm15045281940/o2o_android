@@ -1,13 +1,11 @@
 package adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.gjzg.R;
@@ -15,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import bean.PhotoBean;
+import com.gjzg.bean.PhotoBean;
 
 /**
  * Created by Administrator on 2017/11/16.

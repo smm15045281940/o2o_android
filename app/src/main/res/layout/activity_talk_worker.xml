@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="talkworker.view.TalkWorkerActivity">
+    tools:mContext=".activity.TalkWorkerActivity">
 
     <RelativeLayout style="@style/rl_top_bar">
 

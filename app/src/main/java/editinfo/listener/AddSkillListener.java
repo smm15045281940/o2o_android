@@ -3,7 +3,7 @@ package editinfo.listener;
 
 import java.util.List;
 
-import bean.SkillsBean;
+import com.gjzg.bean.SkillsBean;
 
 public interface AddSkillListener {
 

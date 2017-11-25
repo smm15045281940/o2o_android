@@ -22,9 +22,9 @@ import com.gjzg.R;
 
 import java.util.List;
 
-import bean.SkillsBean;
+import com.gjzg.bean.SkillsBean;
 import editinfo.listener.EditInfoClickHelp;
-import bean.UserInfoBean;
+import com.gjzg.bean.UserInfoBean;
 import utils.Utils;
 
 public class EditInfoAdapter extends BaseAdapter {

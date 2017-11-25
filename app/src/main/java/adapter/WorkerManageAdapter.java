@@ -18,8 +18,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import listener.IdPosClickHelp;
-import listener.ListItemClickHelp;
-import bean.WorkerManageBean;
+
+import com.gjzg.bean.WorkerManageBean;
 
 public class WorkerManageAdapter extends BaseAdapter {
 
