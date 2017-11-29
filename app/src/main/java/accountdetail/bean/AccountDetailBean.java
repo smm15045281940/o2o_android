@@ -8,6 +8,15 @@ public class AccountDetailBean implements Serializable{
     private String balance;
     private String time;
     private String des;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getTitle() {
         return title;
@@ -48,6 +57,7 @@ public class AccountDetailBean implements Serializable{
                 ", balance='" + balance + '\'' +
                 ", time='" + time + '\'' +
                 ", des='" + des + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

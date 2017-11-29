@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.gjzg.R;
+import com.gjzg.bean.AppConfigBean;
+import com.gjzg.singleton.SingleGson;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -41,6 +44,12 @@ import com.gjzg.bean.ToComplainBean;
 import com.gjzg.bean.ToFireBean;
 import com.gjzg.bean.ToJumpWorkerBean;
 import com.gjzg.bean.WorkerBean;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
@@ -76,9 +85,12 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private PopupWindow cancelWorkerPop;
     private View surePricePopView;
     private PopupWindow surePricePop;
-    private TextView surePricePriceTv, surePriceTimeTv;
+    private TextView surePricePriceTv, surePriceTimeTv, surePriceServiceCashTv, surePriceSalaryTv;
     private View fireWorkerPopView;
     private PopupWindow fireWorkerPop;
+
+    private float charge_rate;
+    private String cancelWorkerTip,employerSureTip;
 
     private Handler handler = new Handler() {
         @Override
@@ -91,7 +103,26 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                         break;
                     case 3:
                         cpd.dismiss();
-                        startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
+                        if (!TextUtils.isEmpty(cancelWorkerTip)) {
+                            if (cancelWorkerTip.equals("success")) {
+                                startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
+                            } else if (cancelWorkerTip.equals("failure")) {
+                                Utils.toast(JumpWorkerActivity.this, "失败");
+                            } else {
+                                Utils.toast(JumpWorkerActivity.this, cancelWorkerTip);
+                            }
+                        }
+                        break;
+                    case 4:
+                        if(!TextUtils.isEmpty(employerSureTip)){
+                            if (employerSureTip.equals("success")) {
+                                startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
+                            } else if (employerSureTip.equals("failure")) {
+                                Utils.toast(JumpWorkerActivity.this, "失败");
+                            } else {
+                                Utils.toast(JumpWorkerActivity.this, employerSureTip);
+                            }
+                        }
                         break;
                 }
             }
@@ -106,7 +137,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         initView();
         initData();
         setListener();
-        loadData();
+        getConfig();
     }
 
     @Override
@@ -201,6 +232,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         surePricePopView = LayoutInflater.from(JumpWorkerActivity.this).inflate(R.layout.pop_employer_sure, null);
         surePricePriceTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_price);
         surePriceTimeTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_time);
+        surePriceServiceCashTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_service_cash);
+        surePriceSalaryTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_salary);
         surePricePopView.findViewById(R.id.tv_pop_sure_price_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -347,6 +380,33 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    private void getConfig() {
+        cpd.show();
+        OkHttpUtils.get().tag(this).url(NetConfig.appConfigUrl).build().execute(new StringCallback() {
+            @Override
+            public void onError(com.squareup.okhttp.Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    AppConfigBean appConfigBean = SingleGson.getInstance().fromJson(response, AppConfigBean.class);
+                    if (appConfigBean.getCode() == 1) {
+                        if (appConfigBean.getData() != null) {
+                            if (appConfigBean.getData().getData() != null) {
+                                if (!TextUtils.isEmpty(appConfigBean.getData().getData().getCharge_rate())) {
+                                    charge_rate = Float.parseFloat(appConfigBean.getData().getData().getCharge_rate());
+                                    loadData();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     private void loadData() {
         String url = NetConfig.workerUrl + "?u_id=" + toJumpWorkerBean.getWorkerId() + "&fu_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
         Request request = new Request.Builder().url(url).get().build();
@@ -367,8 +427,16 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void notifyData() {
-        surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
-//        surePriceTimeTv.setText(DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.getDateToString(Long.parseLong(toJumpWorkerBean.getTew_end_time())));
+        cpd.dismiss();
+        if (!TextUtils.isEmpty(toJumpWorkerBean.getTewPrice())) {
+            surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
+            float price = Float.parseFloat(toJumpWorkerBean.getTewPrice());
+            surePriceServiceCashTv.setText("结算工资的时候系统会收取工人" + (price * charge_rate) + "元的服务费");
+            surePriceSalaryTv.setText("扣除服务费工人最终会得到" + (price * (1 - charge_rate)) + "元的工资");
+        }
+        if (!TextUtils.isEmpty(toJumpWorkerBean.getTew_start_time()) && !TextUtils.isEmpty(toJumpWorkerBean.getTew_end_time())) {
+            surePriceTimeTv.setText(DataUtils.times((toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.times((toJumpWorkerBean.getTew_end_time())));
+        }
         Picasso.with(JumpWorkerActivity.this).load(workerBean.getU_img()).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
         if (workerBean.getU_sex().equals("0")) {
             sexIv.setImageResource(R.mipmap.female);
@@ -455,7 +523,15 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Utils.log(JumpWorkerActivity.this, json);
-                    handler.sendEmptyMessage(3);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        if (jsonObject.optInt("code") == 200) {
+                            cancelWorkerTip = jsonObject.optString("data");
+                            handler.sendEmptyMessage(3);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -498,7 +574,15 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Utils.log(JumpWorkerActivity.this, "employerSureJson\n" + json);
-                    handler.sendEmptyMessage(3);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        if(jsonObject.optInt("code") == 200){
+                            employerSureTip = jsonObject.optString("data");
+                            handler.sendEmptyMessage(4);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

@@ -50,6 +50,8 @@ public interface NetConfig {
     String msgListUrl = "http://api.gangjianwang.com/Users/msgList";
     //站内信修改
     String msgEditUrl = "http://api.gangjianwang.com/Users/msgReadEdit";
+    //站内信删除
+    String msgDelUrl = "http://api.gangjianwang.com/Users/msgDel";
     //充值申请
     String toPayUrl = "http://api.gangjianwang.com/Users/applyRechargeLog";
     //文章
@@ -60,6 +62,8 @@ public interface NetConfig {
     String guidePwdUrl = "http://api.gangjianwang.com/tools/internal";
     //锁
     String lockUrl = "http://api.gangjianwang.com/Tools/lock";
+    //优惠
+    String discountUrl = "http://api.gangjianwang.com/activities.php";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";

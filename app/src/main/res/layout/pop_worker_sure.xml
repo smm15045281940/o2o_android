@@ -36,29 +36,29 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_marginLeft="@dimen/y5"
-                        android:layout_marginRight="@dimen/y5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/y5"
+                        android:layout_marginRight="@dimen/y5"
                         android:layout_marginTop="@dimen/y5"
                         android:text="请在工作开始之前，与工人确认好工期及工资，确认工人到岗后，点击开工按钮，待工人确认工资与工期无误后，工人点击开始工作，即算开工并开始计算工期。"
                         android:textSize="@dimen/y8" />
 
                     <TextView
-                        android:layout_marginLeft="@dimen/y5"
-                        android:layout_marginRight="@dimen/y5"
                         android:id="@+id/tv_pop_worker_sure_attention_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/y5"
+                        android:layout_marginRight="@dimen/y5"
                         android:layout_marginTop="@dimen/y5"
                         android:textSize="@dimen/y8" />
 
                     <TextView
-                        android:layout_marginLeft="@dimen/y5"
-                        android:layout_marginRight="@dimen/y5"
                         android:id="@+id/tv_pop_worker_sure_attention_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/y5"
+                        android:layout_marginRight="@dimen/y5"
                         android:layout_marginTop="@dimen/y5"
                         android:textSize="@dimen/y8" />
 
@@ -143,19 +143,19 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_pop_worker_sure_service_cash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/y5"
-                android:text="结算工资的时候系统会收取工人XX元的服务费"
                 android:textColor="@color/red_ff3e50"
                 android:textSize="@dimen/y8" />
 
             <TextView
+                android:id="@+id/tv_pop_worker_sure_salary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="扣除服务费工人最终会得到XX元的工资"
                 android:textColor="@color/red_ff3e50"
                 android:textSize="@dimen/y8" />
 

@@ -38,38 +38,20 @@ public class DetailAdapter extends CommonAdapter<AccountDetailBean> {
         }
         AccountDetailBean accountDetailBean = list.get(position);
         if (accountDetailBean != null) {
-            String title = accountDetailBean.getTitle();
-            if (title == null || title.equals("null") || TextUtils.isEmpty(title)) {
+            String title = accountDetailBean.getType();
+            if (TextUtils.isEmpty(title)) {
             } else {
                 String money = accountDetailBean.getDes();
+                if (!TextUtils.isEmpty(money))
+                    holer.desTv.setText(money);
                 if (title.equals("recharge")) {
                     holer.titleTv.setText("充值");
-                    if (TextUtils.isEmpty(money)) {
-                        holer.desTv.setText("");
-                    } else {
-                        if (money.contains(".")) {
-                            int point = money.indexOf(".");
-                            int last = money.length();
-                            if (last - point > 2) {
-                                money = money.substring(0, point + 3);
-                            }
-                        }
-                        holer.desTv.setText("+" + money);
-                    }
                 } else if (title.equals("withdraw")) {
                     holer.titleTv.setText("提现");
-                    if (TextUtils.isEmpty(money)) {
-                        holer.desTv.setText("");
-                    } else {
-                        if (money.contains(".")) {
-                            int point = money.indexOf(".");
-                            int last = money.length();
-                            if (last - point > 2) {
-                                money = money.substring(0, point + 3);
-                            }
-                        }
-                        holer.desTv.setText("-" + money);
-                    }
+                } else if (title.equals("income")) {
+                    holer.titleTv.setText("收入");
+                } else if (title.equals("pay")) {
+                    holer.titleTv.setText("支出");
                 }
                 holer.timeTv.setText(DataUtils.msgTimes(accountDetailBean.getTime()));
             }

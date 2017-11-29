@@ -224,7 +224,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                 if (menuPopWindow.isShowing()) {
                     menuPopWindow.dismiss();
                     menuContentTv.setText("支出");
-                    LOG_STATE = RECHARGE;
+                    LOG_STATE = WITHDRAW;
                     STATE = FIRST;
                     loadData();
                 }
@@ -233,7 +233,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                 if (menuPopWindow.isShowing()) {
                     menuPopWindow.dismiss();
                     menuContentTv.setText("收入");
-                    LOG_STATE = WITHDRAW;
+                    LOG_STATE = RECHARGE;
                     STATE = FIRST;
                     loadData();
                 }

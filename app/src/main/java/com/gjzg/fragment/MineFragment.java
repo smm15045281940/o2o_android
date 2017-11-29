@@ -35,7 +35,7 @@ import com.gjzg.activity.AgreementActivity;
 import com.gjzg.activity.CollectActivity;
 import config.IntentConfig;
 import config.NetConfig;
-import com.gjzg.activity.LeftRightActivity;
+import com.gjzg.activity.MessageActivity;
 import login.bean.UserBean;
 import com.gjzg.activity.LoginActivity;
 import mine.presenter.IMinePresenter;
@@ -314,7 +314,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                     if (idcard3 == null || TextUtils.isEmpty(idcard3) || idcard3.equals("null")) {
                         Utils.toast(getActivity(), "请在工作管理中完善个人信息");
                     } else {
-                        Intent messageIntent = new Intent(getActivity(), LeftRightActivity.class);
+                        Intent messageIntent = new Intent(getActivity(), MessageActivity.class);
                         messageIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
                         startActivity(messageIntent);
                     }

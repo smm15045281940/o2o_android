@@ -38,8 +38,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import adapter.ScnDiaAdapter;
+
 import com.gjzg.bean.PublishWorkerBean;
 import com.gjzg.bean.SkillsBean;
+
 import config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -48,7 +50,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import publishjob.adapter.PublishKindAdapter;
 import publishjob.adapter.SelectSkillAdapter;
+
 import com.gjzg.bean.PublishBean;
+
 import publishjob.listener.PublishJobClickHelp;
 import publishjob.presenter.IPublishJobPresenter;
 import publishjob.presenter.PublishJobPresenter;
@@ -202,7 +206,7 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                         break;
                 }
             }
-        }, year, month, day);
+        }, year, month - 1, day);
     }
 
     private void setData() {

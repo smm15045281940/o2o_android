@@ -39,7 +39,7 @@ import config.NetConfig;
 import firstpage.presenter.FirstPagePresenter;
 import firstpage.presenter.IFirstPagePresenter;
 import firstpage.view.IFirstPageFragment;
-import com.gjzg.activity.LeftRightActivity;
+import com.gjzg.activity.MessageActivity;
 import com.gjzg.activity.LoginActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -260,7 +260,7 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                     if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
                         Utils.toast(getActivity(), "请在工作管理中完善个人信息");
                     } else {
-                        Intent msgIntent = new Intent(getActivity(), LeftRightActivity.class);
+                        Intent msgIntent = new Intent(getActivity(), MessageActivity.class);
                         msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
                         startActivity(msgIntent);
                     }

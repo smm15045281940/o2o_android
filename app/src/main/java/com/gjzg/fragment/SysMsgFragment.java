@@ -2,8 +2,6 @@ package com.gjzg.fragment;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -22,59 +20,45 @@ import com.gjzg.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.MsgAdapter;
-import com.gjzg.bean.MessageBean;
+import adapter.MessageAdapter;
+
+import com.gjzg.bean.OfferBean;
+import com.gjzg.singleton.SingleGson;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
 import config.NetConfig;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import config.VarConfig;
+import refreshload.PullToRefreshLayout;
+import refreshload.PullableListView;
 import utils.DataUtils;
 import utils.UserUtils;
 import utils.Utils;
 import view.CProgressDialog;
 
-//系统消息
-public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener, PullToRefreshLayout.OnRefreshListener {
 
-    private View rootView, emptyView, msgPopView;
+    private View rootView, netView, emptyView, msgPopView,delPopView;
     private TextView titleTv, timeTv, contentTv;
-    private PopupWindow msgPop;
-    private ListView listView;
+    private PopupWindow msgPop,delPop;
+    private FrameLayout fl;
+    private TextView netTv;
+    private PullToRefreshLayout ptrl;
+    private PullableListView plv;
     private CProgressDialog cProgressDialog;
-    private List<MessageBean> messageBeanList = new ArrayList<>();
-    private MsgAdapter msgAdapter;
+    private List<OfferBean.DataBeanX.DataBean> mList;
+    private MessageAdapter mAdapter;
     private int clickPosition;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg != null) {
-                switch (msg.what) {
-                    case 1:
-                        notifyData();
-                        break;
-                    case 2:
-                        messageBeanList.get(clickPosition).setUm_status("1");
-                        notifyData();
-                        cProgressDialog.dismiss();
-                        pop();
-                        break;
-                }
-            }
-        }
-    };
+    private final int FIRST = 1, REFRESH = 2, LOAD = 3;
+    private int STATE;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_listview, null);
+        rootView = LayoutInflater.from(getActivity()).inflate(R.layout.common_listview, null);
         initView();
         initData();
         setData();
@@ -86,10 +70,7 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (handler != null) {
-            handler.removeMessages(1);
-            handler = null;
-        }
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
     private void initView() {
@@ -100,14 +81,29 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void initRootView() {
         rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        listView = (ListView) rootView.findViewById(R.id.listview);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        plv = (PullableListView) rootView.findViewById(R.id.plv);
         cProgressDialog = Utils.initProgressDialog(getActivity(), cProgressDialog);
     }
 
     private void initEmptyView() {
+        fl = (FrameLayout) rootView.findViewById(R.id.fl);
         emptyView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_data, null);
-        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        listView.setEmptyView(emptyView);
+        fl.addView(emptyView);
+        emptyView.setVisibility(View.GONE);
+        netView = LayoutInflater.from(getActivity()).inflate(R.layout.empty_net, null);
+        netTv = (TextView) netView.findViewById(R.id.tv_no_net_refresh);
+        netTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ptrl.setVisibility(View.VISIBLE);
+                netView.setVisibility(View.GONE);
+                STATE = FIRST;
+                loadData();
+            }
+        });
+        fl.addView(netView);
+        netView.setVisibility(View.GONE);
     }
 
     private void initPopView() {
@@ -126,46 +122,137 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
                 backgroundAlpha(1.0f);
             }
         });
+
+        delPopView = LayoutInflater.from(getActivity()).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) delPopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("确认删除？");
+        ((TextView) delPopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        ((TextView) delPopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        delPopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delPop.isShowing())
+                    delPop.dismiss();
+            }
+        });
+        delPopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delPop.isShowing()) {
+                    delPop.dismiss();
+                    delete();
+                }
+            }
+        });
+        delPop = new PopupWindow(delPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        delPop.setFocusable(true);
+        delPop.setTouchable(true);
+        delPop.setOutsideTouchable(true);
+        delPop.setBackgroundDrawable(new BitmapDrawable());
+        delPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroundAlpha(1.0f);
+            }
+        });
     }
 
     private void initData() {
-        msgAdapter = new MsgAdapter(getActivity(), messageBeanList);
+        STATE = FIRST;
+        mList = new ArrayList<>();
+        mAdapter = new MessageAdapter(getActivity(), mList);
     }
 
     private void setData() {
-        listView.setAdapter(msgAdapter);
+        plv.setAdapter(mAdapter);
     }
 
     private void setListener() {
-        listView.setOnItemClickListener(this);
+        ptrl.setOnRefreshListener(this);
+        plv.setOnItemClickListener(this);
+        plv.setOnItemClickListener(this);
     }
 
     private void loadData() {
+        if (STATE == FIRST)
+            cProgressDialog.show();
         String url = NetConfig.msgListUrl +
                 "?u_id=" + UserUtils.readUserData(getActivity()).getId() +
                 "&wm_type=0";
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url(url).get().build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+        OkHttpUtils.get().tag(this).url(url).build().execute(new StringCallback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
+            public void onError(com.squareup.okhttp.Request request, Exception e) {
+                notifyNet();
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    Utils.log(getActivity(), "sysMsgJson\n" + json);
-                    messageBeanList.clear();
-                    messageBeanList.addAll(DataUtils.getMessageBeanList(json));
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    OfferBean offerBean = SingleGson.getInstance().fromJson(response, OfferBean.class);
+                    if (offerBean != null) {
+                        if (offerBean.getCode() == 1) {
+                            if (offerBean.getData() != null) {
+                                if (offerBean.getData().getData() != null) {
+                                    switch (STATE) {
+                                        case REFRESH:
+                                            mList.clear();
+                                            break;
+                                        case LOAD:
+                                            if (offerBean.getData().getData().size() == 0)
+                                                Utils.toast(getActivity(), "到底了");
+                                            break;
+                                    }
+                                    mList.addAll(offerBean.getData().getData());
+                                    notifyData();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         });
     }
 
     private void notifyData() {
-        msgAdapter.notifyDataSetChanged();
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.dismiss();
+                if (mList.size() == 0) {
+                    ptrl.setVisibility(View.GONE);
+                    netView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    ptrl.setVisibility(View.VISIBLE);
+                    netView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
+                }
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                break;
+            case LOAD:
+                ptrl.hideFootView();
+                break;
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void notifyNet() {
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.dismiss();
+                ptrl.setVisibility(View.GONE);
+                emptyView.setVisibility(View.GONE);
+                netView.setVisibility(View.VISIBLE);
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                Utils.toast(getActivity(), VarConfig.noNetTip);
+                break;
+            case LOAD:
+                ptrl.hideFootView();
+                Utils.toast(getActivity(), VarConfig.noNetTip);
+                break;
+        }
     }
 
     private void backgroundAlpha(float f) {
@@ -177,8 +264,8 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         clickPosition = position;
-        MessageBean messageBean = messageBeanList.get(clickPosition);
-        String status = messageBean.getUm_status();
+        OfferBean.DataBeanX.DataBean dataBean = mList.get(clickPosition);
+        String status = dataBean.getUm_status();
         if (status == null || status.equals("null") || TextUtils.isEmpty(status)) {
         } else {
             if (status.equals("0")) {
@@ -189,27 +276,37 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
         }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        clickPosition = position;
+        backgroundAlpha(0.5f);
+        delPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+        return true;
+    }
+
     private void read() {
         cProgressDialog.show();
-        MessageBean messageBean = messageBeanList.get(clickPosition);
+        OfferBean.DataBeanX.DataBean dataBean = mList.get(clickPosition);
         String url = NetConfig.msgEditUrl +
-                "?um_id=" + messageBean.getUm_id();
-        Request request = new Request.Builder().url(url).get().build();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newCall(request).enqueue(new Callback() {
+                "?um_id=" + dataBean.getUm_id();
+        OkHttpUtils.get().tag(this).url(url).build().execute(new StringCallback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onError(com.squareup.okhttp.Request request, Exception e) {
 
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
                     try {
-                        JSONObject beanObj = new JSONObject(json);
-                        if (beanObj.optInt("code") == 1) {
-                            handler.sendEmptyMessage(2);
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.optInt("code") == 1) {
+                            mList.get(clickPosition).setUm_status("1");
+                            mAdapter.notifyDataSetChanged();
+                            if (cProgressDialog.isShowing()) {
+                                cProgressDialog.dismiss();
+                            }
+                            pop();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -220,22 +317,16 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void pop() {
-        MessageBean messageBean = messageBeanList.get(clickPosition);
-        if (messageBean != null) {
-            Utils.log(getActivity(), "messageBean\n" + messageBean.toString());
-            String title = messageBean.getWm_title();
-            if (title == null || title.equals("null") || TextUtils.isEmpty(title)) {
-            } else {
-                titleTv.setText(title);
+        OfferBean.DataBeanX.DataBean dataBean = mList.get(clickPosition);
+        if (dataBean != null) {
+            if (!TextUtils.isEmpty(dataBean.getWm_title())) {
+                titleTv.setText(dataBean.getWm_title());
             }
-            String time = messageBean.getUm_in_time();
-            if (time == null || time.equals("null") || TextUtils.isEmpty(time)) {
-            } else {
-                timeTv.setText(DataUtils.msgTimes(time));
+            if (!TextUtils.isEmpty(dataBean.getUm_in_time())) {
+                timeTv.setText(DataUtils.msgTimes(dataBean.getUm_in_time()));
             }
-            String content = messageBean.getWm_desc();
-            if (content == null || content.equals("null") || TextUtils.isEmpty(content)) {
-            } else {
+            String content = dataBean.getWm_desc();
+            if (!TextUtils.isEmpty(dataBean.getWm_desc())) {
                 contentTv.setText(content);
             }
             if (!msgPop.isShowing()) {
@@ -243,5 +334,55 @@ public class SysMsgFragment extends Fragment implements AdapterView.OnItemClickL
                 msgPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
             }
         }
+    }
+
+    private void delete() {
+        String delUrl = NetConfig.msgDelUrl + "?um_id=" + mList.get(clickPosition).getUm_id();
+        OkHttpUtils.get().tag(this).url(delUrl).build().execute(new StringCallback() {
+            @Override
+            public void onError(com.squareup.okhttp.Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        int code = jsonObject.optInt("code");
+                        JSONObject dataObj = jsonObject.optJSONObject("data");
+                        String msg = null;
+                        if (dataObj != null) {
+                            msg = dataObj.optString("msg");
+                        }
+                        if (!TextUtils.isEmpty(msg)) {
+                            switch (code) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    mList.remove(clickPosition);
+                                    notifyData();
+                                    break;
+                            }
+                            Utils.toast(getActivity(), msg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+        STATE = REFRESH;
+        loadData();
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        STATE = LOAD;
+        loadData();
     }
 }

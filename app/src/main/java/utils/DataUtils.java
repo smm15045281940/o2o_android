@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import accountdetail.bean.AccountDetailBean;
+
 import com.gjzg.bean.ArticleBean;
 import com.gjzg.bean.CollectWorkerBean;
 import com.gjzg.bean.ComplainIssueBean;
@@ -43,6 +44,7 @@ import com.gjzg.bean.TalkEmployerWorkerBean;
 import com.gjzg.bean.UserInfoBean;
 import com.gjzg.bean.WorkerManageBean;
 import com.gjzg.bean.WxDataBean;
+
 import config.AppConfig;
 
 public class DataUtils {
@@ -792,6 +794,7 @@ public class DataUtils {
                                 adb.setTime(obj.optString("time"));
                                 adb.setBalance(obj.optString("balances"));
                                 adb.setDes(obj.optString("amount"));
+                                adb.setType(obj.optString("type"));
                                 resultList.add(adb);
                             }
                         }

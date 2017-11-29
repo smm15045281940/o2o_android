@@ -46,6 +46,7 @@ import com.gjzg.bean.ToComplainBean;
 import com.gjzg.bean.ToEvaluateBean;
 import com.gjzg.bean.ToJumpEmployerBean;
 import com.gjzg.bean.ToResignBean;
+
 import complain.view.ComplainActivity;
 import config.IntentConfig;
 import config.NetConfig;
@@ -74,7 +75,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
 
     private View beginDoView;
     private PopupWindow beginDoPop;
-    private TextView beginDoPriceTv, beginDoTimeTv;
+    private TextView beginDoPriceTv, beginDoTimeTv, beginDoServiceCashTv, beginDoSalaryTv;
 
     private View resignPopView;
     private PopupWindow resignPop;
@@ -87,6 +88,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     private ToJumpEmployerBean toJumpEmployerBean;
     private OkHttpClient okHttpClient;
     private JumpEmployerBean jumpEmployerBean;
+
+    private String beginDoTip;
 
     private Handler handler = new Handler() {
         @Override
@@ -101,7 +104,18 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                         notifyData();
                         break;
                     case 3:
-                        finish();
+                        if (!TextUtils.isEmpty(beginDoTip)) {
+                            if (beginDoTip.equals("success")) {
+                                startActivity(new Intent(JumpEmployerActivity.this, WorkerManageActivity.class));
+                            } else if (beginDoTip.equals("failure")) {
+                                Utils.toast(JumpEmployerActivity.this, "失败");
+                            } else {
+                                Utils.toast(JumpEmployerActivity.this, beginDoTip);
+                            }
+                        }
+                        break;
+                    case 4:
+                        startActivity(new Intent(JumpEmployerActivity.this, WorkerManageActivity.class));
                         break;
                 }
             }
@@ -204,6 +218,9 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         beginDoView = LayoutInflater.from(JumpEmployerActivity.this).inflate(R.layout.pop_worker_sure, null);
         beginDoPriceTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_price);
         beginDoTimeTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_time);
+        beginDoServiceCashTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_service_cash);
+        beginDoSalaryTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_salary);
+
         beginDoView.findViewById(R.id.tv_pop_worker_sure_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -390,7 +407,19 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Utils.log(JumpEmployerActivity.this, json);
-                    handler.sendEmptyMessage(3);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        if (jsonObject.optInt("code") == 200) {
+                            String data = jsonObject.optString("data");
+                            if (!TextUtils.isEmpty(data)) {
+                                if (data.equals("success")) {
+                                    handler.sendEmptyMessage(4);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -412,7 +441,15 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Utils.log(JumpEmployerActivity.this, json);
-                    handler.sendEmptyMessage(3);
+                    try {
+                        JSONObject jsonObject = new JSONObject(json);
+                        if (jsonObject.optInt("code") == 200) {
+                            beginDoTip = jsonObject.optString("data");
+                            handler.sendEmptyMessage(3);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -435,6 +472,9 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
             beginDoPriceTv.setText(jumpEmployerBean.getPrice());
+            float price = Float.parseFloat(jumpEmployerBean.getPrice());
+            beginDoServiceCashTv.setText("结算工资的时候系统会收取工人" + (price * 0.1) + "元的服务费");
+            beginDoSalaryTv.setText("扣除服务费工人最终会得到" + (price * 0.9) + "元的工资");
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getStartTime()) && !TextUtils.isEmpty(jumpEmployerBean.getEndTime())) {
             beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
