@@ -33,27 +33,36 @@ import java.io.IOException;
 
 import com.gjzg.activity.AgreementActivity;
 import com.gjzg.activity.CollectActivity;
-import config.IntentConfig;
-import config.NetConfig;
+
+import com.gjzg.config.NetConfig;
+
 import com.gjzg.activity.MessageActivity;
-import login.bean.UserBean;
+
+import com.gjzg.bean.UserBean;
+
 import com.gjzg.activity.LoginActivity;
+
 import mine.presenter.IMinePresenter;
 import mine.presenter.MinePresenter;
 import mine.view.IMineFragment;
+
 import com.gjzg.activity.MyEvaluateActivity;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.activity.SetPwdActivity;
 import com.gjzg.activity.RedPacketActivity;
 import com.gjzg.activity.SetActivity;
 import com.gjzg.bean.UserInfoBean;
 import com.gjzg.activity.UserManageActivity;
-import utils.UserUtils;
-import utils.Utils;
+
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+
 import com.gjzg.activity.VoucherActivity;
 import com.gjzg.activity.WalletActivity;
 
@@ -213,7 +222,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                 }
             }
         });
-        serviceMobilePop = new PopupWindow(serviceMobilePopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        serviceMobilePop = new PopupWindow(serviceMobilePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         serviceMobilePop.setFocusable(true);
         serviceMobilePop.setTouchable(true);
         serviceMobilePop.setOutsideTouchable(true);
@@ -311,12 +320,10 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                     break;
                 case R.id.rl_mine_msg:
                     String idcard3 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard3 == null || TextUtils.isEmpty(idcard3) || idcard3.equals("null")) {
+                    if (TextUtils.isEmpty(idcard3)) {
                         Utils.toast(getActivity(), "请在工作管理中完善个人信息");
                     } else {
-                        Intent messageIntent = new Intent(getActivity(), MessageActivity.class);
-                        messageIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
-                        startActivity(messageIntent);
+                        startActivity(new Intent(getActivity(), MessageActivity.class));
                     }
                     break;
                 case R.id.rl_mine_red_bag:

@@ -1,13 +1,10 @@
 package usermanage.presenter;
 
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Handler;
 
-import listener.JsonListener;
-import usermanage.listener.UpLoadingIconListener;
+import com.gjzg.listener.JsonListener;
+
 import usermanage.module.IUserManageModule;
 import usermanage.module.UserManageModule;
 import usermanage.view.IUserManageActivity;

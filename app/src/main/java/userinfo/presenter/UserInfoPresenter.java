@@ -2,7 +2,7 @@ package userinfo.presenter;
 
 import android.os.Handler;
 
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import userinfo.module.IUserInfoModule;
 import userinfo.module.UserInfoModule;
 import userinfo.view.IUserInfoFragment;

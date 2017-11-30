@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 
 import com.gjzg.R;
 
-import utils.UserUtils;
+import com.gjzg.utils.UserUtils;
 
 public class LaunchActivity extends AppCompatActivity {
 

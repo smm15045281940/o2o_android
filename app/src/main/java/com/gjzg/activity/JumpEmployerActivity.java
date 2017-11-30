@@ -48,17 +48,17 @@ import com.gjzg.bean.ToJumpEmployerBean;
 import com.gjzg.bean.ToResignBean;
 
 import complain.view.ComplainActivity;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CImageView;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
 
 public class JumpEmployerActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -21,17 +21,17 @@ import java.util.List;
 
 import com.gjzg.bean.Skill;
 
-import adapter.SkillAdapter;
+import com.gjzg.adapter.SkillAdapter;
 
 import com.gjzg.bean.ToWorkerBean;
 
-import config.IntentConfig;
-import config.NetConfig;
-import config.VarConfig;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class SkillActivity extends AppCompatActivity implements PullToRefreshLayout.OnRefreshListener {
 

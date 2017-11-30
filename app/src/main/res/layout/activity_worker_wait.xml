@@ -42,7 +42,7 @@
             android:orientation="horizontal"
             android:padding="@dimen/y10">
 
-            <view.CImageView
+            <com.gjzg.view.CImageView
                 android:id="@+id/iv_jump_worker_icon"
                 android:layout_width="@dimen/y35"
                 android:layout_height="@dimen/y35"
@@ -102,7 +102,7 @@
 
             </LinearLayout>
 
-            <view.CImageView
+            <com.gjzg.view.CImageView
                 android:id="@+id/iv_jump_worker_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

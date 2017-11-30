@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.NetConfig;
-import config.PermissionConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.PermissionConfig;
 import com.gjzg.fragment.EditInfoFragment;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,11 +54,11 @@ import com.gjzg.bean.UserInfoBean;
 import usermanage.presenter.IUserManagePresenter;
 import usermanage.presenter.UserManagePresenter;
 import usermanage.view.IUserManageActivity;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class UserManageActivity extends AppCompatActivity implements IUserManageActivity, View.OnClickListener {
 
@@ -149,7 +149,7 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                 changeFragment();
             }
         });
-        editPop = new PopupWindow(editPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        editPop = new PopupWindow(editPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         editPop.setTouchable(true);
         editPop.setFocusable(true);
         editPop.setOutsideTouchable(true);

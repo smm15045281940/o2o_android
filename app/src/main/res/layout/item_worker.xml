@@ -14,7 +14,7 @@
         android:background="@drawable/sl_item_skills"
         android:orientation="horizontal">
 
-        <view.CImageView
+        <com.gjzg.view.CImageView
             android:id="@+id/iv_item_worker_icon"
             android:layout_width="@dimen/y32"
             android:layout_height="@dimen/y32"

@@ -32,18 +32,21 @@ import java.util.List;
 
 import com.gjzg.bean.TalkEmployerWorkerBean;
 import com.gjzg.bean.ToTalkEmployerBean;
-import config.IntentConfig;
-import config.NetConfig;
-import adapter.TalkEmployerAdapter;
+
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.adapter.TalkEmployerAdapter;
+
 import com.gjzg.bean.TalkEmployerBean;
-import listener.IdPosClickHelp;
+
+import com.gjzg.listener.IdPosClickHelp;
 import talkemployer.presenter.TalkEmployerPresenter;
 import talkemployer.view.ITalkEmployerActivity;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmployerActivity, View.OnClickListener, IdPosClickHelp {
 
@@ -169,6 +172,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             public void onClick(View v) {
                 switch (SHOW_STATE) {
                     case EMPLOYER_WIAT:
+                    case OVER:
                         Utils.toast(TalkEmployerActivity.this, "未邀约不能打电话！");
                         break;
                     default:

@@ -5,7 +5,7 @@ import android.os.Handler;
 import employermanage.module.EmployerManageModule;
 import employermanage.module.IEmployerManageModule;
 import employermanage.view.IEmployerManageActivity;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 
 /**
  * Created by Administrator on 2017/10/23.

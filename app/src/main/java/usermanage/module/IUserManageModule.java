@@ -4,7 +4,7 @@ package usermanage.module;
 import android.content.Context;
 import android.net.Uri;
 
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import usermanage.listener.UpLoadingIconListener;
 
 public interface IUserManageModule {

@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +15,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.ColorConfig;
+import com.gjzg.config.ColorConfig;
 import com.gjzg.fragment.GetEvaluateFragment;
 import com.gjzg.fragment.GiveEvaluateFragment;
 

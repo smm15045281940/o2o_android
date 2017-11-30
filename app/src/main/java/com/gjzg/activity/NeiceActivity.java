@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,14 +20,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import config.NetConfig;
+import com.gjzg.config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class NeiceActivity extends AppCompatActivity implements View.OnClickListener {
 

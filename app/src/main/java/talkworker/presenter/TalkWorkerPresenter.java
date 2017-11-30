@@ -2,7 +2,7 @@ package talkworker.presenter;
 
 import android.os.Handler;
 
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import talkworker.module.ITalkWorkerModule;
 import talkworker.module.TalkWorkerModule;
 import talkworker.view.ITalkWorkerActivity;

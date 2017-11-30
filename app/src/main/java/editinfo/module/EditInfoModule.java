@@ -9,11 +9,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import config.NetConfig;
-import config.VarConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -22,7 +22,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import com.gjzg.bean.UserInfoBean;
-import utils.DataUtils;
+import com.gjzg.utils.DataUtils;
 
 public class EditInfoModule implements IEditInfoModule {
 

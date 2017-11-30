@@ -1,11 +1,11 @@
 package com.gjzg.fragment;
 
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +20,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.CollectTaskAdapter;
-import com.gjzg.bean.TaskBean;
+import com.gjzg.adapter.CollectTaskAdapter;
+import com.gjzg.bean.CollectTaskBean;
+
 import collecttask.presenter.CollectTaskPresenter;
 import collecttask.presenter.ICollectTaskPresenter;
 import collecttask.view.ICollectTaskFragment;
-import config.NetConfig;
-import config.VarConfig;
-import listener.IdPosClickHelp;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.listener.IdPosClickHelp;
+import com.gjzg.singleton.SingleGson;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 public class CollectTaskFragment extends Fragment implements ICollectTaskFragment, IdPosClickHelp, PullToRefreshLayout.OnRefreshListener {
 
@@ -45,8 +50,8 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
 
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
-    private List<TaskBean> collectTaskList;
-    private CollectTaskAdapter collectTaskAdapter;
+    private List<CollectTaskBean.DataBeanX.DataBean> mList;
+    private CollectTaskAdapter mAdapter;
 
     private final int LOAD_SUCCESS = 1;
     private final int LOAD_FAILURE = 2;
@@ -73,7 +78,7 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
                         break;
                     case CANCEL_SUCCESS:
                         Utils.toast(getActivity(), tip);
-                        collectTaskList.remove(clickPosition);
+                        mList.remove(clickPosition);
                         notifyData();
                         break;
                     case CANCEL_FAILURE:
@@ -98,14 +103,7 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (collectTaskPresenter != null) {
-            collectTaskPresenter.destroy();
-            collectTaskPresenter = null;
-        }
-        if (handler != null) {
-            handler.removeMessages(LOAD_SUCCESS);
-            handler = null;
-        }
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
     private void initView() {
@@ -141,12 +139,12 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
 
     private void initData() {
         collectTaskPresenter = new CollectTaskPresenter(this);
-        collectTaskList = new ArrayList<>();
-        collectTaskAdapter = new CollectTaskAdapter(getActivity(), collectTaskList, this);
+        mList = new ArrayList<>();
+        mAdapter = new CollectTaskAdapter(getActivity(), mList, this);
     }
 
     private void setData() {
-        plv.setAdapter(collectTaskAdapter);
+        plv.setAdapter(mAdapter);
     }
 
     private void setListener() {
@@ -154,19 +152,46 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
     }
 
     private void loadData() {
-        switch (STATE) {
-            case FIRST:
-                cpd.show();
-                break;
-        }
-        collectTaskPresenter.load(NetConfig.collectTaskUrl + "?u_id=" + UserUtils.readUserData(getActivity()).getId());
+        if (STATE == FIRST)
+            cpd.show();
+        OkHttpUtils
+                .get()
+                .tag(this)
+                .url(NetConfig.collectTaskUrl)
+                .addParams("u_id", UserUtils.readUserData(getActivity()).getId())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        notifyNet();
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        if (!TextUtils.isEmpty(response)) {
+                            CollectTaskBean collectTaskBean = SingleGson.getInstance().fromJson(response, CollectTaskBean.class);
+                            if (collectTaskBean != null) {
+                                if (collectTaskBean.getCode() == 1) {
+                                    if (collectTaskBean.getData() != null) {
+                                        if (collectTaskBean.getData().getData() != null) {
+                                            if (STATE == REFRESH)
+                                                mList.clear();
+                                            mList.addAll(collectTaskBean.getData().getData());
+                                            notifyData();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void notifyData() {
         switch (STATE) {
             case FIRST:
                 cpd.dismiss();
-                if (collectTaskList.size() == 0) {
+                if (mList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
@@ -180,7 +205,7 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
                 ptrl.hideHeadView();
                 break;
         }
-        collectTaskAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     private void notifyNet() {
@@ -213,10 +238,10 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
     public void loadSuccess(String json) {
         switch (STATE) {
             case REFRESH:
-                collectTaskList.clear();
+                mList.clear();
                 break;
         }
-        collectTaskList.addAll(DataUtils.getCollectTaskList(json));
+//        mList.addAll(DataUtils.getCollectTaskList(json));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
@@ -252,10 +277,8 @@ public class CollectTaskFragment extends Fragment implements ICollectTaskFragmen
     public void onClick(int id, int pos) {
         clickPosition = pos;
         switch (id) {
-            case R.id.ll_item_task:
-                break;
             case R.id.iv_item_task_collect:
-                collectTaskPresenter.cancelCollect(NetConfig.delCollectUrl + "?f_id=" + collectTaskList.get(clickPosition).getCollectId());
+                collectTaskPresenter.cancelCollect(NetConfig.delCollectUrl + "?f_id=" + mList.get(clickPosition).getF_id());
                 break;
         }
     }

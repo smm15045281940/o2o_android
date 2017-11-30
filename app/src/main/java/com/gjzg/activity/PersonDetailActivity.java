@@ -17,20 +17,20 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.EvaluateAdapter;
+import com.gjzg.adapter.EvaluateAdapter;
 import com.gjzg.bean.EvaluateBean;
 import com.gjzg.bean.SkillsBean;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import persondetail.presenter.IPersonDetailPresenter;
 import persondetail.presenter.PersonDetailPresenter;
 import persondetail.view.IPersonDetailActivity;
-import userinfo.adapter.UserSkillAdapter;
+import com.gjzg.adapter.UserSkillAdapter;
 import com.gjzg.bean.UserInfoBean;
-import utils.DataUtils;
-import utils.Utils;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class PersonDetailActivity extends AppCompatActivity implements IPersonDetailActivity, View.OnClickListener {
 

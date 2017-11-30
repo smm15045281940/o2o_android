@@ -4,7 +4,7 @@ package editinfo.module;
 import editinfo.listener.AddSkillListener;
 import editinfo.listener.SubmitListener;
 import com.gjzg.bean.UserInfoBean;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 
 public interface IEditInfoModule {
 

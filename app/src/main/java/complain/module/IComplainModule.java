@@ -2,7 +2,7 @@ package complain.module;
 
 
 import com.gjzg.bean.ToComplainBean;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 
 public interface IComplainModule {
 

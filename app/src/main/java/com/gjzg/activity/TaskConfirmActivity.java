@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gjzg.bean.PublishBean;
-import config.NetConfig;
-import config.VarConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -38,12 +38,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import taskconfirm.adapter.InputPasswordAdapter;
-import taskconfirm.adapter.TaskConfirmAdapter;
-import taskconfirm.bean.InputPasswordBean;
-import utils.DataUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.adapter.InputPasswordAdapter;
+import com.gjzg.adapter.TaskConfirmAdapter;
+import com.gjzg.bean.InputPasswordBean;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class TaskConfirmActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 

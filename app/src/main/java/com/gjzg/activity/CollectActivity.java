@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,7 +17,7 @@ import java.util.List;
 
 import com.gjzg.fragment.CollectTaskFragment;
 import com.gjzg.fragment.CollectWorkerFragment;
-import config.ColorConfig;
+import com.gjzg.config.ColorConfig;
 
 public class CollectActivity extends AppCompatActivity implements View.OnClickListener {
 

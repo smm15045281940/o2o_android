@@ -1,14 +1,12 @@
 package com.gjzg.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,18 +19,21 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import accountdetail.adapter.DetailAdapter;
-import accountdetail.bean.AccountDetailBean;
-import accountdetail.presenter.AccountDetailPresenter;
-import accountdetail.presenter.IAccountDetailPresenter;
-import accountdetail.view.IAccountDetailActivity;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.UrlUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.adapter.DetailAdapter;
 
-public class AccountDetailActivity extends AppCompatActivity implements IAccountDetailActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
+import com.gjzg.bean.DetailBean;
+import com.gjzg.config.VarConfig;
+import com.gjzg.singleton.SingleGson;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.UrlUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+public class AccountDetailActivity extends AppCompatActivity implements View.OnClickListener, PullToRefreshLayout.OnRefreshListener {
 
     private View rootView, emptyView, netView;
     private RelativeLayout returnRl;
@@ -45,29 +46,14 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     private TextView menuContentTv;
     private PullToRefreshLayout ptrl;
     private PullableListView plv;
-    private List<AccountDetailBean> list;
-    private DetailAdapter adapter;
+    private List<DetailBean.DataBeanX.DataBean> mList;
+    private DetailAdapter mAdapter;
     private CProgressDialog cProgressDialog;
 
     private final int ALL = 0, WITHDRAW = 1, RECHARGE = 2;
     private int LOG_STATE = ALL;
     private final int FIRST = 0, REFRESH = 1;
     private int STATE = FIRST;
-    private IAccountDetailPresenter accountDetailPresenter;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg != null) {
-                switch (msg.what) {
-                    case 1:
-                        notifyData();
-                        break;
-                }
-            }
-        }
-    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,10 +70,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (handler != null) {
-            handler.removeMessages(1);
-            handler = null;
-        }
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
     private void initView() {
@@ -144,13 +127,12 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
     }
 
     private void initData() {
-        accountDetailPresenter = new AccountDetailPresenter(this);
-        list = new ArrayList<>();
-        adapter = new DetailAdapter(this, list);
+        mList = new ArrayList<>();
+        mAdapter = new DetailAdapter(this, mList);
     }
 
     private void setData() {
-        plv.setAdapter(adapter);
+        plv.setAdapter(mAdapter);
     }
 
     private void setListener() {
@@ -169,14 +151,46 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                 break;
         }
         String url = UrlUtils.getUsersFundsLogUrl(AccountDetailActivity.this, LOG_STATE);
-        accountDetailPresenter.load(url);
+        OkHttpUtils
+                .get()
+                .tag(this)
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        cProgressDialog.dismiss();
+                        Utils.toast(AccountDetailActivity.this, VarConfig.noNetTip);
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        cProgressDialog.dismiss();
+                        if (!TextUtils.isEmpty(response)) {
+                            Utils.log(AccountDetailActivity.this, "response\n" + response);
+                            DetailBean detailBean = SingleGson.getInstance().fromJson(response, DetailBean.class);
+                            if (detailBean != null) {
+                                if (detailBean.getCode() == 1) {
+                                    if (detailBean.getData() != null) {
+                                        if (detailBean.getData().getData() != null) {
+                                            mList.clear();
+                                            mList.addAll(detailBean.getData().getData());
+                                            notifyData();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
     }
+
 
     private void notifyData() {
         switch (STATE) {
             case FIRST:
                 cProgressDialog.dismiss();
-                if (list.size() == 0) {
+                if (mList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);
                     emptyView.setVisibility(View.VISIBLE);
@@ -190,7 +204,7 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
                 ptrl.hideHeadView();
                 break;
         }
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     private void backgroundAlpha(float bgAlpha) {
@@ -243,25 +257,11 @@ public class AccountDetailActivity extends AppCompatActivity implements IAccount
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        STATE = REFRESH;
-        loadData();
+        ptrl.hideHeadView();
     }
 
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
         ptrl.hideFootView();
-    }
-
-    @Override
-    public void showSuccess(List<AccountDetailBean> accountDetailBeanList) {
-        Utils.log(AccountDetailActivity.this, accountDetailBeanList.toString());
-        list.clear();
-        list.addAll(accountDetailBeanList);
-        handler.sendEmptyMessage(1);
-    }
-
-    @Override
-    public void showFailure(String failure) {
-
     }
 }

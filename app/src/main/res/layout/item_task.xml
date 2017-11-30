@@ -13,7 +13,7 @@
         android:background="@drawable/sl_item_skills"
         android:orientation="horizontal">
 
-        <view.CImageView
+        <com.gjzg.view.CImageView
             android:id="@+id/iv_item_task_icon"
             android:layout_width="@dimen/y35"
             android:layout_height="@dimen/y35"

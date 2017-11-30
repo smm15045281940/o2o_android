@@ -56,23 +56,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import adapter.ComplainImageAdapter;
-import adapter.ComplainIssueAdapter;
-import adapter.PhotoAdapter;
+import com.gjzg.adapter.ComplainImageAdapter;
+import com.gjzg.adapter.ComplainIssueAdapter;
+import com.gjzg.adapter.PhotoAdapter;
 import com.gjzg.bean.ComplainIssueBean;
 import com.gjzg.bean.PhotoBean;
 import com.gjzg.bean.ToComplainBean;
 import complain.presenter.ComplainPresenter;
 import complain.presenter.IComplainPresenter;
-import config.AppConfig;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.AppConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import com.gjzg.bean.UserInfoBean;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class ComplainActivity extends AppCompatActivity implements IComplainActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

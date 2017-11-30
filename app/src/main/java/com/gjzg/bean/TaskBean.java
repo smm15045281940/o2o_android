@@ -1,7 +1,5 @@
 package com.gjzg.bean;
 
-import com.gjzg.bean.TaskWorkerBean;
-
 import java.io.Serializable;
 import java.util.List;
 

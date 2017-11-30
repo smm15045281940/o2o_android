@@ -11,15 +11,15 @@ import com.gjzg.R;
 import java.io.IOException;
 
 import com.gjzg.bean.ToEmployerToTalkBean;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class EmployerToTalkActivity extends AppCompatActivity implements View.OnClickListener {
 

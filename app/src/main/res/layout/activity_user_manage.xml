@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:background="@color/gray_c4ced3">
 
-        <view.CImageView
+        <com.gjzg.view.CImageView
             android:id="@+id/iv_user_manage_icon"
             android:layout_width="@dimen/x50"
             android:layout_height="@dimen/x50"

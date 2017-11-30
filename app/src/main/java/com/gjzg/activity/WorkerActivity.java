@@ -2,8 +2,6 @@ package com.gjzg.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -22,29 +20,24 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.gjzg.bean.ToTalkWorkerBean;
 import com.gjzg.bean.ToWorkerBean;
 
-import config.IntentConfig;
-import config.NetConfig;
-import config.VarConfig;
-import listener.IdPosClickHelp;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import utils.UserUtils;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.listener.IdPosClickHelp;
 
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.Utils;
-import adapter.WorkerAdapter;
-import view.CProgressDialog;
+import com.gjzg.utils.UserUtils;
+
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.Utils;
+import com.gjzg.adapter.WorkerAdapter;
+import com.gjzg.view.CProgressDialog;
 
 public class WorkerActivity extends AppCompatActivity implements PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 

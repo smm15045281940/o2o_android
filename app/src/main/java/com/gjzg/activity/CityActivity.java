@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -20,16 +19,16 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import city.adapter.CityAdapter;
-import city.bean.CityBean;
-import city.bean.CityBigBean;
+import com.gjzg.adapter.CityAdapter;
+import com.gjzg.bean.CityBean;
+import com.gjzg.bean.CityBigBean;
 import city.presenter.CityPresenter;
 import city.presenter.ICityPresenter;
 import city.view.ICityActivity;
-import config.IntentConfig;
-import utils.Utils;
-import view.CProgressDialog;
-import view.SlideBar;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
+import com.gjzg.view.SlideBar;
 
 public class CityActivity extends AppCompatActivity implements ICityActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

@@ -17,16 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gjzg.bean.SkillsBean;
-import config.NetConfig;
-import userinfo.adapter.UserInfoAdapter;
+import com.gjzg.config.NetConfig;
+import com.gjzg.adapter.UserInfoAdapter;
 import com.gjzg.bean.UserInfoBean;
 import userinfo.presenter.IUserInfoPresenter;
 import userinfo.presenter.UserInfoPresenter;
 import userinfo.view.IUserInfoFragment;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class UserInfoFragment extends Fragment implements IUserInfoFragment {
 

@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <view.CImageView
+                    <com.gjzg.view.CImageView
                         android:id="@+id/iv_complain_icon"
                         android:layout_width="@dimen/y37"
                         android:layout_height="@dimen/y37"

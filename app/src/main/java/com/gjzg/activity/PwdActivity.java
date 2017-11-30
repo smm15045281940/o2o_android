@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -22,15 +21,15 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import login.bean.UserBean;
+import com.gjzg.bean.UserBean;
 import password.presenter.IPwdPresenter;
 import password.presenter.PwdPresenter;
 import password.view.IPwdActivity;
-import taskconfirm.adapter.InputPasswordAdapter;
-import taskconfirm.bean.InputPasswordBean;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.adapter.InputPasswordAdapter;
+import com.gjzg.bean.InputPasswordBean;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class PwdActivity extends AppCompatActivity implements IPwdActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

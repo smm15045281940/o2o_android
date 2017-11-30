@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -18,14 +17,14 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.ColorConfig;
-import selectaddress.adapter.SelectAddressAdapter;
-import selectaddress.bean.SelectAddressBean;
+import com.gjzg.config.ColorConfig;
+import com.gjzg.adapter.SelectAddressAdapter;
+import com.gjzg.bean.SelectAddressBean;
 import selectaddress.presenter.ISelectAddressPresenter;
 import selectaddress.presenter.SelectAddressPresenter;
 import selectaddress.view.ISelectAddressActivity;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class SelectAddressActivity extends AppCompatActivity implements ISelectAddressActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

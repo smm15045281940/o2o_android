@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <view.SlideBar
+        <com.gjzg.view.SlideBar
             android:id="@+id/sb_city"
             android:layout_width="@dimen/y10"
             android:layout_height="wrap_content"

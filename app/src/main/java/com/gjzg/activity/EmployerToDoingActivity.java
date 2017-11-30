@@ -23,24 +23,24 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import adapter.TInfoTaskAdapter;
+import com.gjzg.adapter.TInfoTaskAdapter;
 import com.gjzg.bean.TInfoOrderBean;
 import com.gjzg.bean.TInfoTaskBean;
 import com.gjzg.bean.TInfoWorkerBean;
 import com.gjzg.bean.ToEvaluateBean;
 import com.gjzg.bean.ToJumpWorkerBean;
-import config.IntentConfig;
-import config.NetConfig;
-import listener.TInfoClickHelp;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.listener.TInfoClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class EmployerToDoingActivity extends AppCompatActivity implements View.OnClickListener, TInfoClickHelp {
 

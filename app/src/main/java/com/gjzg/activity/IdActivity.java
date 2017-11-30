@@ -5,15 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
-
-import config.VarConfig;
-import utils.Utils;
 
 public class IdActivity extends AppCompatActivity implements View.OnClickListener {
 

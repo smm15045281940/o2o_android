@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
@@ -21,11 +20,11 @@ import java.util.List;
 import idcard.presenter.IIdCardPresenter;
 import idcard.presenter.IdCardPresenter;
 import idcard.view.IIdCardActivity;
-import taskconfirm.adapter.InputPasswordAdapter;
-import taskconfirm.bean.InputPasswordBean;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.adapter.InputPasswordAdapter;
+import com.gjzg.bean.InputPasswordBean;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class IdCardActivity extends AppCompatActivity implements IIdCardActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

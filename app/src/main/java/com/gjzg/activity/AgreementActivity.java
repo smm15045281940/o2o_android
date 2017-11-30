@@ -20,17 +20,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.ArticleAdapter;
+import com.gjzg.adapter.ArticleAdapter;
 import com.gjzg.bean.ArticleBean;
-import config.NetConfig;
+import com.gjzg.config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.DataUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class AgreementActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 

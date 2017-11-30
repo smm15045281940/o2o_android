@@ -7,7 +7,7 @@ import com.gjzg.bean.ToComplainBean;
 import complain.module.ComplainModule;
 import complain.module.IComplainModule;
 import complain.view.IComplainActivity;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 
 public class ComplainPresenter implements IComplainPresenter {
 

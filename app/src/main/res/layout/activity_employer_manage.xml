@@ -94,7 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <refreshload.PullToRefreshLayout
+        <com.gjzg.view.PullToRefreshLayout
             android:id="@+id/ptrl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -102,7 +102,7 @@
 
             <include layout="@layout/head" />
 
-            <refreshload.PullableListView
+            <com.gjzg.view.PullableListView
                 android:id="@+id/plv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -110,7 +110,7 @@
 
             <include layout="@layout/foot" />
 
-        </refreshload.PullToRefreshLayout>
+        </com.gjzg.view.PullToRefreshLayout>
 
     </FrameLayout>
 

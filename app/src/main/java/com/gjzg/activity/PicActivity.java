@@ -21,11 +21,11 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.ComplainPicAdapter;
+import com.gjzg.adapter.ComplainPicAdapter;
 import com.gjzg.bean.Pic;
-import config.IntentConfig;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class PicActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 

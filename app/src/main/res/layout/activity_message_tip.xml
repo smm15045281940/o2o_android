@@ -50,7 +50,7 @@
                 android:layout_marginTop="@dimen/y10"
                 android:gravity="center"
                 android:text="您已关闭消息提示功能，如想打开需要在手机的设置中手动设置"
-                android:textSize="@dimen/y8" />
+                android:textSize="@dimen/y10" />
 
         </LinearLayout>
 

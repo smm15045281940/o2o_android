@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,7 +17,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -27,7 +26,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import usermanage.listener.UpLoadingIconListener;
-import utils.Utils;
+import com.gjzg.utils.Utils;
 
 public class UserManageModule implements IUserManageModule {
 

@@ -31,28 +31,35 @@ import java.util.List;
 
 import com.gjzg.bean.LonLatBean;
 import com.gjzg.bean.MessageBean;
-import city.bean.CityBean;
-import city.bean.CityBigBean;
+
+import com.gjzg.bean.CityBean;
+import com.gjzg.bean.CityBigBean;
+
 import com.gjzg.activity.CityActivity;
-import config.IntentConfig;
-import config.NetConfig;
+
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import firstpage.presenter.FirstPagePresenter;
 import firstpage.presenter.IFirstPagePresenter;
 import firstpage.view.IFirstPageFragment;
+
 import com.gjzg.activity.MessageActivity;
 import com.gjzg.activity.LoginActivity;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.activity.PublishJobActivity;
 import com.gjzg.activity.SkillActivity;
 import com.gjzg.activity.TaskActivity;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class FirstPageFragment extends Fragment implements IFirstPageFragment, View.OnClickListener {
 
@@ -257,12 +264,10 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
             case R.id.rl_frag_first_page_msg:
                 if (UserUtils.isUserLogin(getActivity())) {
                     String idcard = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard == null || TextUtils.isEmpty(idcard) || idcard.equals("null")) {
+                    if (TextUtils.isEmpty(idcard)) {
                         Utils.toast(getActivity(), "请在工作管理中完善个人信息");
                     } else {
-                        Intent msgIntent = new Intent(getActivity(), MessageActivity.class);
-                        msgIntent.putExtra(IntentConfig.intentName, IntentConfig.MESSAGE);
-                        startActivity(msgIntent);
+                        startActivity(new Intent(getActivity(), MessageActivity.class));
                     }
                 } else {
                     startActivity(new Intent(getActivity(), LoginActivity.class));

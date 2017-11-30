@@ -1,6 +1,5 @@
 package com.gjzg.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,8 +16,7 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.ColorConfig;
-import config.IntentConfig;
+import com.gjzg.config.ColorConfig;
 
 import com.gjzg.fragment.JobOfferFragment;
 import com.gjzg.fragment.SysMsgFragment;
@@ -58,23 +56,13 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     private void initData() {
         fragmentManager = getSupportFragmentManager();
         fragmentList = new ArrayList<>();
-        Intent intent = getIntent();
-        int status = intent.getIntExtra(IntentConfig.intentName, 0);
-        if (status != 0) {
-            switch (status) {
-                case IntentConfig.MESSAGE:
-                    offerTv.setText("工作邀约");
-                    systemTv.setText("系统消息");
-                    Fragment jobOfferFragment = new JobOfferFragment();
-                    Fragment sysMsgFragment = new SysMsgFragment();
-                    fragmentList.add(jobOfferFragment);
-                    fragmentList.add(sysMsgFragment);
-                    break;
-            }
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.ll_message_sit, fragmentList.get(curState));
-            transaction.commit();
-        }
+        Fragment jobOfferFragment = new JobOfferFragment();
+        Fragment sysMsgFragment = new SysMsgFragment();
+        fragmentList.add(jobOfferFragment);
+        fragmentList.add(sysMsgFragment);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.ll_message_sit, fragmentList.get(curState));
+        transaction.commit();
     }
 
     private void setListener() {

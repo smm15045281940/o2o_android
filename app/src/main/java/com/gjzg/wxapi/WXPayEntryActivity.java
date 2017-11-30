@@ -11,8 +11,8 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import config.AppConfig;
-import utils.Utils;
+import com.gjzg.config.AppConfig;
+import com.gjzg.utils.Utils;
 import com.gjzg.activity.WalletActivity;
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {

@@ -12,7 +12,7 @@ import editinfo.module.EditInfoModule;
 import editinfo.module.IEditInfoModule;
 import editinfo.view.IEditInfoFragment;
 import com.gjzg.bean.UserInfoBean;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 
 public class EditInfoPresenter implements IEditInfoPresenter {
 

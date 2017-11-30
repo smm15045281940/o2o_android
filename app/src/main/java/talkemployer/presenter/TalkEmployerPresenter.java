@@ -2,7 +2,7 @@ package talkemployer.presenter;
 
 import android.os.Handler;
 
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import talkemployer.module.ITalkEmployerModule;
 import talkemployer.module.TalkEmployerModule;
 import talkemployer.view.ITalkEmployerActivity;

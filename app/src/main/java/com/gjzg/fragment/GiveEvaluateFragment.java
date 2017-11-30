@@ -16,18 +16,18 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.EvaluateAdapter;
+import com.gjzg.adapter.EvaluateAdapter;
 import com.gjzg.bean.EvaluateBean;
-import config.NetConfig;
+import com.gjzg.config.NetConfig;
 import giveevaluate.presenter.GiveEvaluatePresenter;
 import giveevaluate.presenter.IGiveEvaluatePresenter;
 import giveevaluate.view.IGiveEvaluateFragment;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class GiveEvaluateFragment extends Fragment implements IGiveEvaluateFragment, PullToRefreshLayout.OnRefreshListener {
 

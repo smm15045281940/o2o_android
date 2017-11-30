@@ -23,22 +23,22 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.NetConfig;
-import editinfo.adapter.AddSkillAdapter;
-import editinfo.adapter.EditInfoAdapter;
+import com.gjzg.config.NetConfig;
+import com.gjzg.adapter.AddSkillAdapter;
+import com.gjzg.adapter.EditInfoAdapter;
 import editinfo.listener.AddSkillClickHelp;
 import editinfo.listener.EditInfoClickHelp;
 import editinfo.presenter.EditInfoPresenter;
 import editinfo.presenter.IEditInfoPresenter;
 import editinfo.view.IEditInfoFragment;
-import selectaddress.bean.SelectAddressBean;
+import com.gjzg.bean.SelectAddressBean;
 import com.gjzg.activity.SelectAddressActivity;
 import com.gjzg.bean.SkillsBean;
 import com.gjzg.bean.UserInfoBean;
 import com.gjzg.activity.UserManageActivity;
-import utils.DataUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class EditInfoFragment extends Fragment implements IEditInfoFragment, View.OnClickListener, EditInfoClickHelp, AddSkillClickHelp {
 

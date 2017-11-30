@@ -28,17 +28,17 @@ import com.squareup.picasso.Picasso;
 
 import com.gjzg.bean.ToSelectTaskBean;
 import com.gjzg.bean.ToTalkWorkerBean;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import talkworker.presenter.ITalkWorkerPresenter;
 import talkworker.presenter.TalkWorkerPresenter;
 import talkworker.view.ITalkWorkerActivity;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
 import com.gjzg.bean.WorkerBean;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorkerActivity, View.OnClickListener {
 

@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/white">
 
-                <view.CImageView
+                <com.gjzg.view.CImageView
                     android:id="@+id/iv_frag_me_login_icon"
                     android:layout_width="@dimen/y34"
                     android:layout_height="@dimen/y34"

@@ -3,7 +3,7 @@ package withdraw.presenter;
 import android.os.Handler;
 
 import com.gjzg.bean.WithDrawBean;
-import listener.JsonListener;
+import com.gjzg.listener.JsonListener;
 import withdraw.module.IWithDrawModule;
 import withdraw.module.WithDrawModule;
 import withdraw.view.IWithDrawActivity;

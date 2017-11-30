@@ -2,9 +2,9 @@ package withdraw.module;
 
 import java.io.IOException;
 
-import config.NetConfig;
-import config.VarConfig;
-import listener.JsonListener;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.listener.JsonListener;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;

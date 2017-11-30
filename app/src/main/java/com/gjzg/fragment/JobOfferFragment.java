@@ -23,21 +23,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.MessageAdapter;
+import com.gjzg.adapter.MessageAdapter;
 
 import com.gjzg.bean.OfferBean;
 import com.gjzg.singleton.SingleGson;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import config.NetConfig;
-import config.VarConfig;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class JobOfferFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, PullToRefreshLayout.OnRefreshListener {
 

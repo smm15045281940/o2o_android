@@ -24,18 +24,18 @@ import com.gjzg.bean.ToComplainBean;
 import com.gjzg.bean.ToFireBean;
 import com.gjzg.bean.UserInfoBean;
 import complain.view.ComplainActivity;
-import config.IntentConfig;
-import config.NetConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CImageView;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CImageView;
+import com.gjzg.view.CProgressDialog;
 
 public class FireActivity extends AppCompatActivity implements View.OnClickListener {
 

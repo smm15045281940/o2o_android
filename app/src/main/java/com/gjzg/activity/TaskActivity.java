@@ -22,23 +22,23 @@ import java.util.List;
 import com.gjzg.bean.Task;
 import com.gjzg.bean.ToTalkEmployerBean;
 
-import config.IntentConfig;
-import listener.IdPosClickHelp;
-import adapter.TaskAdapter;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.listener.IdPosClickHelp;
+import com.gjzg.adapter.TaskAdapter;
 
 import com.gjzg.singleton.SingleGson;
 import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import config.NetConfig;
-import config.VarConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
 
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class TaskActivity extends AppCompatActivity implements PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 

@@ -15,7 +15,6 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,8 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.ColorConfig;
-import config.NetConfig;
+import com.gjzg.config.ColorConfig;
+import com.gjzg.config.NetConfig;
 
 import com.gjzg.fragment.DiscountFragment;
 import com.gjzg.fragment.FirstPageFragment;
@@ -46,7 +45,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import utils.Utils;
+import com.gjzg.utils.Utils;
 
 /**
  * 主页

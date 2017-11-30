@@ -2,64 +2,46 @@ package com.gjzg.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gjzg.R;
+import com.gjzg.bean.FundBean;
+import com.gjzg.singleton.SingleGson;
+import com.squareup.okhttp.Request;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
-import com.gjzg.bean.WalletBean;
-import config.NetConfig;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
-import wallet.presenter.IWalletPresenter;
-import wallet.presenter.WalletPresenter;
-import wallet.view.IWalletActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
 
-public class WalletActivity extends AppCompatActivity implements IWalletActivity, View.OnClickListener {
+public class WalletActivity extends AppCompatActivity{
 
-    private View rootView;
-    private RelativeLayout returnRl, detailRl, rechargeRl, withDrawRl;
-    private TextView overageTv;
-    private CProgressDialog cpd;
-    private WalletBean walletBean;
-    private IWalletPresenter walletPresenter;
-    private final int LOAD_SUCCESS = 1;
-    private final int LOAD_FAILURE = 2;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg != null) {
-                switch (msg.what) {
-                    case LOAD_SUCCESS:
-                        cpd.dismiss();
-                        notifyData();
-                        break;
-                    case LOAD_FAILURE:
-                        break;
-                }
-            }
-        }
-    };
+    @BindView(R.id.rl_wallet_return)
+    RelativeLayout rlWalletReturn;
+    @BindView(R.id.rl_wallet_detail)
+    RelativeLayout rlWalletDetail;
+    @BindView(R.id.tv_wallet_overage)
+    TextView tvWalletOverage;
+    @BindView(R.id.rl_wallet_recharge)
+    RelativeLayout rlWalletRecharge;
+    @BindView(R.id.rl_wallet_withdraw)
+    RelativeLayout rlWalletWithdraw;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rootView = LayoutInflater.from(this).inflate(R.layout.activity_wallet, null);
-        setContentView(rootView);
-        initView();
-        initData();
-        setListener();
+        setContentView(R.layout.activity_wallet);
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -71,84 +53,51 @@ public class WalletActivity extends AppCompatActivity implements IWalletActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (handler != null) {
-            handler.removeMessages(LOAD_SUCCESS);
-            handler.removeMessages(LOAD_FAILURE);
-            handler = null;
-        }
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
-    private void initView() {
-        initRootView();
-    }
-
-    private void initRootView() {
-        returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_wallet_return);
-        detailRl = (RelativeLayout) rootView.findViewById(R.id.rl_wallet_detail);
-        rechargeRl = (RelativeLayout) rootView.findViewById(R.id.rl_wallet_recharge);
-        withDrawRl = (RelativeLayout) rootView.findViewById(R.id.rl_wallet_withdraw);
-        overageTv = (TextView) rootView.findViewById(R.id.tv_wallet_overage);
-        cpd = Utils.initProgressDialog(WalletActivity.this, cpd);
-    }
-
-    private void initData() {
-        walletPresenter = new WalletPresenter(this);
-    }
-
-    private void setListener() {
-        returnRl.setOnClickListener(this);
-        detailRl.setOnClickListener(this);
-        rechargeRl.setOnClickListener(this);
-        withDrawRl.setOnClickListener(this);
-    }
-
-    private void loadData() {
-        cpd.show();
-        walletPresenter.load(NetConfig.userFundUrl + "?u_id=" + UserUtils.readUserData(WalletActivity.this).getId());
-    }
-
-    private void notifyData() {
-        if (TextUtils.isEmpty(walletBean.getOverage())) {
-            overageTv.setText("0");
-        } else {
-            String money = walletBean.getOverage();
-            if (money.contains(".")) {
-                int point = money.indexOf(".");
-                int last = money.length();
-                if (last - point > 2) {
-                    money = money.substring(0, point + 3);
-                }
-            }
-            overageTv.setText(money);
-        }
-    }
-
-    @Override
+    @OnClick({R.id.rl_wallet_return,R.id.rl_wallet_detail,R.id.rl_wallet_recharge,R.id.rl_wallet_withdraw})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_wallet_return:
                 startActivity(new Intent(WalletActivity.this, MainActivity.class));
                 break;
             case R.id.rl_wallet_detail:
-                startActivity(new Intent(this, AccountDetailActivity.class));
+                startActivity(new Intent(WalletActivity.this, AccountDetailActivity.class));
                 break;
             case R.id.rl_wallet_recharge:
-                startActivity(new Intent(this, RechargeActivity.class));
+                startActivity(new Intent(WalletActivity.this, RechargeActivity.class));
                 break;
             case R.id.rl_wallet_withdraw:
-                startActivity(new Intent(this, WithDrawActivity.class));
+                startActivity(new Intent(WalletActivity.this, WithDrawActivity.class));
                 break;
         }
     }
 
-    @Override
-    public void loadSuccess(String json) {
-        walletBean = DataUtils.getWalletBean(json);
-        handler.sendEmptyMessage(LOAD_SUCCESS);
-    }
+    private void loadData() {
+        String url = NetConfig.userFundUrl + "?u_id=" + UserUtils.readUserData(WalletActivity.this).getId();
+        OkHttpUtils.get().tag(this).url(url).build().execute(new StringCallback() {
+            @Override
+            public void onError(Request request, Exception e) {
+                Utils.toast(WalletActivity.this, VarConfig.noNetTip);
+            }
 
-    @Override
-    public void loadFailure(String failure) {
-        handler.sendEmptyMessage(LOAD_FAILURE);
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    FundBean fundBean = SingleGson.getInstance().fromJson(response, FundBean.class);
+                    if (fundBean != null) {
+                        if (fundBean.getCode() == 1) {
+                            if (fundBean.getData() != null) {
+                                if (fundBean.getData().getData() != null) {
+                                    if (!TextUtils.isEmpty(fundBean.getData().getData().getUef_overage()))
+                                        tvWalletOverage.setText(fundBean.getData().getData().getUef_overage());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 }

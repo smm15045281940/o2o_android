@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
@@ -22,16 +21,16 @@ import com.gjzg.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.VarConfig;
+import com.gjzg.config.VarConfig;
 import phoneprove.presenter.IPhoneProvePresenter;
 import phoneprove.presenter.PhoneProvePresenter;
 import phoneprove.view.IPhoneProveActivity;
-import service.CodeTimerService;
-import taskconfirm.adapter.InputPasswordAdapter;
-import taskconfirm.bean.InputPasswordBean;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.service.CodeTimerService;
+import com.gjzg.adapter.InputPasswordAdapter;
+import com.gjzg.bean.InputPasswordBean;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class PhoneProveActivity extends AppCompatActivity implements IPhoneProveActivity, View.OnClickListener, AdapterView.OnItemClickListener {
 

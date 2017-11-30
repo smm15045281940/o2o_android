@@ -22,27 +22,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.SelectTaskAdapter;
+import com.gjzg.adapter.SelectTaskAdapter;
 import com.gjzg.bean.TaskBean;
 import com.gjzg.bean.ToSelectTaskBean;
-import config.IntentConfig;
-import config.NetConfig;
-import config.VarConfig;
-import listener.IdPosClickHelp;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.listener.IdPosClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
 import selecttask.presenter.ISelectTaskPresenter;
 import selecttask.presenter.SelectTaskPresenter;
 import selecttask.view.ISelectTaskActivity;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class SelectTaskActivity extends AppCompatActivity implements ISelectTaskActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 

@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import adapter.CollectWorkerAdapter;
+import com.gjzg.adapter.CollectWorkerAdapter;
 
 import com.gjzg.bean.CollectWorker;
 import com.gjzg.singleton.SingleGson;
@@ -26,14 +26,14 @@ import com.squareup.okhttp.Request;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import config.NetConfig;
-import config.VarConfig;
-import listener.IdPosClickHelp;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.listener.IdPosClickHelp;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class CollectWorkerFragment extends Fragment implements PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 

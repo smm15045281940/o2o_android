@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.NetConfig;
-import config.VarConfig;
-import adapter.RedPacketAdapter;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.adapter.RedPacketAdapter;
 import com.gjzg.bean.RedPacketBean;
-import listener.IdPosClickHelp;
+import com.gjzg.listener.IdPosClickHelp;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -32,12 +33,13 @@ import okhttp3.Response;
 import redpacket.presenter.IRedPacketPresenter;
 import redpacket.presenter.RedPacketPresenter;
 import redpacket.view.IRedPacketActivity;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.DataUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class RedPacketActivity extends AppCompatActivity implements IRedPacketActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
@@ -153,7 +155,8 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     }
 
     private void loadData() {
-        cpd.show();
+        if (STATE == FIRST)
+            cpd.show();
         String url = NetConfig.redBagUrl +
                 "?action=list" +
                 "&uid=" + UserUtils.readUserData(RedPacketActivity.this).getId() +
@@ -162,11 +165,9 @@ public class RedPacketActivity extends AppCompatActivity implements IRedPacketAc
     }
 
     private void notifyData() {
-        if (cpd.isShowing()) {
-            cpd.dismiss();
-        }
         switch (STATE) {
             case FIRST:
+                cpd.dismiss();
                 if (redPacketBeanList.size() == 0) {
                     ptrl.setVisibility(View.GONE);
                     netView.setVisibility(View.GONE);

@@ -26,29 +26,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.ColorConfig;
-import config.IntentConfig;
-import config.NetConfig;
-import config.StateConfig;
-import config.VarConfig;
-import adapter.EmployerManageAdapter;
+import com.gjzg.config.ColorConfig;
+import com.gjzg.config.IntentConfig;
+import com.gjzg.config.NetConfig;
+import com.gjzg.config.StateConfig;
+import com.gjzg.config.VarConfig;
+import com.gjzg.adapter.EmployerManageAdapter;
 import com.gjzg.bean.EmployerManageBean;
 import employermanage.presenter.EmployerManagePresenter;
 import employermanage.presenter.IEmployerManagePresenter;
 import employermanage.view.IEmployerManageActivity;
-import listener.IdPosClickHelp;
+import com.gjzg.listener.IdPosClickHelp;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import refreshload.PullToRefreshLayout;
-import refreshload.PullableListView;
-import utils.DataUtils;
-import utils.UrlUtils;
-import utils.UserUtils;
-import utils.Utils;
-import view.CProgressDialog;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
+import com.gjzg.utils.DataUtils;
+import com.gjzg.utils.UrlUtils;
+import com.gjzg.utils.UserUtils;
+import com.gjzg.utils.Utils;
+import com.gjzg.view.CProgressDialog;
 
 public class EmployerManageActivity extends AppCompatActivity implements IEmployerManageActivity, View.OnClickListener, PullToRefreshLayout.OnRefreshListener, IdPosClickHelp {
 
