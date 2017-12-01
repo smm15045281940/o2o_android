@@ -1,6 +1,8 @@
 package com.gjzg.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gjzg.bean.AppConfigBean;
 import com.gjzg.config.ColorConfig;
 import com.gjzg.config.NetConfig;
 
@@ -45,7 +48,11 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import com.gjzg.singleton.SingleGson;
 import com.gjzg.utils.Utils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 /**
  * 主页
@@ -67,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String lockPwd;
     private boolean correct = false;
 
+    private View updatePopView;
+    private PopupWindow updatePop;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -87,6 +97,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case 3:
                         Utils.toast(MainActivity.this, "密码不正确");
                         break;
+                    case 4:
+                        if (!updatePop.isShowing()) {
+                            Utils.dark(MainActivity.this);
+                            updatePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                        }
+                        break;
                 }
             }
         }
@@ -101,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initData();
         setListener();
         loadData();
+        getUpdate();
     }
 
     @Override
@@ -110,8 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             handler.removeMessages(1);
             handler.removeMessages(2);
             handler.removeMessages(3);
+            handler.removeMessages(4);
             handler = null;
         }
+        OkHttpUtils.getInstance().cancelTag(this);
     }
 
     private void initView() {
@@ -212,6 +231,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+        updatePopView = LayoutInflater.from(MainActivity.this).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) updatePopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("检测到有新版本，是否更新?");
+        ((TextView) updatePopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) updatePopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        updatePopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (updatePop.isShowing()) {
+                    updatePop.dismiss();
+                }
+            }
+        });
+        updatePopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (updatePop.isShowing()) {
+                    updatePop.dismiss();
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW).setData(Uri.parse(NetConfig.updateUrl));
+                    intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+                    if (intent.resolveActivity(getPackageManager()) != null)
+                        startActivity(intent);
+                }
+            }
+        });
+        updatePop = new PopupWindow(updatePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        updatePop.setFocusable(true);
+        updatePop.setTouchable(true);
+        updatePop.setOutsideTouchable(true);
+        updatePop.setBackgroundDrawable(new BitmapDrawable());
+        updatePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Utils.light(MainActivity.this);
+            }
+        });
     }
 
     private void initData() {
@@ -268,6 +324,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+
+    private void getUpdate() {
+        OkHttpUtils
+                .get()
+                .tag(this)
+                .url(NetConfig.appConfigUrl)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(com.squareup.okhttp.Request request, Exception e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response) {
+                        if (!TextUtils.isEmpty(response)) {
+                            AppConfigBean appConfigBean = SingleGson.getInstance().fromJson(response, AppConfigBean.class);
+                            if (appConfigBean != null) {
+                                if (appConfigBean.getData() != null) {
+                                    if (appConfigBean.getData().getData() != null) {
+                                        if (!TextUtils.isEmpty(appConfigBean.getData().getData().getAndroid_version())) {
+                                            String version = getAppInfo();
+                                            if (!TextUtils.isEmpty(version)) {
+                                                if (!appConfigBean.getData().getData().getAndroid_version().equals(version)) {
+                                                    handler.sendEmptyMessageDelayed(4, 2000);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private String getAppInfo() {
+        try {
+            String pkName = this.getPackageName();
+            String versionName = this.getPackageManager().getPackageInfo(
+                    pkName, 0).versionName;
+            return versionName;
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     @Override

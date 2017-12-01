@@ -8,7 +8,7 @@ public class AppConfigBean {
 
     /**
      * code : 1
-     * data : {"data":{"charge_rate":"0.1","official_website":"www.baidu.com","service_telephone":"13163675676","token_valid":"2"}}
+     * data : {"data":{"android_version":"1.0","ios_version":"1.0","charge_rate":"0.1","official_website":"www.gangjianwang.com","service_telephone":"4000788889","token_valid":"2"}}
      */
 
     private int code;
@@ -32,7 +32,7 @@ public class AppConfigBean {
 
     public static class DataBeanX {
         /**
-         * data : {"charge_rate":"0.1","official_website":"www.baidu.com","service_telephone":"13163675676","token_valid":"2"}
+         * data : {"android_version":"1.0","ios_version":"1.0","charge_rate":"0.1","official_website":"www.gangjianwang.com","service_telephone":"4000788889","token_valid":"2"}
          */
 
         private DataBean data;
@@ -47,16 +47,36 @@ public class AppConfigBean {
 
         public static class DataBean {
             /**
+             * android_version : 1.0
+             * ios_version : 1.0
              * charge_rate : 0.1
-             * official_website : www.baidu.com
-             * service_telephone : 13163675676
+             * official_website : www.gangjianwang.com
+             * service_telephone : 4000788889
              * token_valid : 2
              */
 
+            private String android_version;
+            private String ios_version;
             private String charge_rate;
             private String official_website;
             private String service_telephone;
             private String token_valid;
+
+            public String getAndroid_version() {
+                return android_version;
+            }
+
+            public void setAndroid_version(String android_version) {
+                this.android_version = android_version;
+            }
+
+            public String getIos_version() {
+                return ios_version;
+            }
+
+            public void setIos_version(String ios_version) {
+                this.ios_version = ios_version;
+            }
 
             public String getCharge_rate() {
                 return charge_rate;
