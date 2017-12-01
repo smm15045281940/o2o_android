@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
+
 import com.gjzg.config.ColorConfig;
 import com.gjzg.config.NetConfig;
 import com.gjzg.config.VarConfig;
@@ -37,7 +38,7 @@ import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CProgressDialog;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.rl_login_return)
     RelativeLayout returnRl;
@@ -153,8 +154,9 @@ public class LoginActivity extends AppCompatActivity{
                                     }
                                     if (!TextUtils.isEmpty(msg))
                                         Utils.toast(LoginActivity.this, msg);
-                                    if (code == 1)
+                                    if (code == 1) {
                                         startService(new Intent(LoginActivity.this, GetLoginCodeTimerService.class));
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -186,6 +188,7 @@ public class LoginActivity extends AppCompatActivity{
 
                             @Override
                             public void onResponse(String response) {
+                                cpd.dismiss();
                                 if (!TextUtils.isEmpty(response)) {
                                     Utils.log(LoginActivity.this, response);
                                     try {
@@ -270,15 +273,15 @@ public class LoginActivity extends AppCompatActivity{
             final String action = intent.getAction();
             switch (action) {
                 case GetLoginCodeTimerService.IN_RUNNING:
-                    if (getTv.isEnabled()) {
+                    if (getRl.isEnabled()) {
                         getGd.setColor(ColorConfig.gray_a0a0a0);
-                        getTv.setEnabled(false);
+                        getRl.setEnabled(false);
                     }
                     getTv.setText(intent.getStringExtra("time") + "秒后重新发送");
                     break;
                 case GetLoginCodeTimerService.END_RUNNING:
                     getGd.setColor(ColorConfig.blue_2681fc);
-                    getTv.setEnabled(true);
+                    getRl.setEnabled(true);
                     getTv.setText(VarConfig.getPwdTip);
                     break;
             }

@@ -51,13 +51,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import complain.view.ComplainActivity;
+
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -90,7 +93,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private PopupWindow fireWorkerPop;
 
     private float charge_rate;
-    private String cancelWorkerTip,employerSureTip;
+    private String cancelWorkerTip, employerSureTip;
 
     private Handler handler = new Handler() {
         @Override
@@ -114,7 +117,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                         }
                         break;
                     case 4:
-                        if(!TextUtils.isEmpty(employerSureTip)){
+                        cpd.dismiss();
+                        if (!TextUtils.isEmpty(employerSureTip)) {
                             if (employerSureTip.equals("success")) {
                                 startActivity(new Intent(JumpWorkerActivity.this, EmployerManageActivity.class));
                             } else if (employerSureTip.equals("failure")) {
@@ -217,7 +221,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-        cancelWorkerPop = new PopupWindow(cancelWorkerPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        cancelWorkerPop = new PopupWindow(cancelWorkerPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         cancelWorkerPop.setFocusable(true);
         cancelWorkerPop.setTouchable(true);
         cancelWorkerPop.setOutsideTouchable(true);
@@ -576,7 +580,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                     Utils.log(JumpWorkerActivity.this, "employerSureJson\n" + json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
-                        if(jsonObject.optInt("code") == 200){
+                        if (jsonObject.optInt("code") == 200) {
                             employerSureTip = jsonObject.optString("data");
                             handler.sendEmptyMessage(4);
                         }

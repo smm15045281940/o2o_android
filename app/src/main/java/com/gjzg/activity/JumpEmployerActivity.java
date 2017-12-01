@@ -203,7 +203,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 }
             }
         });
-        cancelPop = new PopupWindow(cancelPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        cancelPop = new PopupWindow(cancelPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         cancelPop.setFocusable(true);
         cancelPop.setTouchable(true);
         cancelPop.setOutsideTouchable(true);

@@ -1,5 +1,6 @@
 package com.gjzg.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,6 +13,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -37,6 +39,63 @@ import com.gjzg.view.CProgressDialog;
 
 //工具类
 public class Utils {
+
+    public static void dark(Activity activity) {
+        if (activity != null) {
+            WindowManager.LayoutParams layoutParams = activity.getWindow().getAttributes();
+            layoutParams.alpha = 0.5f;
+            activity.getWindow().setAttributes(layoutParams);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+    }
+
+    public static void light(Activity activity) {
+        if (activity != null) {
+            WindowManager.LayoutParams layoutParams = activity.getWindow().getAttributes();
+            layoutParams.alpha = 1.0f;
+            activity.getWindow().setAttributes(layoutParams);
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+    }
+
+    /**
+     * 校验银行卡卡号
+     *
+     * @param cardId
+     * @return
+     */
+    public static boolean checkBankCard(String cardId) {
+        char bit = getBankCardCheckCode(cardId.substring(0, cardId.length() - 1));
+        if (bit == 'N') {
+            return false;
+        }
+        return cardId.charAt(cardId.length() - 1) == bit;
+    }
+
+    /**
+     * 从不含校验位的银行卡卡号采用 Luhm 校验算法获得校验位
+     *
+     * @param nonCheckCodeCardId
+     * @return
+     */
+    public static char getBankCardCheckCode(String nonCheckCodeCardId) {
+        if (nonCheckCodeCardId == null || nonCheckCodeCardId.trim().length() == 0
+                || !nonCheckCodeCardId.matches("\\d+")) {
+            //如果传的不是数据返回N
+            return 'N';
+        }
+        char[] chs = nonCheckCodeCardId.trim().toCharArray();
+        int luhmSum = 0;
+        for (int i = chs.length - 1, j = 0; i >= 0; i--, j++) {
+            int k = chs[i] - '0';
+            if (j % 2 == 0) {
+                k *= 2;
+                k = k / 10 + k % 10;
+            }
+            luhmSum += k;
+        }
+        return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0');
+    }
 
     /**Intent in = new Intent(Intent.ACTION_DIAL);
      in.setData(Uri.parse("tel:" + "?"));

@@ -87,7 +87,7 @@ public class TaskAdapter extends BaseAdapter {
             LonLatBean lonLatBean2 = new LonLatBean(dataBean.getT_posit_x(), dataBean.getT_posit_y());
             String distance = DataUtils.getDistance(lonLatBean1, lonLatBean2);
             if (!TextUtils.isEmpty(distance)) {
-                holder.distanceTv.setText("离我" + distance + "公里");
+                holder.distanceTv.setText(distance);
             } else {
                 holder.distanceTv.setText("无法获取距离");
             }

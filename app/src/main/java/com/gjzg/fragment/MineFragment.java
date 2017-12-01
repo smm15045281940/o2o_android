@@ -295,60 +295,25 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         if (UserUtils.isUserLogin(getActivity())) {
             switch (v.getId()) {
                 case R.id.rl_mine_collect:
-                    String idcard0 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard0 == null || TextUtils.isEmpty(idcard0) || idcard0.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), CollectActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), CollectActivity.class));
                     break;
                 case R.id.rl_mine_evaluate:
-                    String idcard1 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard1 == null || TextUtils.isEmpty(idcard1) || idcard1.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), MyEvaluateActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), MyEvaluateActivity.class));
                     break;
                 case R.id.rl_mine_wallet:
-                    String idcard2 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard2 == null || TextUtils.isEmpty(idcard2) || idcard2.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), WalletActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), WalletActivity.class));
                     break;
                 case R.id.rl_mine_msg:
-                    String idcard3 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (TextUtils.isEmpty(idcard3)) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), MessageActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), MessageActivity.class));
                     break;
                 case R.id.rl_mine_red_bag:
-                    String idcard4 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard4 == null || TextUtils.isEmpty(idcard4) || idcard4.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), RedPacketActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), RedPacketActivity.class));
                     break;
                 case R.id.rl_mine_voucher:
-                    String idcard5 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard5 == null || TextUtils.isEmpty(idcard5) || idcard5.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), VoucherActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), VoucherActivity.class));
                     break;
                 case R.id.ll_mine_set_cash_pwd:
-                    String idcard6 = UserUtils.readUserData(getActivity()).getIdcard();
-                    if (idcard6 == null || TextUtils.isEmpty(idcard6) || idcard6.equals("null")) {
-                        Utils.toast(getActivity(), "请在工作管理中完善个人信息");
-                    } else {
-                        startActivity(new Intent(getActivity(), SetPwdActivity.class));
-                    }
+                    startActivity(new Intent(getActivity(), SetPwdActivity.class));
                     break;
                 case R.id.ll_mine_service_term:
                     startActivity(new Intent(getActivity(), AgreementActivity.class));
@@ -364,8 +329,7 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                     }
                     break;
                 case R.id.tv_mine_login:
-                    Intent loginIntent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(loginIntent);
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
                     break;
                 case R.id.iv_frag_me_login_online:
                     String online = UserUtils.readUserData(getActivity()).getOnline();

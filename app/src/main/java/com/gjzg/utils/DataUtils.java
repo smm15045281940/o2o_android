@@ -81,7 +81,6 @@ public class DataUtils {
 
     //距离
     public static String getDistance(LonLatBean lonLatBean1, LonLatBean lonLatBean2) {
-        String distance = "";
         if (lonLatBean1 != null && lonLatBean2 != null) {
             String lon1 = lonLatBean1.getLon();
             String lat1 = lonLatBean1.getLat();
@@ -92,10 +91,22 @@ public class DataUtils {
                 LatLng latLng1 = new LatLng(Double.parseDouble(lat1), Double.parseDouble(lon1));
                 LatLng latLng2 = new LatLng(Double.parseDouble(lat2), Double.parseDouble(lon2));
                 Double d = DistanceUtil.getDistance(latLng1, latLng2);
-                distance = String.format("%.2f", d / 1000);
+                String distance = null;
+                if (d < 1) {
+                    distance = "离我1米";
+                } else if (d >= 1 && d < 1000) {
+                    String temp = d + "";
+                    if (temp.contains(".")) {
+                        int point = temp.indexOf(".");
+                        distance = "离我" + temp.substring(0, point) + "米";
+                    }
+                } else {
+                    distance = "离我" + String.format("%.2f", d / 1000) + "公里";
+                }
+                return distance;
             }
         }
-        return distance;
+        return null;
     }
 
     //技能

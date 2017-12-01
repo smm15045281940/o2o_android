@@ -28,8 +28,7 @@
         <ScrollView
             android:id="@+id/sv_agreement"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/y5">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tv_agreement_desc"

@@ -146,7 +146,7 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                 }
             }
         });
-        sureDonePop = new PopupWindow(sureDonePopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        sureDonePop = new PopupWindow(sureDonePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         sureDonePop.setFocusable(true);
         sureDonePop.setTouchable(true);
         sureDonePop.setOutsideTouchable(true);

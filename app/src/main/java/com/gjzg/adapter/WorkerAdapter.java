@@ -83,7 +83,7 @@ public class WorkerAdapter extends BaseAdapter {
             }
             String distance = DataUtils.getDistance(lonLatBean1, lonLatBean2);
             if (!TextUtils.isEmpty(distance)) {
-                holder.distanceTv.setText("离我" + distance + "公里");
+                holder.distanceTv.setText(distance);
             } else {
                 holder.distanceTv.setText("无法获取距离");
             }

@@ -36,11 +36,13 @@ import java.util.List;
 import com.gjzg.adapter.WithDrawAdapter;
 import com.gjzg.bean.PayWayBean;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.adapter.InputPasswordAdapter;
 import com.gjzg.bean.InputPasswordBean;
 import com.gjzg.utils.DataUtils;
@@ -48,6 +50,7 @@ import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CProgressDialog;
 import com.gjzg.bean.WithDrawBean;
+
 import withdraw.presenter.IWithDrawPresenter;
 import withdraw.presenter.WithDrawPresenter;
 import withdraw.view.IWithDrawActivity;
@@ -281,6 +284,8 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
             Utils.toast(WithDrawActivity.this, "姓名不能为空");
         } else if (TextUtils.isEmpty(withDrawBean.getUwl_card())) {
             Utils.toast(WithDrawActivity.this, "卡号不能为空");
+        } else if (!Utils.checkBankCard(withDrawBean.getUwl_card())) {
+            Utils.toast(WithDrawActivity.this, "卡号格式不正确");
         } else if (TextUtils.isEmpty(withDrawBean.getP_id())) {
             Utils.toast(WithDrawActivity.this, "请选择银行");
         } else if (TextUtils.isEmpty(withDrawBean.getUwl_amount())) {

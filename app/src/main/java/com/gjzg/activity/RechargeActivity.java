@@ -29,11 +29,13 @@ import com.gjzg.bean.PayWayBean;
 import com.gjzg.bean.WxDataBean;
 import com.gjzg.config.AppConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -156,11 +158,26 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    private boolean haveWay() {
+        int count = 0;
+        for (int i = 0; i < payWayBeanList.size(); i++) {
+            if (payWayBeanList.get(i).isCheck()) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private void toPay() {
         if (TextUtils.isEmpty(moneyEt.getText().toString()) || moneyEt.getText().toString().equals("")) {
-            Utils.log(RechargeActivity.this, "请输入金额");
+            Utils.toast(RechargeActivity.this, "请输入金额");
+        } else if (!haveWay()) {
+            Utils.toast(RechargeActivity.this, "请选择支付方式");
         } else {
-            Utils.log(RechargeActivity.this, "去支付");
             int p = 0;
             for (int i = 0; i < payWayBeanList.size(); i++) {
                 if (payWayBeanList.get(i).isCheck()) {

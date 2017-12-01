@@ -33,15 +33,19 @@ import com.gjzg.config.StateConfig;
 import com.gjzg.config.VarConfig;
 import com.gjzg.adapter.EmployerManageAdapter;
 import com.gjzg.bean.EmployerManageBean;
+
 import employermanage.presenter.EmployerManagePresenter;
 import employermanage.presenter.IEmployerManagePresenter;
 import employermanage.view.IEmployerManageActivity;
+
 import com.gjzg.listener.IdPosClickHelp;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.view.PullToRefreshLayout;
 import com.gjzg.view.PullableListView;
 import com.gjzg.utils.DataUtils;
@@ -76,6 +80,11 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
     private final int CANCEL_FAILURE = 4;
     private int clickPosition = 0;
 
+    private View cancelPopView;
+    private PopupWindow cancelPop;
+    private View deletePopView;
+    private PopupWindow deletePop;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,6 +104,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                     case CANCEL_FAILURE:
                         break;
                     case 5:
+                        cpd.dismiss();
                         STATE = FIRST;
                         employerManageBeanList.remove(clickPosition);
                         notifyData();
@@ -195,7 +205,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                 }
             }
         });
-        pop = new PopupWindow(popView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        pop = new PopupWindow(popView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         pop.setFocusable(true);
         pop.setTouchable(true);
         pop.setOutsideTouchable(true);
@@ -204,6 +214,82 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
             @Override
             public void onDismiss() {
                 backgroundAlpha(1.0f);
+            }
+        });
+
+        cancelPopView = LayoutInflater.from(EmployerManageActivity.this).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) cancelPopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("是否取消发布？");
+        ((TextView) cancelPopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) cancelPopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        cancelPopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cancelPop.isShowing()) {
+                    cancelPop.dismiss();
+                }
+            }
+        });
+        cancelPopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cancelPop.isShowing()) {
+                    cancelPop.dismiss();
+                    cpd.show();
+                    String waitCancelUrl = NetConfig.taskBaseUrl +
+                            "?action=del" +
+                            "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
+                            "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                    employerManagePresenter.cancel(waitCancelUrl);
+                }
+            }
+        });
+        cancelPop = new PopupWindow(cancelPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        cancelPop.setFocusable(true);
+        cancelPop.setTouchable(true);
+        cancelPop.setOutsideTouchable(true);
+        cancelPop.setBackgroundDrawable(new BitmapDrawable());
+        cancelPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Utils.light(EmployerManageActivity.this);
+            }
+        });
+
+        deletePopView = LayoutInflater.from(EmployerManageActivity.this).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("是否删除？");
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        deletePopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deletePop.isShowing())
+                    deletePop.dismiss();
+            }
+        });
+        deletePopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deletePop.isShowing()) {
+                    deletePop.dismiss();
+                    cpd.show();
+                    String doneDelUrl = NetConfig.taskBaseUrl +
+                            "?action=del2" +
+                            "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
+                            "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                    doneDel(doneDelUrl);
+                }
+            }
+        });
+
+        deletePop = new PopupWindow(deletePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        deletePop.setFocusable(true);
+        deletePop.setTouchable(true);
+        deletePop.setOutsideTouchable(true);
+        deletePop.setBackgroundDrawable(new BitmapDrawable());
+        deletePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Utils.light(EmployerManageActivity.this);
             }
         });
     }
@@ -416,30 +502,17 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                 }
                 break;
             case R.id.tv_item_employer_manage_wait_cancel:
-                cpd.show();
-                String waitCancelUrl = NetConfig.taskBaseUrl +
-                        "?action=del" +
-                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
-                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
-                Utils.log(EmployerManageActivity.this, waitCancelUrl);
-                employerManagePresenter.cancel(waitCancelUrl);
-                break;
             case R.id.tv_item_employer_manage_talk_cancel:
-                cpd.show();
-                String talkcancelUrl = NetConfig.taskBaseUrl +
-                        "?action=del" +
-                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
-                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
-                Utils.log(EmployerManageActivity.this, "talkcancelUrl\n" + talkcancelUrl);
-                employerManagePresenter.cancel(NetConfig.taskBaseUrl + "?action=del&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() + "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId());
+                if (!cancelPop.isShowing()) {
+                    Utils.dark(EmployerManageActivity.this);
+                    cancelPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
                 break;
             case R.id.tv_item_employer_manage_done_del:
-                String doneDelUrl = NetConfig.taskBaseUrl +
-                        "?action=del2" +
-                        "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
-                        "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
-                Utils.log(EmployerManageActivity.this, "假删\n" + doneDelUrl);
-                doneDel(doneDelUrl);
+                if (!deletePop.isShowing()) {
+                    Utils.dark(EmployerManageActivity.this);
+                    deletePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
                 break;
         }
     }

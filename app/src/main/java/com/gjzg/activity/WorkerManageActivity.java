@@ -1,15 +1,19 @@
 package com.gjzg.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,11 +29,13 @@ import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
 import com.gjzg.config.VarConfig;
 import com.gjzg.listener.IdPosClickHelp;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.view.PullToRefreshLayout;
 import com.gjzg.view.PullableListView;
 import com.gjzg.utils.DataUtils;
@@ -38,6 +44,7 @@ import com.gjzg.utils.Utils;
 import com.gjzg.view.CProgressDialog;
 import com.gjzg.adapter.WorkerManageAdapter;
 import com.gjzg.bean.WorkerManageBean;
+
 import workermanage.presenter.IWorkerManagePresenter;
 import workermanage.presenter.WorkerManagePresenter;
 import workermanage.view.IWorkerManageActivity;
@@ -64,6 +71,9 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
 
     private OkHttpClient okHttpClient;
     private IWorkerManagePresenter workerManagePresenter;
+
+    private View deletePopView;
+    private PopupWindow deletePop;
 
     private Handler handler = new Handler() {
         @Override
@@ -116,6 +126,7 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
     private void initView() {
         initRootView();
         initEmptyView();
+        initPopView();
     }
 
     private void initRootView() {
@@ -151,6 +162,40 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
         });
         fl.addView(netView);
         netView.setVisibility(View.GONE);
+    }
+
+    private void initPopView() {
+        deletePopView = LayoutInflater.from(WorkerManageActivity.this).inflate(R.layout.pop_dialog_0, null);
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_content)).setText("确认删除？");
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_cancel)).setText("取消");
+        ((TextView) deletePopView.findViewById(R.id.tv_pop_dialog_0_sure)).setText("确认");
+        deletePopView.findViewById(R.id.rl_pop_dialog_0_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deletePop.isShowing())
+                    deletePop.dismiss();
+            }
+        });
+        deletePopView.findViewById(R.id.rl_pop_dialog_0_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deletePop.isShowing()) {
+                    deletePop.dismiss();
+                    delete();
+                }
+            }
+        });
+        deletePop = new PopupWindow(deletePopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        deletePop.setFocusable(true);
+        deletePop.setTouchable(true);
+        deletePop.setOutsideTouchable(true);
+        deletePop.setBackgroundDrawable(new BitmapDrawable());
+        deletePop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Utils.light(WorkerManageActivity.this);
+            }
+        });
     }
 
     private void initData() {
@@ -321,7 +366,10 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                 startActivity(talkIntent);
                 break;
             case R.id.tv_item_worker_manage_delete:
-                delete();
+                if (!deletePop.isShowing()) {
+                    Utils.dark(WorkerManageActivity.this);
+                    deletePop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
+                }
                 break;
         }
     }

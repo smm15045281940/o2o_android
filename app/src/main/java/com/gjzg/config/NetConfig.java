@@ -64,6 +64,8 @@ public interface NetConfig {
     String lockUrl = "http://api.gangjianwang.com/Tools/lock";
     //优惠
     String discountUrl = "http://api.gangjianwang.com/activities.php";
+    //更新
+    String updateUrl = "http://static-app.gangjianwang.com/static/app/xinyonggong_android.apk";
 
     String setPwdUrl = "http://api.gangjianwang.com/Users/setPassword";
     String editPwdUrl = "http://api.gangjianwang.com/Users/passwordEdit";
