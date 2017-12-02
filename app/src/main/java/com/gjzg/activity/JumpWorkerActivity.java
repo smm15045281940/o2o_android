@@ -300,7 +300,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-        fireWorkerPop = new PopupWindow(fireWorkerPopView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        fireWorkerPop = new PopupWindow(fireWorkerPopView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         fireWorkerPop.setFocusable(true);
         fireWorkerPop.setTouchable(true);
         fireWorkerPop.setOutsideTouchable(true);
