@@ -340,13 +340,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onResponse(String response) {
+                        Utils.log(MainActivity.this, "response\n" + response);
                         if (!TextUtils.isEmpty(response)) {
+                            Utils.log(MainActivity.this, "response\n" + response);
                             AppConfigBean appConfigBean = SingleGson.getInstance().fromJson(response, AppConfigBean.class);
+                            Utils.log(MainActivity.this, "version\n" + getAppInfo());
+                            Utils.log(MainActivity.this, "net_version\n" + appConfigBean.getData().getData().getAndroid_version());
                             if (appConfigBean != null) {
                                 if (appConfigBean.getData() != null) {
                                     if (appConfigBean.getData().getData() != null) {
                                         if (!TextUtils.isEmpty(appConfigBean.getData().getData().getAndroid_version())) {
                                             String version = getAppInfo();
+                                            Utils.log(MainActivity.this, "version\n" + version);
+                                            Utils.log(MainActivity.this, "net_version\n" + appConfigBean.getData().getData().getAndroid_version());
                                             if (!TextUtils.isEmpty(version)) {
                                                 if (!appConfigBean.getData().getData().getAndroid_version().equals(version)) {
                                                     handler.sendEmptyMessageDelayed(4, 2000);

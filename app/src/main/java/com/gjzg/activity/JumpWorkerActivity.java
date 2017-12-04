@@ -88,7 +88,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     private PopupWindow cancelWorkerPop;
     private View surePricePopView;
     private PopupWindow surePricePop;
-    private TextView surePricePriceTv, surePriceTimeTv, surePriceServiceCashTv, surePriceSalaryTv;
+    private TextView surePricePriceTv, surePriceTimeTv, surePriceServiceCashTv;
     private View fireWorkerPopView;
     private PopupWindow fireWorkerPop;
 
@@ -237,7 +237,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         surePricePriceTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_price);
         surePriceTimeTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_time);
         surePriceServiceCashTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_service_cash);
-        surePriceSalaryTv = (TextView) surePricePopView.findViewById(R.id.tv_pop_employer_sure_salary);
         surePricePopView.findViewById(R.id.tv_pop_sure_price_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -435,8 +434,7 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         if (!TextUtils.isEmpty(toJumpWorkerBean.getTewPrice())) {
             surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
             float price = Float.parseFloat(toJumpWorkerBean.getTewPrice());
-            surePriceServiceCashTv.setText("结算工资的时候系统会收取工人" + (price * charge_rate) + "元的服务费");
-            surePriceSalaryTv.setText("扣除服务费工人最终会得到" + (price * (1 - charge_rate)) + "元的工资");
+            surePriceServiceCashTv.setText("结算工资的时候系统会收取工人" + (charge_rate * 100) + "%的服务费");
         }
         if (!TextUtils.isEmpty(toJumpWorkerBean.getTew_start_time()) && !TextUtils.isEmpty(toJumpWorkerBean.getTew_end_time())) {
             surePriceTimeTv.setText(DataUtils.times((toJumpWorkerBean.getTew_start_time())) + "-" + DataUtils.times((toJumpWorkerBean.getTew_end_time())));

@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/black_252323"
-                android:textSize="@dimen/y11"
+                android:textSize="@dimen/y9"
                 android:textStyle="bold" />
 
             <TextView
@@ -112,7 +112,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="元/人/天,工期"
                 android:textColor="@color/black_252323"
-                android:textSize="@dimen/y11"
+                android:textSize="@dimen/y9"
                 android:textStyle="bold" />
 
             <TextView
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/black_252323"
-                android:textSize="@dimen/y11"
+                android:textSize="@dimen/y9"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -132,16 +132,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y5"
-            android:text="结算工资的时候系统会收取工人XX元的服务费"
-            android:textColor="@color/red_ff3e50"
-            android:textSize="@dimen/y8" />
-
-        <TextView
-            android:id="@+id/tv_pop_employer_sure_salary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="扣除服务费工人最终会得到XX元的工资"
             android:textColor="@color/red_ff3e50"
             android:textSize="@dimen/y8" />
 

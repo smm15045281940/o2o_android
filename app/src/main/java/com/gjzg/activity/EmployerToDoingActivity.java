@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -22,21 +23,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.gjzg.adapter.TInfoTaskAdapter;
 import com.gjzg.bean.TInfoOrderBean;
 import com.gjzg.bean.TInfoTaskBean;
 import com.gjzg.bean.TInfoWorkerBean;
+import com.gjzg.bean.TaskGsonBean;
 import com.gjzg.bean.ToEvaluateBean;
 import com.gjzg.bean.ToJumpWorkerBean;
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
 import com.gjzg.listener.TInfoClickHelp;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import com.gjzg.singleton.SingleGson;
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -54,6 +60,10 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
     private View sureDonePopView;
     private PopupWindow sureDonePop;
 
+    private TaskGsonBean taskGsonBean;
+
+    private String sureTip;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -68,7 +78,13 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                         break;
                     case 3:
                         cProgressDialog.dismiss();
-                        startActivity(new Intent(EmployerToDoingActivity.this, EmployerManageActivity.class));
+                        if (sureTip.equals("success")) {
+                            startActivity(new Intent(EmployerToDoingActivity.this, EmployerManageActivity.class));
+                        } else if (sureTip.equals("failure")) {
+                            Utils.toast(EmployerToDoingActivity.this, "失败");
+                        } else {
+                            Utils.toast(EmployerToDoingActivity.this, sureTip);
+                        }
                         break;
                 }
             }
@@ -185,7 +201,9 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
+                    taskGsonBean = SingleGson.getInstance().fromJson(json, TaskGsonBean.class);
                     Utils.log(EmployerToDoingActivity.this, "json\n" + json);
+
                     tInfoTaskBean = DataUtils.getTInfoTaskBean(json);
                     if (tInfoTaskBean != null) {
                         for (int i = 0; i < tInfoTaskBean.gettInfoWorkerBeanList().size(); i++) {
@@ -238,6 +256,10 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
         cProgressDialog.dismiss();
         TInfoTaskAdapter tInfoTaskAdapter = new TInfoTaskAdapter(EmployerToDoingActivity.this, tInfoTaskBean, this);
         listView.setAdapter(tInfoTaskAdapter);
+        View emptyView = LayoutInflater.from(EmployerToDoingActivity.this).inflate(R.layout.empty_data, null);
+        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        listView.setEmptyView(emptyView);
+        tInfoTaskAdapter.notifyDataSetChanged();
     }
 
     private void sureDone(String payoutUrl) {
@@ -258,9 +280,8 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {
-                            if (beanObj.optString("data").equals("successs")) {
-                                handler.sendEmptyMessage(3);
-                            }
+                            sureTip = beanObj.optString("data");
+                            handler.sendEmptyMessage(3);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -281,39 +302,43 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onClick(int id, int outerPos, int innerPos, String orderId) {
+        Utils.log(EmployerToDoingActivity.this, "outerPos\n" + "\ninnerPos\n" + innerPos);
         switch (id) {
             case R.id.ll_item_tinfotask_inner:
+                Utils.log(EmployerToDoingActivity.this, "size\n" + tInfoTaskBean.gettInfoWorkerBeanList().size());
                 for (int i = 0; i < tInfoTaskBean.gettInfoWorkerBeanList().size(); i++) {
-                    if (tInfoTaskBean.gettInfoWorkerBeanList().get(i).gettInfoOrderBeanList().get(innerPos).getO_id().equals(orderId)) {
-                        Utils.log(EmployerToDoingActivity.this, "outerPos\n" + i + "\ninnerPos\n" + innerPos);
-                        int out = i;
-                        int in = innerPos;
-                        TInfoOrderBean tInfoOrderBean = tInfoTaskBean.gettInfoWorkerBeanList().get(out).gettInfoOrderBeanList().get(in);
-                        Utils.log(EmployerToDoingActivity.this, "tInfoOrderBean\n" + tInfoOrderBean.toString());
-                        String o_status = tInfoOrderBean.getO_status();
-                        if (o_status.equals("-1")) {
+                    if (tInfoTaskBean.gettInfoWorkerBeanList().get(i).gettInfoOrderBeanList().size() > innerPos) {
+                        if (tInfoTaskBean.gettInfoWorkerBeanList().get(i).gettInfoOrderBeanList().get(innerPos).getO_id().equals(orderId)) {
+                            Utils.log(EmployerToDoingActivity.this, "outerPos\n" + i + "\ninnerPos\n" + innerPos);
+                            int out = i;
+                            int in = innerPos;
+                            TInfoOrderBean tInfoOrderBean = tInfoTaskBean.gettInfoWorkerBeanList().get(out).gettInfoOrderBeanList().get(in);
+                            Utils.log(EmployerToDoingActivity.this, "tInfoOrderBean\n" + tInfoOrderBean.toString());
+                            String o_status = tInfoOrderBean.getO_status();
+                            if (o_status.equals("-1")) {
 
-                        } else if (o_status.equals("-2")) {
+                            } else if (o_status.equals("-2")) {
 
-                        } else {
-                            ToJumpWorkerBean toJumpWorkerBean = new ToJumpWorkerBean();
-                            toJumpWorkerBean.setS_name(tInfoOrderBean.getSkill());
-                            toJumpWorkerBean.setSkillId(tInfoOrderBean.getS_id());
-                            toJumpWorkerBean.setTaskId(tInfoOrderBean.getT_id());
-                            toJumpWorkerBean.setTewId(tInfoOrderBean.getTew_id());
-                            toJumpWorkerBean.setWorkerId(tInfoOrderBean.getO_worker());
-                            toJumpWorkerBean.setTew_start_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_start_time());
-                            toJumpWorkerBean.setTew_end_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_end_time());
-                            toJumpWorkerBean.setTew_worker_num(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_worker_num());
-                            toJumpWorkerBean.setOrderId(tInfoOrderBean.getO_id());
-                            toJumpWorkerBean.setTewPrice(tInfoOrderBean.getO_amount());
-                            toJumpWorkerBean.setO_confirm(tInfoOrderBean.getO_confirm());
-                            toJumpWorkerBean.setO_status(tInfoOrderBean.getO_status());
-                            Intent jumpWorkerIntent = new Intent(EmployerToDoingActivity.this, JumpWorkerActivity.class);
-                            jumpWorkerIntent.putExtra(IntentConfig.toJumpWorker, toJumpWorkerBean);
-                            startActivity(jumpWorkerIntent);
+                            } else {
+                                ToJumpWorkerBean toJumpWorkerBean = new ToJumpWorkerBean();
+                                toJumpWorkerBean.setS_name(tInfoOrderBean.getSkill());
+                                toJumpWorkerBean.setSkillId(tInfoOrderBean.getS_id());
+                                toJumpWorkerBean.setTaskId(tInfoOrderBean.getT_id());
+                                toJumpWorkerBean.setTewId(tInfoOrderBean.getTew_id());
+                                toJumpWorkerBean.setWorkerId(tInfoOrderBean.getO_worker());
+                                toJumpWorkerBean.setTew_start_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_start_time());
+                                toJumpWorkerBean.setTew_end_time(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_end_time());
+                                toJumpWorkerBean.setTew_worker_num(tInfoTaskBean.gettInfoWorkerBeanList().get(out).getTew_worker_num());
+                                toJumpWorkerBean.setOrderId(tInfoOrderBean.getO_id());
+                                toJumpWorkerBean.setTewPrice(tInfoOrderBean.getO_amount());
+                                toJumpWorkerBean.setO_confirm(tInfoOrderBean.getO_confirm());
+                                toJumpWorkerBean.setO_status(tInfoOrderBean.getO_status());
+                                Intent jumpWorkerIntent = new Intent(EmployerToDoingActivity.this, JumpWorkerActivity.class);
+                                jumpWorkerIntent.putExtra(IntentConfig.toJumpWorker, toJumpWorkerBean);
+                                startActivity(jumpWorkerIntent);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
                 break;

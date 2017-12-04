@@ -27,6 +27,8 @@ public class JumpEmployerBean implements Serializable{
     private String orderId;
     private String tewId;
     private String taskId;
+    private String relation;
+    private String result;
 
     public String getTaskId() {
         return taskId;
@@ -178,5 +180,21 @@ public class JumpEmployerBean implements Serializable{
 
     public void setSkillId(String skillId) {
         this.skillId = skillId;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

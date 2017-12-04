@@ -33,6 +33,8 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.gjzg.R;
+import com.gjzg.bean.AppConfigBean;
+import com.gjzg.singleton.SingleGson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -48,17 +50,22 @@ import com.gjzg.bean.ToJumpEmployerBean;
 import com.gjzg.bean.ToResignBean;
 
 import complain.view.ComplainActivity;
+
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CImageView;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 public class JumpEmployerActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -75,7 +82,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
 
     private View beginDoView;
     private PopupWindow beginDoPop;
-    private TextView beginDoPriceTv, beginDoTimeTv, beginDoServiceCashTv, beginDoSalaryTv;
+    private TextView beginDoPriceTv, beginDoTimeTv, beginDoServiceCashTv;
 
     private View resignPopView;
     private PopupWindow resignPop;
@@ -90,6 +97,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     private JumpEmployerBean jumpEmployerBean;
 
     private String beginDoTip;
+
+    private float charge_rate;
 
     private Handler handler = new Handler() {
         @Override
@@ -130,7 +139,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         initView();
         initData();
         setListener();
-        loadData();
+        getConfig();
     }
 
     @Override
@@ -219,7 +228,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         beginDoPriceTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_price);
         beginDoTimeTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_time);
         beginDoServiceCashTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_service_cash);
-        beginDoSalaryTv = (TextView) beginDoView.findViewById(R.id.tv_pop_worker_sure_salary);
 
         beginDoView.findViewById(R.id.tv_pop_worker_sure_no).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,6 +336,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                                     jumpEmployerBean.setSex(dataObj.optString("u_sex"));
                                     jumpEmployerBean.setMobile(dataObj.optString("u_mobile"));
                                     jumpEmployerBean.setAuthorId(dataObj.optString("t_author"));
+                                    jumpEmployerBean.setRelation(dataObj.optString("relation"));
+                                    jumpEmployerBean.setResult(dataObj.optString("result"));
                                     JSONArray workerArr = dataObj.optJSONArray("t_workers");
                                     if (workerArr != null) {
                                         for (int i = 0; i < workerArr.length(); i++) {
@@ -363,6 +373,32 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void getConfig() {
+        OkHttpUtils.get().tag(this).url(NetConfig.appConfigUrl).build().execute(new StringCallback() {
+            @Override
+            public void onError(com.squareup.okhttp.Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(String response) {
+                if (!TextUtils.isEmpty(response)) {
+                    AppConfigBean appConfigBean = SingleGson.getInstance().fromJson(response, AppConfigBean.class);
+                    if (appConfigBean.getCode() == 1) {
+                        if (appConfigBean.getData() != null) {
+                            if (appConfigBean.getData().getData() != null) {
+                                if (!TextUtils.isEmpty(appConfigBean.getData().getData().getCharge_rate())) {
+                                    charge_rate = Float.parseFloat(appConfigBean.getData().getData().getCharge_rate());
+                                    loadData();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -473,8 +509,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
             beginDoPriceTv.setText(jumpEmployerBean.getPrice());
             float price = Float.parseFloat(jumpEmployerBean.getPrice());
-            beginDoServiceCashTv.setText("结算工资的时候系统会收取工人" + (price * 0.1) + "元的服务费");
-            beginDoSalaryTv.setText("扣除服务费工人最终会得到" + (price * 0.9) + "元的工资");
+            beginDoServiceCashTv.setText("结算工资的时候系统会收取工人" + (charge_rate * 100) + "%的服务费");
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getStartTime()) && !TextUtils.isEmpty(jumpEmployerBean.getEndTime())) {
             beginDoTimeTv.setText(DataUtils.times(jumpEmployerBean.getStartTime()) + "-" + DataUtils.times(jumpEmployerBean.getEndTime()));
@@ -520,6 +555,14 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 SHOW_STATE = EVALUATE;
             }
             refreshState();
+        }
+        if (!TextUtils.isEmpty(jumpEmployerBean.getRelation())) {
+            if (jumpEmployerBean.getRelation().equals("0"))
+                Utils.toast(JumpEmployerActivity.this, "对方已取消订单");
+        }
+        if(!TextUtils.isEmpty(jumpEmployerBean.getResult())){
+            if(jumpEmployerBean.getResult().equals("0"))
+                Utils.toast(JumpEmployerActivity.this, "对方已取消订单");
         }
     }
 

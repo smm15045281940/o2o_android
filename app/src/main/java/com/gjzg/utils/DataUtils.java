@@ -893,8 +893,8 @@ public class DataUtils {
                     tInfoTaskBean.setTew_address(dataObj.optString("tew_address"));
                     tInfoTaskBean.setT_desc(dataObj.optString("t_desc"));
                     JSONArray workerArr = dataObj.optJSONArray("t_workers");
+                    List<TInfoWorkerBean> tInfoWorkerBeanList = new ArrayList<>();
                     if (workerArr != null) {
-                        List<TInfoWorkerBean> tInfoWorkerBeanList = new ArrayList<>();
                         for (int i = 0; i < workerArr.length(); i++) {
                             JSONObject workerObj = workerArr.optJSONObject(i);
                             if (workerObj != null) {
@@ -915,8 +915,8 @@ public class DataUtils {
                                 tInfoWorkerBean.setTew_type(workerObj.optString("tew_type"));
                                 tInfoWorkerBean.setRemaining(workerObj.optInt("remaining"));
                                 JSONArray orderArr = workerObj.optJSONArray("orders");
+                                List<TInfoOrderBean> tInfoOrderBeanList = new ArrayList<>();
                                 if (orderArr != null) {
-                                    List<TInfoOrderBean> tInfoOrderBeanList = new ArrayList<>();
                                     for (int j = 0; j < orderArr.length(); j++) {
                                         JSONObject orderObj = orderArr.optJSONObject(j);
                                         if (orderObj != null) {
@@ -959,13 +959,13 @@ public class DataUtils {
                                             tInfoOrderBeanList.add(tInfoOrderBean);
                                         }
                                     }
-                                    tInfoWorkerBean.settInfoOrderBeanList(tInfoOrderBeanList);
                                 }
+                                tInfoWorkerBean.settInfoOrderBeanList(tInfoOrderBeanList);
                                 tInfoWorkerBeanList.add(tInfoWorkerBean);
                             }
                         }
-                        tInfoTaskBean.settInfoWorkerBeanList(tInfoWorkerBeanList);
                     }
+                    tInfoTaskBean.settInfoWorkerBeanList(tInfoWorkerBeanList);
                     return tInfoTaskBean;
                 }
             }

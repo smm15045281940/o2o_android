@@ -13,6 +13,7 @@ import com.gjzg.R;
 import com.gjzg.adapter.TInfoTaskInnerAdapter;
 import com.gjzg.bean.TInfoTaskBean;
 import com.gjzg.bean.TInfoWorkerBean;
+import com.gjzg.bean.TaskGsonBean;
 import com.gjzg.config.ColorConfig;
 import com.gjzg.listener.TInfoClickHelp;
 import com.gjzg.utils.DataUtils;

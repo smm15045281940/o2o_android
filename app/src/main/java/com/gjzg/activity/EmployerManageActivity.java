@@ -239,6 +239,7 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                             "?action=del" +
                             "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
                             "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
+                    Utils.log(EmployerManageActivity.this, "cancel-Url\n" + waitCancelUrl);
                     employerManagePresenter.cancel(waitCancelUrl);
                 }
             }

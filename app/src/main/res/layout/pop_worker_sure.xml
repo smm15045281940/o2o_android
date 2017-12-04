@@ -152,14 +152,6 @@
                 android:textSize="@dimen/y8" />
 
             <TextView
-                android:id="@+id/tv_pop_worker_sure_salary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/red_ff3e50"
-                android:textSize="@dimen/y8" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
