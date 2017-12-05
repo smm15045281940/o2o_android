@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.gjzg.listener.JsonListener;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -26,6 +27,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import usermanage.listener.UpLoadingIconListener;
+
 import com.gjzg.utils.Utils;
 
 public class UserManageModule implements IUserManageModule {
@@ -62,7 +64,6 @@ public class UserManageModule implements IUserManageModule {
         Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
         cursor.moveToFirst();
         String picPath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-        Log.e("UserManageModule", "picPath\n" + picPath);
         cursor.close();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;//不申请内存，重新计算比例
@@ -74,15 +75,15 @@ public class UserManageModule implements IUserManageModule {
         int beWidth = w / 200;
         int beHeight = h / 200;
         int be = 4;
-        if(beWidth < beHeight && beHeight >= 1){
+        if (beWidth < beHeight && beHeight >= 1) {
             be = beHeight;
         }
-        if(beHeight < beWidth && beWidth >= 1){
+        if (beHeight < beWidth && beWidth >= 1) {
             be = beWidth;
         }
-        if(be <= 0){
+        if (be <= 0) {
             be = 1;
-        }else if(be > 3){
+        } else if (be > 3) {
             be = 3;
         }
         options.inSampleSize = be;
@@ -91,11 +92,11 @@ public class UserManageModule implements IUserManageModule {
         options.inInputShareable = true;
         try {
             //重新读入图片，读取缩放后的bitmap
-            bitmap = BitmapFactory.decodeFile(picPath,options);
+            bitmap = BitmapFactory.decodeFile(picPath, options);
             //利用ThumbnailUtils来创建缩略图
-            bitmap = ThumbnailUtils.extractThumbnail(bitmap,200,200,
+            bitmap = ThumbnailUtils.extractThumbnail(bitmap, 200, 200,
                     ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        }catch (OutOfMemoryError e){
+        } catch (OutOfMemoryError e) {
             System.gc();
             bitmap = null;
         }

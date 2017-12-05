@@ -125,10 +125,8 @@ public class UserInfoFragment extends Fragment implements IUserInfoFragment {
 
     @Override
     public void skillSuccess(String json) {
-        Log.e("UserInfoFragment=", json);
         skillsBeanList.clear();
         skillsBeanList.addAll(DataUtils.getSkillBeanList(json));
-        Log.e("UserInfoFragment=", skillsBeanList.toString());
         handler.sendEmptyMessage(SKILL_SUCCESS);
     }
 

@@ -247,7 +247,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
     private void loadData() {
         cpd.show();
         String url = NetConfig.payWayUrl + "?p_type=1";
-        Utils.log(WithDrawActivity.this, "url\n" + url);
         Request request = new Request.Builder().url(url).get().build();
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -262,10 +261,8 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
                     String json = response.body().string();
                     if (json == null || json.equals("null") || TextUtils.isEmpty(json)) {
                     } else {
-                        Utils.log(WithDrawActivity.this, "json\n" + json);
                         if (DataUtils.getPayWayBeanList(json) != null) {
                             payWayBeanList.addAll(DataUtils.getPayWayBeanList(json));
-                            Utils.log(WithDrawActivity.this, "payWayBeanList\n" + payWayBeanList.toString());
                             handler.sendEmptyMessage(3);
                         }
                     }
@@ -291,7 +288,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
         } else if (TextUtils.isEmpty(withDrawBean.getUwl_amount())) {
             Utils.toast(WithDrawActivity.this, "请输入金额");
         } else {
-            Utils.log(WithDrawActivity.this, "withDrawBean=" + withDrawBean.toString());
             pop();
         }
     }
@@ -415,7 +411,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
 
     @Override
     public void loadSuccess(String json) {
-        Utils.log(WithDrawActivity.this, "json=" + json);
         try {
             JSONObject beanObj = new JSONObject(json);
             int code = beanObj.optInt("code");
@@ -438,7 +433,6 @@ public class WithDrawActivity extends AppCompatActivity implements IWithDrawActi
 
     @Override
     public void loadFailure(String failure) {
-        Utils.log(WithDrawActivity.this, failure);
     }
 
     @Override

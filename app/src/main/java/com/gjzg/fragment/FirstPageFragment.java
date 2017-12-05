@@ -108,8 +108,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                             cpd.dismiss();
                         }
                         UserUtils.saveLonLat(getActivity(), new LonLatBean(positionX + "", positionY + ""));
-                        Utils.log(getActivity(), "positionX\n" + positionX + "\npositionY\n" + positionY);
-                        Utils.log(getActivity(), "saveLonLat");
                         if (UserUtils.isUserLogin(getActivity())) {
                             firstpagePresenter.changePosition(NetConfig.changePositionUrl + "?u_id=" + UserUtils.readUserData(getActivity()).getId() + "&ucp_posit_x=" + positionX + "&ucp_posit_y=" + positionY);
                         }
@@ -152,7 +150,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            Utils.log(getActivity(), "!hidden=" + "加载小红点");
             loadCount();
         }
     }
@@ -160,7 +157,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
     @Override
     public void onResume() {
         super.onResume();
-        Utils.log(getActivity(), "resume" + "加载小红点");
         loadCount();
     }
 
@@ -313,7 +309,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     @Override
     public void showHotSuccess(String json) {
-        Log.e("hotJson\n", json);
         hotJson = json;
         handler.sendEmptyMessage(HOT_DONE);
     }
@@ -325,7 +320,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     @Override
     public void showComSuccess(String json) {
-        Log.e("comJson\n", json);
         comJson = json;
         handler.sendEmptyMessage(COM_DONE);
     }
@@ -348,16 +342,13 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
 
     @Override
     public void changePositionSuccess(String json) {
-        Log.e("FirstPageFragment", json);
     }
 
     @Override
     public void changePositionFailure(String failure) {
-        Log.e("FirstPageFragment", failure);
     }
 
     private void loadCount() {
-        Utils.log(getActivity(), "loadCount");
         if (UserUtils.isUserLogin(getActivity())) {
             String url = NetConfig.msgListUrl +
                     "?u_id=" + UserUtils.readUserData(getActivity()).getId();
@@ -373,7 +364,6 @@ public class FirstPageFragment extends Fragment implements IFirstPageFragment, V
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String json = response.body().string();
-                        Utils.log(getActivity(), "firstJson\n" + json);
                         List<MessageBean> messageBeanList = DataUtils.getMessageBeanList(json);
                         count = 0;
                         for (int i = 0; i < messageBeanList.size(); i++) {

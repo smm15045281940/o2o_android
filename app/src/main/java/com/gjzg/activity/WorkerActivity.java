@@ -109,7 +109,6 @@ public class WorkerActivity extends AppCompatActivity implements PullToRefreshLa
         mList = new ArrayList<>();
         workerAdapter = new WorkerAdapter(WorkerActivity.this, mList, this);
         toWorkerBean = (ToWorkerBean) getIntent().getSerializableExtra(IntentConfig.toWorker);
-        Utils.log(WorkerActivity.this, "toWorkerBean\n" + toWorkerBean.toString());
     }
 
     private void setData() {

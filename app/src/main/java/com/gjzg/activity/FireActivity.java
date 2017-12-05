@@ -108,7 +108,6 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initData() {
         toFireBean = (ToFireBean) getIntent().getSerializableExtra(IntentConfig.toFire);
-        Utils.log(FireActivity.this, "toFireBean\n" + toFireBean.toString());
     }
 
     private void setListener() {
@@ -168,7 +167,6 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
                 "&s_id=" + toFireBean.getSkillId() +
                 "&start=" + toFireBean.getStart() +
                 "&appraisal=" + toFireBean.getContent();
-        Utils.log(FireActivity.this, "fireUrl\n" + fireUrl);
         fire(fireUrl);
     }
 
@@ -185,7 +183,6 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(FireActivity.this, "fireJson\n" + json);
                     handler.sendEmptyMessage(1);
                 }
             }

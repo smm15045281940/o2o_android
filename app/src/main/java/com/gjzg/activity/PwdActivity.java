@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gjzg.bean.UserBean;
+
 import password.presenter.IPwdPresenter;
 import password.presenter.PwdPresenter;
 import password.view.IPwdActivity;
+
 import com.gjzg.adapter.InputPasswordAdapter;
 import com.gjzg.bean.InputPasswordBean;
 import com.gjzg.utils.UserUtils;
@@ -417,7 +419,6 @@ public class PwdActivity extends AppCompatActivity implements IPwdActivity, View
                     if (fromIdCard) {
                         UserBean userBean = UserUtils.readUserData(PwdActivity.this);
                         pwdPresenter.forgetPwd(userBean.getMobile(), verifycode, againPwd, userBean.getIdcard());
-                        Log.e("PwdActivity", "forgetPwd");
                     } else {
                         pwdPresenter.editPwd(UserUtils.readUserData(PwdActivity.this).getId(), originPwd, againPwd);
                     }

@@ -23,11 +23,13 @@ import java.io.IOException;
 import com.gjzg.bean.ToChangePriceBean;
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CProgressDialog;
 
@@ -81,7 +83,6 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
 
     private void initData() {
         toChangePriceBean = (ToChangePriceBean) getIntent().getSerializableExtra(IntentConfig.toChangePrice);
-        Utils.log(ChangePriceActivity.this, "toChangePriceBean=" + toChangePriceBean.toString());
         skillTv.setText(toChangePriceBean.getSkill());
         workerNumTv.setText(toChangePriceBean.getWorker_num());
         amountEt.setText(toChangePriceBean.getAmount());
@@ -102,18 +103,21 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.rl_change_price_submit:
-                String url = NetConfig.orderUrl +
-                        "?action=price" +
-                        "&tew_id=" + toChangePriceBean.getTew_id() +
-                        "&t_id=" + toChangePriceBean.getT_id() +
-                        "&t_author=" + toChangePriceBean.getT_author() +
-                        "&amount=" + toChangePriceBean.getAmount() +
-                        "&worker_num=" + toChangePriceBean.getWorker_num() +
-                        "&start_time=" + toChangePriceBean.getStart_time() +
-                        "&end_time=" + toChangePriceBean.getEnd_time() +
-                        "&o_worker=" + toChangePriceBean.getO_worker();
-                Utils.log(ChangePriceActivity.this, url);
-                change(url);
+                if (toChangePriceBean.getAmount().equals("0")) {
+                    Utils.toast(ChangePriceActivity.this, "工资不能为0!");
+                } else {
+                    String url = NetConfig.orderUrl +
+                            "?action=price" +
+                            "&tew_id=" + toChangePriceBean.getTew_id() +
+                            "&t_id=" + toChangePriceBean.getT_id() +
+                            "&t_author=" + toChangePriceBean.getT_author() +
+                            "&amount=" + toChangePriceBean.getAmount() +
+                            "&worker_num=" + toChangePriceBean.getWorker_num() +
+                            "&start_time=" + toChangePriceBean.getStart_time() +
+                            "&end_time=" + toChangePriceBean.getEnd_time() +
+                            "&o_worker=" + toChangePriceBean.getO_worker();
+                    change(url);
+                }
                 break;
         }
     }
@@ -149,7 +153,6 @@ public class ChangePriceActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(ChangePriceActivity.this, "json\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {

@@ -142,10 +142,8 @@ public class GiveEvaluateFragment extends Fragment implements IGiveEvaluateFragm
 
     @Override
     public void loadSuccess(String json) {
-        Utils.log(getActivity(), "json=" + json);
         evaluateBeanList.clear();
         evaluateBeanList.addAll(DataUtils.getEvaluateBeanList(json));
-        Utils.log(getActivity(), "evaluateBeanList=" + evaluateBeanList.toString());
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 

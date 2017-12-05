@@ -91,7 +91,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                                 "&t_id=" + taskBeanList.get(clickPosition).getTaskId() +
                                 "&o_worker=" + toSelectTaskBean.getWorkerId() +
                                 "&o_sponsor=" + UserUtils.readUserData(SelectTaskActivity.this).getId();
-                        Utils.log(SelectTaskActivity.this, "inviteUrl\n" + url);
                         selectTaskPresenter.invite(url);
                         break;
                     case INVITE_SUCCESS:
@@ -186,7 +185,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                 break;
         }
         String url = NetConfig.taskBaseUrl + "?t_author=" + UserUtils.readUserData(SelectTaskActivity.this).getId() + "&t_storage=0&t_status=0,1,5&skills=" + toSelectTaskBean.getSkillId();
-        Utils.log(SelectTaskActivity.this, url);
         selectTaskPresenter.load(url);
     }
 
@@ -254,7 +252,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                 break;
         }
         taskBeanList.addAll(DataUtils.getTaskBeanList(json));
-        Utils.log(SelectTaskActivity.this, "taskBeanList=" + taskBeanList.toString());
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
@@ -265,7 +262,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
 
     @Override
     public void inviteSuccess(String json) {
-        Utils.log(SelectTaskActivity.this, json);
         json = Utils.cutJson(json);
         try {
             JSONObject beanObj = new JSONObject(json);
@@ -301,7 +297,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(SelectTaskActivity.this, "screenJson\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {
@@ -315,7 +310,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                                             int remain = Integer.parseInt(o.optString("remaining"));
                                             if (remain > 0) {
                                                 tew_id = o.optString("tew_id");
-                                                Utils.log(SelectTaskActivity.this, "tew_id\n" + tew_id);
                                                 handler.sendEmptyMessage(TEW_ID);
                                                 break;
                                             }
@@ -341,7 +335,6 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                         "?action=info" +
                         "&t_id=" + taskBeanList.get(clickPosition).getTaskId() +
                         "&skills=" + toSelectTaskBean.getSkillId();
-                Utils.log(SelectTaskActivity.this, "shaiurl\n" + url);
                 screenOrder(url);
                 break;
         }

@@ -43,11 +43,13 @@ import com.gjzg.bean.PublishWorkerBean;
 import com.gjzg.bean.SkillsBean;
 
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.adapter.PublishKindAdapter;
 import com.gjzg.adapter.SelectSkillAdapter;
 
@@ -57,6 +59,7 @@ import publishjob.listener.PublishJobClickHelp;
 import publishjob.presenter.IPublishJobPresenter;
 import publishjob.presenter.PublishJobPresenter;
 import publishjob.view.IPublishJobActivity;
+
 import com.gjzg.bean.SelectAddressBean;
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
@@ -350,6 +353,16 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                 if (amountCount != publishWorkerBeanList.size()) {
                     Utils.toast(PublishJobActivity.this, "工人数量不能为空！");
                 } else {
+                    int userCount = 0;
+                    for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                        if (publishWorkerBeanList.get(i).getAmount().equals("0")) {
+                            userCount++;
+                        }
+                    }
+                    if (userCount != 0) {
+                        Utils.toast(PublishJobActivity.this, "工人数量不能为0！");
+                        return;
+                    }
                     int salaryCount = 0;
                     for (int i = 0; i < publishWorkerBeanList.size(); i++) {
                         if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getSalary())) {
@@ -359,6 +372,18 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
                     if (salaryCount != publishWorkerBeanList.size()) {
                         Utils.toast(PublishJobActivity.this, "工人工资不能为空！");
                     } else {
+
+                        int userSalaryCount = 0;
+                        for (int i = 0; i < publishWorkerBeanList.size(); i++) {
+                            if(publishWorkerBeanList.get(i).getSalary().equals("0")){
+                                userSalaryCount++;
+                            }
+                        }
+                        if(userSalaryCount != 0){
+                            Utils.toast(PublishJobActivity.this, "工人工资不能为0！");
+                            return;
+                        }
+
                         int startTimeCount = 0;
                         for (int i = 0; i < publishWorkerBeanList.size(); i++) {
                             if (!TextUtils.isEmpty(publishWorkerBeanList.get(i).getStartTime())) {
@@ -469,7 +494,6 @@ public class PublishJobActivity extends AppCompatActivity implements IPublishJob
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(PublishJobActivity.this, "timeJson\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {

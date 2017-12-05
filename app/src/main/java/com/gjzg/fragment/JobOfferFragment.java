@@ -181,7 +181,6 @@ public class JobOfferFragment extends Fragment implements AdapterView.OnItemClic
         String url = NetConfig.msgListUrl +
                 "?u_id=" + UserUtils.readUserData(getActivity()).getId() +
                 "&wm_type=1&page=" + page;
-        Utils.log(getActivity(), "offerUrl\n" + url);
         OkHttpUtils.get().tag(this).url(url).build().execute(new StringCallback() {
             @Override
             public void onError(com.squareup.okhttp.Request request, Exception e) {

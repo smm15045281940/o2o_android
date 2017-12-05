@@ -349,14 +349,12 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
                 startActivity(intent);
                 break;
             case R.id.tv_jump_worker_cancel_worker:
-                Utils.log(JumpWorkerActivity.this, "cancelWorker");
                 if (!cancelWorkerPop.isShowing()) {
                     backgroundAlpha(0.5f);
                     cancelWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
                 }
                 break;
             case R.id.tv_jump_worker_cancel_worker_2:
-                Utils.log(JumpWorkerActivity.this, "cancelWorker");
                 if (!cancelWorkerPop.isShowing()) {
                     backgroundAlpha(0.5f);
                     cancelWorkerPop.showAtLocation(rootView, Gravity.CENTER, 0, 0);
@@ -455,8 +453,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         infoTv.setText(workerBean.getUei_info());
         addressTv.setText(workerBean.getUei_address());
         map();
-        Utils.log(JumpWorkerActivity.this, "o_status\n" + toJumpWorkerBean.getO_status());
-        Utils.log(JumpWorkerActivity.this, "o_confirm\n" + toJumpWorkerBean.getO_confirm());
         if (toJumpWorkerBean.getO_status().equals("0")) {
             if (toJumpWorkerBean.getO_confirm().equals("0")) {
                 SHOW_STATE = SURE_PRICE;
@@ -511,8 +507,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         String url = NetConfig.orderUrl +
                 "?action=cancel" +
                 "&o_id=" + toJumpWorkerBean.getOrderId() +
-                "&sponsor=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
-        Utils.log(JumpWorkerActivity.this, url);
+                "&sponsor=" + UserUtils.readUserData(JumpWorkerActivity.this).getId() +
+                "&o_confirm=0,2";
         Request cancelRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
             @Override
@@ -524,7 +520,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(JumpWorkerActivity.this, json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
                         if (jsonObject.optInt("code") == 200) {
@@ -557,13 +552,11 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
 
     private void employerSure() {
         cpd.show();
-        //?action=employerConfirm&o_id=8&t_id=2&u_id=1
         String employerSureUrl = NetConfig.orderUrl +
                 "?action=employerConfirm" +
                 "&o_id=" + toJumpWorkerBean.getOrderId() +
                 "&t_id=" + toJumpWorkerBean.getTaskId() +
                 "&u_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
-        Utils.log(JumpWorkerActivity.this, "employerUrl\n" + employerSureUrl);
         Request employerSureRequest = new Request.Builder().url(employerSureUrl).get().build();
         okHttpClient.newCall(employerSureRequest).enqueue(new Callback() {
             @Override
@@ -575,7 +568,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(JumpWorkerActivity.this, "employerSureJson\n" + json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
                         if (jsonObject.optInt("code") == 200) {
@@ -591,7 +583,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void fireWorker() {
-        Utils.log(JumpWorkerActivity.this, "fireWorker");
         ToFireBean toFireBean = new ToFireBean();
         toFireBean.setTewId(toJumpWorkerBean.getTewId());
         toFireBean.setFireId(toJumpWorkerBean.getWorkerId());

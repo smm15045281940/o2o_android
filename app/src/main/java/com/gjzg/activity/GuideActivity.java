@@ -28,11 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 
@@ -146,6 +148,7 @@ public class GuideActivity extends AppCompatActivity {
             public void onClick(View v) {
                 UserUtils.saveUse(GuideActivity.this);
                 startActivity(new Intent(GuideActivity.this, MainActivity.class));
+                finish();
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +207,6 @@ public class GuideActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(GuideActivity.this, "json\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {

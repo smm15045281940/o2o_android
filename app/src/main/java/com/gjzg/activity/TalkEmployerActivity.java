@@ -223,7 +223,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         } else {
             url = NetConfig.taskBaseUrl + "?action=info&t_id=" + toTalkEmployerBean.getT_id();
         }
-        Utils.log(TalkEmployerActivity.this, url);
         talkEmployerPresenter.load(url);
     }
 
@@ -309,7 +308,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
             Utils.toast(TalkEmployerActivity.this, "请选择任务");
         } else {
             String url = NetConfig.orderUrl + "?action=create&tew_id=" + tewId + "&t_id=" + toTalkEmployerBean.getT_id() + "&o_worker=" + UserUtils.readUserData(TalkEmployerActivity.this).getId() + "&o_sponsor=" + UserUtils.readUserData(TalkEmployerActivity.this).getId();
-            Utils.log(TalkEmployerActivity.this, url);
             cpd.show();
             talkEmployerPresenter.invite(url);
         }
@@ -317,9 +315,7 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     @Override
     public void success(String json) {
-        Utils.log(TalkEmployerActivity.this, "talkEmployerJson\n" + json);
         talkEmployerBean = DataUtils.getTalkEmployerBean(json);
-        Utils.log(TalkEmployerActivity.this, "talkEmployerBean\n" + talkEmployerBean.toString());
         for (int i = 0; i < talkEmployerBean.getTalkEmployerWorkerBeanList().size(); i++) {
             idList.add(talkEmployerBean.getTalkEmployerWorkerBeanList().get(i).getId());
         }
@@ -349,7 +345,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
 
     @Override
     public void inviteSuccess(String json) {
-        Utils.log(TalkEmployerActivity.this, "invite=" + json);
         handler.sendEmptyMessage(INVITE_SUCCESS);
     }
 
@@ -363,7 +358,6 @@ public class TalkEmployerActivity extends AppCompatActivity implements ITalkEmpl
         clickPosition = pos;
         switch (id) {
             case R.id.rb_item_talk_employer:
-                Utils.log(TalkEmployerActivity.this, "clickPosition=" + pos);
                 for (int i = 0; i < talkEmployerWorkerBeanList.size(); i++) {
                     if (i == clickPosition) {
                         talkEmployerWorkerBeanList.get(i).setSelect(true);

@@ -119,7 +119,6 @@ public class CityActivity extends AppCompatActivity implements ICityActivity, Vi
         if (intent != null) {
             CityBigBean cityBigBean = (CityBigBean) intent.getSerializableExtra("cityBigBean");
             if (cityBigBean != null) {
-                Utils.log(CityActivity.this, "cityBigBean=" + cityBigBean.toString());
                 cityPresenter.load(getResources().getStringArray(R.array.lowerletter), cityBigBean);
             }
         }

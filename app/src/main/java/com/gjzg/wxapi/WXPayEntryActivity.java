@@ -40,8 +40,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp resp) {
-        Utils.log(WXPayEntryActivity.this, "onPayFinish, errCode\n" + resp.errCode);
-        Utils.log(WXPayEntryActivity.this, "onPayFinish,errStr\n" + resp.errStr);
         switch (resp.errCode) {
             case 0:
                 Utils.toast(WXPayEntryActivity.this, "支付成功");

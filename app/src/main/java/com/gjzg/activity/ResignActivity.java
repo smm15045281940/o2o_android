@@ -120,7 +120,6 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
     private void loadData() {
         cpd.show();
         String infoUrl = NetConfig.userInfoUrl + toResignBean.getAuthorId();
-        Utils.log(ResignActivity.this, "infoUrl\n" + infoUrl);
         Request infoRequest = new Request.Builder().url(infoUrl).get().build();
         okHttpClient.newCall(infoRequest).enqueue(new Callback() {
             @Override
@@ -218,7 +217,6 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
                 "&s_id=" + toResignBean.getSkillId() +
                 "&start=" + praiseCount +
                 "&appraisal=" + contentEt.getText().toString();
-        Utils.log(ResignActivity.this, "submitUrl\n" + submitUrl);
         Request submitRequest = new Request.Builder().url(submitUrl).get().build();
         okHttpClient.newCall(submitRequest).enqueue(new Callback() {
             @Override
@@ -230,7 +228,6 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(ResignActivity.this, "json\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {

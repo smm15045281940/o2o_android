@@ -54,7 +54,6 @@ public class EmployerToTalkActivity extends AppCompatActivity implements View.On
         cpd.show();
         ToEmployerToTalkBean toEmployerToTalkBean = (ToEmployerToTalkBean) getIntent().getSerializableExtra(IntentConfig.toEmployerToTalk);
         String t_id = toEmployerToTalkBean.getTaskId();
-        Utils.log(EmployerToTalkActivity.this, "t_id\n" + t_id);
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request
                 .Builder()
@@ -73,7 +72,6 @@ public class EmployerToTalkActivity extends AppCompatActivity implements View.On
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
                             String json = response.body().string();
-                            Utils.log(EmployerToTalkActivity.this, "json\n" + json);
                         }
                     }
                 });

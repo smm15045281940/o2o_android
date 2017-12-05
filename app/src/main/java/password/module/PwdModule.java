@@ -55,7 +55,6 @@ public class PwdModule implements IPwdModule {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Log.e("PwdModule", "json=" + json);
                     if (!TextUtils.isEmpty(json)) {
                         try {
                             JSONObject beanObj = new JSONObject(json);

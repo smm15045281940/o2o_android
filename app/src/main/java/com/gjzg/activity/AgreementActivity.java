@@ -95,7 +95,6 @@ public class AgreementActivity extends AppCompatActivity implements View.OnClick
 
     private void loadData() {
         String url = NetConfig.articlesListUrl;
-        Utils.log(AgreementActivity.this, "url\n" + url);
         Request request = new Request.Builder().url(url).get().build();
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -108,10 +107,8 @@ public class AgreementActivity extends AppCompatActivity implements View.OnClick
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(AgreementActivity.this, "json\n" + json);
                     if (DataUtils.getArticleBeanList(json) != null) {
                         articleBeanList.addAll(DataUtils.getArticleBeanList(json));
-                        Utils.log(AgreementActivity.this, "articleBeanList\n" + articleBeanList.toString());
                         if (articleBeanList.size() != 0) {
                             String desc = articleBeanList.get(0).getA_desc();
                             if (desc == null || desc.equals("null") || TextUtils.isEmpty(desc)) {
@@ -138,7 +135,6 @@ public class AgreementActivity extends AppCompatActivity implements View.OnClick
             agreementLv.setVisibility(View.GONE);
             if (articleBeanList.size() != 0) {
                 String desc = articleBeanList.get(0).getA_desc();
-                Utils.log(AgreementActivity.this, "desc\n" + desc);
                 if (desc == null || desc.equals("null") || TextUtils.isEmpty(desc)) {
                 } else {
                     agreementDescTv.setText(desc);

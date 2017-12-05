@@ -98,7 +98,6 @@ public class EditInfoModule implements IEditInfoModule {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Log.e("Edit", json);
                     if (!TextUtils.isEmpty(json)) {
                         try {
                             JSONObject beanObj = new JSONObject(json);

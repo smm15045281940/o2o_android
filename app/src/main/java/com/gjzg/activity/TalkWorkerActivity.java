@@ -156,7 +156,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
     private void initData() {
         talkWorkerPresenter = new TalkWorkerPresenter(this);
         toTalkWorkerBean = (ToTalkWorkerBean) getIntent().getSerializableExtra(IntentConfig.toTalkWorker);
-        Utils.log(TalkWorkerActivity.this, "toTalkWorkerBean\n" + toTalkWorkerBean.toString());
     }
 
     private void setListener() {
@@ -180,7 +179,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                     "&fu_id=0" +
                     "&o_status=0,-3";
         }
-        Utils.log(TalkWorkerActivity.this, "talkWorkerUrl\n" + talkWorkerUrl);
         talkWorkerPresenter.load(talkWorkerUrl);
     }
 
@@ -308,7 +306,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
                         String checkUrl = NetConfig.taskBaseUrl +
                                 "?t_author=" + UserUtils.readUserData(TalkWorkerActivity.this).getId() +
                                 "&t_storage=0&t_status=0,1,5&skills=" + toTalkWorkerBean.getS_id();
-                        Utils.log(TalkWorkerActivity.this, "checkUrl\n" + checkUrl);
                         talkWorkerPresenter.check(checkUrl);
                     }
                 } else {
@@ -336,7 +333,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
     @Override
     public void loadSuccess(String json) {
         workerBean = DataUtils.getWorkerBeanList(json).get(0);
-        Utils.log(TalkWorkerActivity.this, "workerBean\n" + workerBean.toString());
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
 
@@ -347,8 +343,6 @@ public class TalkWorkerActivity extends AppCompatActivity implements ITalkWorker
 
     @Override
     public void checkSuccess(String json) {
-        Utils.log(TalkWorkerActivity.this, json);
-        Utils.log(TalkWorkerActivity.this, "DataUtils.getTask(json)\n" + DataUtils.getTaskBeanList(json).toString());
         if (DataUtils.getTaskBeanList(json).size() == 0) {
             handler.sendEmptyMessage(CHECK_NONE);
         } else {

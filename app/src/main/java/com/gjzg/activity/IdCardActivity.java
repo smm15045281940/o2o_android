@@ -98,7 +98,6 @@ public class IdCardActivity extends AppCompatActivity implements IIdCardActivity
         Intent intent = getIntent();
         if (intent != null) {
             verifycode = intent.getStringExtra("verifycode");
-            Utils.log(IdCardActivity.this, "verifycode=" + verifycode);
         }
         InputPasswordBean inputPasswordBean0 = new InputPasswordBean(0, 1, "");
         InputPasswordBean inputPasswordBean1 = new InputPasswordBean(0, 2, "ABC");

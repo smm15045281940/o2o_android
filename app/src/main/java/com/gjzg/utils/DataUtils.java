@@ -1050,7 +1050,6 @@ public class DataUtils {
                     "&prepayid=" + wxDataBean.getPrepayid() +
                     "&timestamp=" + wxDataBean.getTimestamp();
             String stringSignTemp = stringA + "&key=" + AppConfig.WX_KEY;
-            Log.e("DataUtils", "stringSignTemp\n" + stringSignTemp);
             String sign = MD5.getMessageDigest(stringSignTemp.getBytes()).toUpperCase();
             return sign;
         }

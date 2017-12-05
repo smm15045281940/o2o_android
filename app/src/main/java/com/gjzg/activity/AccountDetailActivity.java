@@ -167,7 +167,6 @@ public class AccountDetailActivity extends AppCompatActivity implements View.OnC
                     public void onResponse(String response) {
                         cProgressDialog.dismiss();
                         if (!TextUtils.isEmpty(response)) {
-                            Utils.log(AccountDetailActivity.this, "response\n" + response);
                             DetailBean detailBean = SingleGson.getInstance().fromJson(response, DetailBean.class);
                             if (detailBean != null) {
                                 if (detailBean.getCode() == 1) {

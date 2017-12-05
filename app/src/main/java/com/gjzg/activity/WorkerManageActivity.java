@@ -223,7 +223,6 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
             cpd.show();
         }
         String workerManageUrl = Utils.getWorkerManageUrl(WorkerManageActivity.this, curState);
-        Utils.log(WorkerManageActivity.this, "workerManageUrl\n" + workerManageUrl);
         workerManagePresenter.load(workerManageUrl);
     }
 
@@ -333,7 +332,6 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
                 workerManageBeanList.clear();
                 break;
         }
-        Utils.log(WorkerManageActivity.this, json);
         workerManageBeanList.addAll(DataUtils.getWorkerManageBeanList(json));
         handler.sendEmptyMessage(LOAD_SUCCESS);
     }
@@ -388,7 +386,6 @@ public class WorkerManageActivity extends AppCompatActivity implements IWorkerMa
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(WorkerManageActivity.this, json);
                     handler.sendEmptyMessage(666);
                 }
             }

@@ -310,7 +310,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         String url = NetConfig.taskBaseUrl +
                 "?action=info&t_id=" + toJumpEmployerBean.getTaskId() +
                 "&o_worker=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
-        Utils.log(JumpEmployerActivity.this, url);
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -429,8 +428,8 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         String url = NetConfig.orderUrl +
                 "?action=cancel" +
                 "&o_id=" + jumpEmployerBean.getOrderId() +
-                "&sponsor=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
-        Utils.log(JumpEmployerActivity.this, url);
+                "&sponsor=" + UserUtils.readUserData(JumpEmployerActivity.this).getId()+"" +
+                "&o_confirm=0,2";
         Request cancelRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
             @Override
@@ -442,7 +441,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(JumpEmployerActivity.this, json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
                         if (jsonObject.optInt("code") == 200) {
@@ -462,9 +460,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void beginDo() {
-        //?action=workerConfirm&o_id=8&t_id=2&o_worker=9
         String url = NetConfig.orderUrl + "?action=workerConfirm&o_id=" + jumpEmployerBean.getOrderId() + "&t_id=" + jumpEmployerBean.getTaskId() + "&o_worker=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
-        Utils.log(JumpEmployerActivity.this, url);
         Request beginRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(beginRequest).enqueue(new Callback() {
             @Override
@@ -476,7 +472,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(JumpEmployerActivity.this, json);
                     try {
                         JSONObject jsonObject = new JSONObject(json);
                         if (jsonObject.optInt("code") == 200) {
@@ -508,7 +503,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getPrice())) {
             beginDoPriceTv.setText(jumpEmployerBean.getPrice());
-            float price = Float.parseFloat(jumpEmployerBean.getPrice());
             beginDoServiceCashTv.setText("结算工资的时候系统会收取工人" + (charge_rate * 100) + "%的服务费");
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getStartTime()) && !TextUtils.isEmpty(jumpEmployerBean.getEndTime())) {
@@ -573,7 +567,6 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 finish();
                 break;
             case R.id.rl_jump_employer_complain:
-                Utils.log(JumpEmployerActivity.this, "complain");
                 ToComplainBean toComplainBean = new ToComplainBean();
                 toComplainBean.setAuthorId(UserUtils.readUserData(JumpEmployerActivity.this).getId());
                 toComplainBean.setAgainstId(jumpEmployerBean.getAuthorId());

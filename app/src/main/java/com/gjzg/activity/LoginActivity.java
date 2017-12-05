@@ -190,7 +190,6 @@ public class LoginActivity extends AppCompatActivity {
                             public void onResponse(String response) {
                                 cpd.dismiss();
                                 if (!TextUtils.isEmpty(response)) {
-                                    Utils.log(LoginActivity.this, response);
                                     try {
                                         JSONObject jsonObject = new JSONObject(response);
                                         int code = jsonObject.optInt("code");

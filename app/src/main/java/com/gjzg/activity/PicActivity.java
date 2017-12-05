@@ -102,17 +102,13 @@ public class PicActivity extends AppCompatActivity implements View.OnClickListen
                 super.run();
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 if (mImageUri == null) {
-                    Utils.log(PicActivity.this, "mImageUri = null");
                 } else {
                     ContentResolver mContentResolver = PicActivity.this.getContentResolver();
                     if (mContentResolver == null) {
-                        Utils.log(PicActivity.this, "mContentResolver = null");
                     } else {
                         Cursor mCursor = mContentResolver.query(mImageUri, null, MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?", new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED);
-                        Utils.log(PicActivity.this, "总计图片数量=" + mCursor.getCount() + "");
                         while (mCursor.moveToNext()) {
                             String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                            Utils.log(PicActivity.this, "path=" + path);
                             Pic pic = new Pic();
                             pic.setChoose(false);
                             pic.setPath(path);
@@ -167,7 +163,6 @@ public class PicActivity extends AppCompatActivity implements View.OnClickListen
                     strList.add(list.get(i).getPath());
                 }
             }
-            Utils.log(PicActivity.this, strList.toString());
             Intent intent = new Intent();
             intent.putStringArrayListExtra(IntentConfig.PIC, (ArrayList<String>) strList);
             setResult(IntentConfig.PIC_RESULT, intent);

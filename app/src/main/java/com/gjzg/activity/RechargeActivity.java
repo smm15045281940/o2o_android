@@ -126,14 +126,12 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void registerWx() {
-        Utils.log(RechargeActivity.this, "注册微信支付");
         wxapi = WXAPIFactory.createWXAPI(RechargeActivity.this, null);
         wxapi.registerApp(AppConfig.APP_ID);
     }
 
     private void loadData() {
         cProgressDialog.show();
-        Utils.log(RechargeActivity.this, "加载数据");
         String url = NetConfig.payWayUrl + "?p_type=0";
         Request request = new Request.Builder().url(url).get().build();
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -147,7 +145,6 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(RechargeActivity.this, "json\n" + json);
                     payWayBeanList.clear();
                     if (DataUtils.getPayWayBeanList(json) != null) {
                         payWayBeanList.addAll(DataUtils.getPayWayBeanList(json));
@@ -190,8 +187,6 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
                 if (p_id == null || p_id.equals("null") || TextUtils.isEmpty(p_id)) {
                 } else {
                     if (p_id.equals("7")) {
-                        //?u_id=12&p_id=1&url_amount=1
-                        Utils.log(RechargeActivity.this, "微信支付");
                         String url = NetConfig.toPayUrl +
                                 "?u_id=" + UserUtils.readUserData(RechargeActivity.this).getId() +
                                 "&p_id=" + p_id +
@@ -205,7 +200,6 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
 
     private void pay(String url) {
         cProgressDialog.show();
-        Utils.log(RechargeActivity.this, "url\n" + url);
         Request request = new Request.Builder().url(url).get().build();
         OkHttpClient okhttpClient = new OkHttpClient();
         okhttpClient.newCall(request).enqueue(new Callback() {
@@ -218,14 +212,11 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(RechargeActivity.this, "json\n" + json);
                     String testJson = test(json);
                     if (testJson == null || testJson.equals("null") || TextUtils.isEmpty(testJson)) {
                     } else {
-                        Utils.log(RechargeActivity.this, "testJson\n" + testJson);
                         wxDataBean = DataUtils.getWxDataBean(testJson);
                         if (wxDataBean != null) {
-                            Utils.log(RechargeActivity.this, "wxDataBean\n" + wxDataBean.toString());
                             handler.sendEmptyMessage(2);
                         }
                     }
@@ -246,8 +237,6 @@ public class RechargeActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void wx() {
-        Utils.log(RechargeActivity.this, "wx");
-        Utils.log(RechargeActivity.this, "wxDataBean\n" + wxDataBean);
         PayReq payReq = new PayReq();
         payReq.appId = wxDataBean.getAppid();
         payReq.partnerId = wxDataBean.getPartnerid();

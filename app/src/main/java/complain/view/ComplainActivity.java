@@ -379,7 +379,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     }
 
     private void takePhoto() {
-        Utils.log(this, "调用照相机");
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         tempFile = new File(Environment.getExternalStorageDirectory() + File.separator + "temp", PHOTO_FILE_NAME);
@@ -445,7 +444,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
                 }
                 break;
             case R.id.tv_complain_sumit:
-                Utils.log(ComplainActivity.this, toComplainBean.toString());
                 submitData();
                 break;
             default:
@@ -460,14 +458,12 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
             case REQUEST_WRITE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    Utils.log(ComplainActivity.this, "没有读写权限！");
                 }
                 break;
             case PHOTO_REQUEST_CAREMA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     takePhoto();
                 } else {
-                    Utils.log(ComplainActivity.this, "没有打开照相机权限！");
                 }
                 break;
         }
@@ -789,10 +785,8 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
     public Uri getFileUri(Uri uri) {
         if (uri.getScheme().equals("file")) {
             String path = uri.getEncodedPath();
-            Log.d("=====", "path1 is " + path);
             if (path != null) {
                 path = Uri.decode(path);
-                Log.d("===", "path2 is " + path);
                 ContentResolver cr = this.getContentResolver();
                 StringBuffer buff = new StringBuffer();
                 buff.append("(")
@@ -817,7 +811,6 @@ public class ComplainActivity extends AppCompatActivity implements IComplainActi
                     Uri uri_temp = Uri
                             .parse("content://media/external/images/media/"
                                     + index);
-                    Log.d("========", "uri_temp is " + uri_temp);
                     if (uri_temp != null) {
                         uri = uri_temp;
                     }

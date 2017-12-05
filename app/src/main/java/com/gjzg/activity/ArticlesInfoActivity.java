@@ -117,7 +117,6 @@ public class ArticlesInfoActivity extends AppCompatActivity implements View.OnCl
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String json = response.body().string();
-                        Utils.log(ArticlesInfoActivity.this, "json\n" + json);
                         try {
                             JSONObject beanObj = new JSONObject(json);
                             if (beanObj.optInt("code") == 1) {

@@ -123,7 +123,6 @@ public class SelectAddressActivity extends AppCompatActivity implements ISelectA
                 finish();
                 break;
             case R.id.rl_select_address_province:
-                Utils.log(SelectAddressActivity.this, "省");
                 if (STATE != PROVINCE) {
                     provinceTv.setText("省");
                     provinceTv.setTextColor(ColorConfig.black_252323);

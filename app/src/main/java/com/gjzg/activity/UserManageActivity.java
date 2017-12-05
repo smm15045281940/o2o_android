@@ -92,7 +92,6 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                         userInfoHandler.sendEmptyMessage(5);
                         break;
                     case INFO_SUCCESS:
-                        Utils.log(UserManageActivity.this, "userInfoBean.getU_img()\n" + userInfoBean.getU_img());
                         Picasso.with(UserManageActivity.this).load(userInfoBean.getU_img()).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).placeholder(R.mipmap.person_face_default).error(R.mipmap.person_face_default).into(iconIv);
                         break;
                     case INFO_FAILURE:
@@ -253,27 +252,22 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
         if (requestCode == PermissionConfig.GALLERY && resultCode == RESULT_OK) {
             //从相册返回的数据
             if (data != null) {
-                Utils.log(UserManageActivity.this, "data != null");
                 Bitmap bitmap = null;
                 Uri uri = null;
                 String path = null;
                 Bundle bundle = data.getExtras();
                 if (data.getData() != null) {
-                    Utils.log(UserManageActivity.this, "uri != null");
                     uri = data.getData();
                 } else {
                     if (bundle != null) {
-                        Utils.log(UserManageActivity.this, "bundle != null");
                         bitmap = (Bitmap) bundle.get("data");
                         if (bitmap != null) {
-                            Utils.log(UserManageActivity.this, "bitmap != null");
                             uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null, null));
                         }
                     }
                 }
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 if (uri != null) {
-                    Utils.log(UserManageActivity.this, "uri != null");
                     ContentResolver cr = getContentResolver();
                     Cursor cursor = null;
                     if (uri.getScheme().equals("content")) {
@@ -282,27 +276,21 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                         cursor = cr.query(getFileUri(uri), null, null, null, null);
                     }
                     if (cursor != null) {
-                        Utils.log(UserManageActivity.this, "cursor != null");
                         cursor.moveToFirst();
                         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                         path = cursor.getString(columnIndex);
-                        Utils.log(UserManageActivity.this, "path\n" + path);
                         cursor.close();
                         try {
                             Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             if (bmp != null) {
-                                Utils.log(UserManageActivity.this, "bmp != null");
                                 Bitmap bm = Bitmap.createScaledBitmap(bmp, 150, 150, true);
                                 if (bm != null) {
-                                    Utils.log(UserManageActivity.this, "bm != null");
                                     String base64 = Utils.Bitmap2StrByBase64(bm);
                                     if (base64 == null || base64.equals("null") || TextUtils.isEmpty(base64)) {
                                     } else {
-                                        Utils.log(UserManageActivity.this, "base64 != null");
                                         String url = Utils.getIconUpdateUrl(UserUtils.readUserData(UserManageActivity.this).getId(), new File(path).getName());
                                         if (url == null || url.equals("null") || TextUtils.isEmpty(url)) {
                                         } else {
-                                            Utils.log(UserManageActivity.this, "url\n" + url);
                                             RequestBody baseBody = new FormBody.Builder().add("base64", base64).build();
                                             Request request = new Request.Builder().url(url).post(baseBody).build();
                                             OkHttpClient okHttpClient = new OkHttpClient();
@@ -326,10 +314,8 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                                                                     if (!TextUtils.isEmpty(msg)) {
                                                                         switch (code) {
                                                                             case 0:
-                                                                                Utils.log(UserManageActivity.this, "msg\n" + msg);
                                                                                 break;
                                                                             case 1:
-                                                                                Utils.log(UserManageActivity.this, "msg\n" + msg);
                                                                                 handler.sendEmptyMessage(4);
                                                                                 break;
                                                                             default:
@@ -361,10 +347,8 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
     public Uri getFileUri(Uri uri) {
         if (uri.getScheme().equals("file")) {
             String path = uri.getEncodedPath();
-            Log.d("=====", "path1 is " + path);
             if (path != null) {
                 path = Uri.decode(path);
-                Log.d("===", "path2 is " + path);
                 ContentResolver cr = this.getContentResolver();
                 StringBuffer buff = new StringBuffer();
                 buff.append("(")
@@ -389,7 +373,6 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
                     Uri uri_temp = Uri
                             .parse("content://media/external/images/media/"
                                     + index);
-                    Log.d("========", "uri_temp is " + uri_temp);
                     if (uri_temp != null) {
                         uri = uri_temp;
                     }
@@ -402,7 +385,6 @@ public class UserManageActivity extends AppCompatActivity implements IUserManage
     @Override
     public void infoSuccess(String json) {
         userInfoBean = DataUtils.getUserInfoBean(json);
-        Utils.log(UserManageActivity.this, "userInfoBean\n" + userInfoBean.toString());
         handler.sendEmptyMessage(INFO_SUCCESS);
     }
 

@@ -239,7 +239,6 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
                             "?action=del" +
                             "&t_id=" + employerManageBeanList.get(clickPosition).getTaskId() +
                             "&t_author=" + UserUtils.readUserData(EmployerManageActivity.this).getId();
-                    Utils.log(EmployerManageActivity.this, "cancel-Url\n" + waitCancelUrl);
                     employerManagePresenter.cancel(waitCancelUrl);
                 }
             }
@@ -454,7 +453,6 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
 
     @Override
     public void cancelSuccess(String json) {
-        Utils.log(EmployerManageActivity.this, "cancel=" + json);
         json = Utils.cutJson(json);
         try {
             JSONObject beanObj = new JSONObject(json);
@@ -531,7 +529,6 @@ public class EmployerManageActivity extends AppCompatActivity implements IEmploy
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Utils.log(EmployerManageActivity.this, "doneDel\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 200) {

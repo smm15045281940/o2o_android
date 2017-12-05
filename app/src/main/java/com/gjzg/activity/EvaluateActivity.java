@@ -114,7 +114,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
 
     private void initData() {
         toEvaluateBean = (ToEvaluateBean) getIntent().getSerializableExtra(IntentConfig.toEvaluate);
-        Utils.log(EvaluateActivity.this, "toEvaluateBean\n" + toEvaluateBean.toString());
         String tc_type = toEvaluateBean.getTc_type();
         if (tc_type.equals("0")) {
             complainTv.setText("投诉\n工人");
@@ -198,7 +197,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     json = Utils.cutJson(json);
-                    Utils.log(EvaluateActivity.this, "submitJson\n" + json);
                     try {
                         JSONObject beanObj = new JSONObject(json);
                         if (beanObj.optInt("code") == 1) {
@@ -251,7 +249,6 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.tv_evaluate_submit:
                 toEvaluateBean.setU_id(UserUtils.readUserData(EvaluateActivity.this).getId());
-                Utils.log(EvaluateActivity.this, "toEvaluateBean\n" + toEvaluateBean.toString());
                 submit();
                 break;
         }

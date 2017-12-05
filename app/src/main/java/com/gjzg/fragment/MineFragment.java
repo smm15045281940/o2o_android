@@ -112,7 +112,6 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         if (UserUtils.isUserLogin(getActivity())) {
             minePresenter.load(UserUtils.readUserData(getActivity()).getId());
             String serviceMobileUrl = NetConfig.appConfigUrl;
-            Utils.log(getActivity(), "serviceMobileUrl\n" + serviceMobileUrl);
             OkHttpClient okHttpClient = new OkHttpClient();
             Request request = new Request.Builder().url(serviceMobileUrl).get().build();
             okHttpClient.newCall(request).enqueue(new Callback() {
@@ -142,7 +141,6 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Utils.log(getActivity(), "serviceMobileJson\n" + json);
                     }
                 }
             });
@@ -359,7 +357,6 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
         userBean.setSex(userInfoBean.getU_sex());
         userBean.setMobile(userInfoBean.getU_mobile());
         UserUtils.saveUserData(getActivity(), userBean);
-        Log.e("MineFragment", "userBean=" + userBean.toString());
         handler.sendEmptyMessage(REFRESH_DONE);
     }
 
@@ -375,7 +372,6 @@ public class MineFragment extends Fragment implements IMineFragment, View.OnClic
 
     @Override
     public void showPostOnlineFailure(String failure) {
-        Log.e("showPostOnlineFailure", failure);
         handler.sendEmptyMessage(REFRESH_DONE);
     }
 

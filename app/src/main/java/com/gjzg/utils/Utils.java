@@ -124,7 +124,6 @@ public class Utils {
             byte[] bytes = bos.toByteArray();
             return Base64.encodeToString(bytes, Base64.DEFAULT);
         } else {
-            Log.e("bit", "bit == null");
             return null;
         }
     }
@@ -136,7 +135,6 @@ public class Utils {
 
     //日志
     public static void log(Context c, String s) {
-        Log.e(c.getClass().getSimpleName(), s);
     }
 
     //设置ListView高度
@@ -255,7 +253,6 @@ public class Utils {
         double radius = 6371229;
         double x = (180 * distance) / (pi * radius * Math.cos(longitude * pi / 180));
         double y = (180 * distance) / (pi * radius * Math.cos(latitude * pi / 180));
-        Log.e("TAG", "pi:" + pi + "\nradius:" + radius + "\nx:" + x + "\ny:" + y);
     }
 
     public static String getLocCityId(Context context, String cityName, String json) {

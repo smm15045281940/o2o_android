@@ -202,7 +202,6 @@ public class EditInfoFragment extends Fragment implements IEditInfoFragment, Vie
     }
 
     private void judgeSubmit() {
-        Log.e("EditInfoFragment", "userInfoBean\n" + userInfoBean.toString());
         if (TextUtils.isEmpty(userInfoBean.getU_true_name())) {
             Utils.toast(getActivity(), "请输入昵称");
         } else if (!Utils.isLegalId(userInfoBean.getU_idcard())) {
