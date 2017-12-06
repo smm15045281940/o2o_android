@@ -24,9 +24,28 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/lv_employer_to_doing"
+    <FrameLayout
+        android:id="@+id/fl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.gjzg.view.PullToRefreshLayout
+            android:id="@+id/ptrl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/head" />
+
+            <com.gjzg.view.PullableListView
+                android:id="@+id/plv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null" />
+
+            <include layout="@layout/foot" />
+
+        </com.gjzg.view.PullToRefreshLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

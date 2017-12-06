@@ -34,6 +34,7 @@ public class WorkerBean implements Serializable {
     private int is_fav;
     private int relation;
     private int relation_type;
+    private String o_confirm;
 
     public String getU_id() {
         return u_id;
@@ -267,6 +268,14 @@ public class WorkerBean implements Serializable {
         this.relation_type = relation_type;
     }
 
+    public String getO_confirm() {
+        return o_confirm;
+    }
+
+    public void setO_confirm(String o_confirm) {
+        this.o_confirm = o_confirm;
+    }
+
     @Override
     public String toString() {
         return "WorkerBean{" +
@@ -299,6 +308,7 @@ public class WorkerBean implements Serializable {
                 ", is_fav=" + is_fav +
                 ", relation=" + relation +
                 ", relation_type=" + relation_type +
+                ", o_confirm='" + o_confirm + '\'' +
                 '}';
     }
 }

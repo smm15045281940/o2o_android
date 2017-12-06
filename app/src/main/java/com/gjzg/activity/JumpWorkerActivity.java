@@ -12,6 +12,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -409,7 +410,8 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void loadData() {
-        String url = NetConfig.workerUrl + "?u_id=" + toJumpWorkerBean.getWorkerId() + "&fu_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId();
+        String url = NetConfig.workerUrl + "?u_id=" + toJumpWorkerBean.getWorkerId() + "&fu_id=" + UserUtils.readUserData(JumpWorkerActivity.this).getId() + "&o_status=0,2";
+        Log.e(this.getClass().getSimpleName(), "testUrl\n" + url);
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -431,7 +433,6 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         cpd.dismiss();
         if (!TextUtils.isEmpty(toJumpWorkerBean.getTewPrice())) {
             surePricePriceTv.setText(toJumpWorkerBean.getTewPrice());
-            float price = Float.parseFloat(toJumpWorkerBean.getTewPrice());
             surePriceServiceCashTv.setText("结算工资的时候系统会收取工人" + (charge_rate * 100) + "%的服务费");
         }
         if (!TextUtils.isEmpty(toJumpWorkerBean.getTew_start_time()) && !TextUtils.isEmpty(toJumpWorkerBean.getTew_end_time())) {
@@ -453,16 +454,29 @@ public class JumpWorkerActivity extends AppCompatActivity implements View.OnClic
         infoTv.setText(workerBean.getUei_info());
         addressTv.setText(workerBean.getUei_address());
         map();
-        if (toJumpWorkerBean.getO_status().equals("0")) {
-            if (toJumpWorkerBean.getO_confirm().equals("0")) {
-                SHOW_STATE = SURE_PRICE;
-            } else if (toJumpWorkerBean.getO_confirm().equals("1")) {
+        if (workerBean.getRelation() == 0) {
+            if (workerBean.getO_confirm().equals("-1")) {
+                Utils.toast(JumpWorkerActivity.this, "工人已辞职");
+            } else {
+                Utils.toast(JumpWorkerActivity.this, "工人已取消订单");
+            }
+        } else {
+            if (workerBean.getO_confirm().equals("1")) {
                 SHOW_STATE = FIRE_WORKER;
-            } else if (toJumpWorkerBean.getO_confirm().equals("2")) {
-                SHOW_STATE = WAIT_WORKER;
+                refreshState();
+            } else {
+                if (toJumpWorkerBean.getO_status().equals("0")) {
+                    if (toJumpWorkerBean.getO_confirm().equals("0")) {
+                        SHOW_STATE = SURE_PRICE;
+                    } else if (toJumpWorkerBean.getO_confirm().equals("1")) {
+                        SHOW_STATE = FIRE_WORKER;
+                    } else if (toJumpWorkerBean.getO_confirm().equals("2")) {
+                        SHOW_STATE = WAIT_WORKER;
+                    }
+                }
+                refreshState();
             }
         }
-        refreshState();
     }
 
     private void map() {

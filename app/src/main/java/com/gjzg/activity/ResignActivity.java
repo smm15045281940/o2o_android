@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -25,14 +26,18 @@ import java.io.IOException;
 import com.gjzg.bean.ToComplainBean;
 import com.gjzg.bean.ToResignBean;
 import com.gjzg.bean.UserInfoBean;
+
 import complain.view.ComplainActivity;
+
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -54,6 +59,8 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
     private UserInfoBean userInfoBean;
     private int praiseCount = 0;
 
+    private String resignTip = "";
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -66,7 +73,13 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
                         break;
                     case 2:
                         cpd.dismiss();
-                        startActivity(new Intent(ResignActivity.this, MainActivity.class));
+                        if (resignTip.equals("success")) {
+                            startActivity(new Intent(ResignActivity.this, MainActivity.class));
+                        } else if (resignTip.equals("failure")) {
+                            Utils.toast(ResignActivity.this, "失败");
+                        } else {
+                            Utils.toast(ResignActivity.this, resignTip);
+                        }
                         break;
                 }
             }
@@ -206,40 +219,43 @@ public class ResignActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void submit() {
-        cpd.show();
-        String submitUrl = NetConfig.orderUrl +
-                "?action=unbind" +
-                "&tew_id=" + toResignBean.getTewId() +
-                "&t_id=" + toResignBean.getTaskId() +
-                "&type=resign" +
-                "&o_worker=" + UserUtils.readUserData(ResignActivity.this).getId() +
-                "&u_id=" + toResignBean.getAuthorId() +
-                "&s_id=" + toResignBean.getSkillId() +
-                "&start=" + praiseCount +
-                "&appraisal=" + contentEt.getText().toString();
-        Request submitRequest = new Request.Builder().url(submitUrl).get().build();
-        okHttpClient.newCall(submitRequest).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (!TextUtils.isEmpty(contentEt.getText().toString())) {
+            cpd.show();
+            String submitUrl = NetConfig.orderUrl +
+                    "?action=unbind" +
+                    "&tew_id=" + toResignBean.getTewId() +
+                    "&t_id=" + toResignBean.getTaskId() +
+                    "&type=resign" +
+                    "&o_worker=" + UserUtils.readUserData(ResignActivity.this).getId() +
+                    "&u_id=" + toResignBean.getAuthorId() +
+                    "&s_id=" + toResignBean.getSkillId() +
+                    "&start=" + praiseCount +
+                    "&appraisal=" + contentEt.getText().toString();
+            Request submitRequest = new Request.Builder().url(submitUrl).get().build();
+            okHttpClient.newCall(submitRequest).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            }
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    try {
-                        JSONObject beanObj = new JSONObject(json);
-                        if (beanObj.optInt("code") == 200) {
-                            if (beanObj.optString("data").equals("success")) {
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        try {
+                            JSONObject beanObj = new JSONObject(json);
+                            if (beanObj.optInt("code") == 200) {
+                                resignTip = beanObj.optString("data");
                                 handler.sendEmptyMessage(2);
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
-        });
+            });
+        } else {
+            Utils.toast(ResignActivity.this, "请填写辞职原因");
+        }
     }
 }

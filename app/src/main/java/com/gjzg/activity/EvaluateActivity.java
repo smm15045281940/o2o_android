@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,10 @@ import com.gjzg.bean.ToEvaluateBean;
 import com.gjzg.bean.UserInfoBean;
 
 import complain.view.ComplainActivity;
+
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -37,6 +40,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -171,43 +175,47 @@ public class EvaluateActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void submit() {
-        cpd.show();
-        String submitUrl = NetConfig.commentAddUrl;
-        RequestBody submitBody = new FormBody.Builder()
-                .add("u_id", toEvaluateBean.getU_id())
-                .add("t_id", toEvaluateBean.getT_id())
-                .add("tc_u_id", toEvaluateBean.getTc_u_id())
-                .add("tce_desc", toEvaluateBean.getTce_desc())
-                .add("tc_start", toEvaluateBean.getTc_start())
-                .add("tc_type", toEvaluateBean.getTc_type())
-                .build();
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(submitUrl)
-                .post(submitBody)
-                .build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (!TextUtils.isEmpty(toEvaluateBean.getTce_desc())) {
+            cpd.show();
+            String submitUrl = NetConfig.commentAddUrl;
+            RequestBody submitBody = new FormBody.Builder()
+                    .add("u_id", toEvaluateBean.getU_id())
+                    .add("t_id", toEvaluateBean.getT_id())
+                    .add("tc_u_id", toEvaluateBean.getTc_u_id())
+                    .add("tce_desc", toEvaluateBean.getTce_desc())
+                    .add("tc_start", toEvaluateBean.getTc_start())
+                    .add("tc_type", toEvaluateBean.getTc_type())
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(submitUrl)
+                    .post(submitBody)
+                    .build();
+            okHttpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            }
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-                    json = Utils.cutJson(json);
-                    try {
-                        JSONObject beanObj = new JSONObject(json);
-                        if (beanObj.optInt("code") == 1) {
-                            handler.sendEmptyMessage(2);
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        String json = response.body().string();
+                        json = Utils.cutJson(json);
+                        try {
+                            JSONObject beanObj = new JSONObject(json);
+                            if (beanObj.optInt("code") == 1) {
+                                handler.sendEmptyMessage(2);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
-        });
+            });
+        } else {
+            Utils.toast(EvaluateActivity.this, "请填写评价");
+        }
     }
 
     @Override

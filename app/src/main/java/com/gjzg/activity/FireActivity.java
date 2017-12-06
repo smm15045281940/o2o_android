@@ -6,7 +6,9 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -23,19 +25,26 @@ import java.io.IOException;
 import com.gjzg.bean.ToComplainBean;
 import com.gjzg.bean.ToFireBean;
 import com.gjzg.bean.UserInfoBean;
+
 import complain.view.ComplainActivity;
+
 import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CImageView;
 import com.gjzg.view.CProgressDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FireActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,6 +60,7 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
     private TextView nameTv, skillTv, highOpinionTv;
 
     private UserInfoBean userInfoBean;
+    private String fireTip = "";
 
     private Handler handler = new Handler() {
         @Override
@@ -59,7 +69,14 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
             if (msg != null) {
                 switch (msg.what) {
                     case 1:
-                        startActivity(new Intent(FireActivity.this, EmployerManageActivity.class));
+                        cProgressDialog.dismiss();
+                        if (fireTip.equals("success")) {
+                            startActivity(new Intent(FireActivity.this, EmployerManageActivity.class));
+                        } else if (fireTip.equals("failure")) {
+                            Utils.toast(FireActivity.this, "失败");
+                        } else {
+                            Utils.toast(FireActivity.this, fireTip);
+                        }
                         break;
                     case 2:
                         notifyData();
@@ -157,20 +174,26 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void submit() {
-        String fireUrl = NetConfig.orderUrl +
-                "?action=unbind" +
-                "&tew_id=" + toFireBean.getTewId() +
-                "&t_id=" + toFireBean.getTaskId() +
-                "&type=fire" +
-                "&o_worker=" + toFireBean.getFireId() +
-                "&u_id=" + UserUtils.readUserData(FireActivity.this).getId() +
-                "&s_id=" + toFireBean.getSkillId() +
-                "&start=" + toFireBean.getStart() +
-                "&appraisal=" + toFireBean.getContent();
-        fire(fireUrl);
+        cProgressDialog.show();
+        if (!TextUtils.isEmpty(toFireBean.getContent())) {
+            String fireUrl = NetConfig.orderUrl +
+                    "?action=unbind" +
+                    "&tew_id=" + toFireBean.getTewId() +
+                    "&t_id=" + toFireBean.getTaskId() +
+                    "&type=fire" +
+                    "&o_worker=" + toFireBean.getFireId() +
+                    "&u_id=" + UserUtils.readUserData(FireActivity.this).getId() +
+                    "&s_id=" + toFireBean.getSkillId() +
+                    "&start=" + toFireBean.getStart() +
+                    "&appraisal=" + toFireBean.getContent();
+            fire(fireUrl);
+        } else {
+            Utils.toast(FireActivity.this, "请填写解雇原因");
+        }
     }
 
     private void fire(String fireUrl) {
+        Log.e(this.getClass().getSimpleName(), "fireUrl\n" + fireUrl);
         Request request = new Request.Builder().url(fireUrl).get().build();
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -183,7 +206,19 @@ public class FireActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    handler.sendEmptyMessage(1);
+                    if (!TextUtils.isEmpty(json)) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(json);
+                            int code = jsonObject.optInt("code");
+                            if (code == 200) {
+                                fireTip = jsonObject.optString("data");
+                                handler.sendEmptyMessage(1);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
             }
         });

@@ -232,6 +232,7 @@ public class DataUtils {
                                     workerBean.setIs_fav(o.optInt("is_fav"));
                                     workerBean.setRelation(o.optInt("relation"));
                                     workerBean.setRelation_type(o.optInt("relation_type"));
+                                    workerBean.setO_confirm(o.optString("o_confirm"));
                                     workerBeanList.add(workerBean);
                                 }
                             }

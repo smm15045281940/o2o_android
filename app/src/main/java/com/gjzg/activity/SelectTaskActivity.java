@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -29,16 +30,20 @@ import com.gjzg.config.IntentConfig;
 import com.gjzg.config.NetConfig;
 import com.gjzg.config.VarConfig;
 import com.gjzg.listener.IdPosClickHelp;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import com.gjzg.view.PullToRefreshLayout;
 import com.gjzg.view.PullableListView;
+
 import selecttask.presenter.ISelectTaskPresenter;
 import selecttask.presenter.SelectTaskPresenter;
 import selecttask.view.ISelectTaskActivity;
+
 import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
@@ -71,6 +76,8 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     private ToSelectTaskBean toSelectTaskBean;
     private int clickPosition;
 
+    private String selectTip;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -95,7 +102,13 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
                         break;
                     case INVITE_SUCCESS:
                         cpd.dismiss();
-                        startActivity(new Intent(SelectTaskActivity.this, EmployerManageActivity.class));
+                        if (selectTip.equals("success")) {
+                            startActivity(new Intent(SelectTaskActivity.this, EmployerManageActivity.class));
+                        } else if (selectTip.equals("failure")) {
+                            Utils.toast(SelectTaskActivity.this, "失败");
+                        } else {
+                            Utils.toast(SelectTaskActivity.this, selectTip);
+                        }
                         break;
                     case INVITE_FAILURE:
                         cpd.dismiss();
@@ -263,15 +276,14 @@ public class SelectTaskActivity extends AppCompatActivity implements ISelectTask
     @Override
     public void inviteSuccess(String json) {
         json = Utils.cutJson(json);
+        Log.e(this.getClass().getSimpleName(), "json\n" + json);
         try {
             JSONObject beanObj = new JSONObject(json);
             int code = beanObj.optInt("code");
             switch (code) {
                 case 200:
-                    String msg = beanObj.optString("data");
-                    if (msg.equals("success")) {
-                        handler.sendEmptyMessage(INVITE_SUCCESS);
-                    }
+                    selectTip = beanObj.optString("data");
+                    handler.sendEmptyMessage(INVITE_SUCCESS);
                     break;
             }
         } catch (JSONException e) {

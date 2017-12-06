@@ -126,7 +126,7 @@
             android:layout_marginTop="@dimen/y5"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="工资将在XX时间内支付到工人的钢建众工账户"
+            android:text="工资将在任务结束后支付到工人的钢建众工账户"
             android:textColor="@color/blue_2681fc"
             android:textSize="@dimen/y9" />
 

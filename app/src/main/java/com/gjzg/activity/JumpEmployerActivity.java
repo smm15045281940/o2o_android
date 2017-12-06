@@ -12,6 +12,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -310,6 +311,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         String url = NetConfig.taskBaseUrl +
                 "?action=info&t_id=" + toJumpEmployerBean.getTaskId() +
                 "&o_worker=" + UserUtils.readUserData(JumpEmployerActivity.this).getId();
+        Log.e(this.getClass().getSimpleName(), "testUrl\n" + url);
         Request request = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -428,7 +430,7 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
         String url = NetConfig.orderUrl +
                 "?action=cancel" +
                 "&o_id=" + jumpEmployerBean.getOrderId() +
-                "&sponsor=" + UserUtils.readUserData(JumpEmployerActivity.this).getId()+"" +
+                "&sponsor=" + UserUtils.readUserData(JumpEmployerActivity.this).getId() + "" +
                 "&o_confirm=0,2";
         Request cancelRequest = new Request.Builder().url(url).get().build();
         okHttpClient.newCall(cancelRequest).enqueue(new Callback() {
@@ -545,17 +547,20 @@ public class JumpEmployerActivity extends AppCompatActivity implements View.OnCl
                 } else if (o_confirm.equals("2")) {
                     SHOW_STATE = SURE_DO;
                 }
+                refreshState();
             } else if (o_status.equals("1")) {
                 SHOW_STATE = EVALUATE;
+                refreshState();
+            } else if (o_status.equals("-2")) {
+                Utils.toast(JumpEmployerActivity.this, "对方已将你解雇");
             }
-            refreshState();
         }
         if (!TextUtils.isEmpty(jumpEmployerBean.getRelation())) {
             if (jumpEmployerBean.getRelation().equals("0"))
                 Utils.toast(JumpEmployerActivity.this, "对方已取消订单");
         }
-        if(!TextUtils.isEmpty(jumpEmployerBean.getResult())){
-            if(jumpEmployerBean.getResult().equals("0"))
+        if (!TextUtils.isEmpty(jumpEmployerBean.getResult())) {
+            if (jumpEmployerBean.getResult().equals("0"))
                 Utils.toast(JumpEmployerActivity.this, "对方已取消订单");
         }
     }

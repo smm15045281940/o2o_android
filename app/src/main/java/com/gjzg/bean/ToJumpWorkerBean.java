@@ -21,6 +21,7 @@ public class ToJumpWorkerBean implements Serializable {
     private String tew_end_time;
     private String tew_worker_num;
 
+
     public String getTew_worker_num() {
         return tew_worker_num;
     }

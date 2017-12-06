@@ -1,6 +1,8 @@
 package com.gjzg.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -55,6 +57,20 @@ public class AccountDetailActivity extends AppCompatActivity implements View.OnC
     private final int FIRST = 0, REFRESH = 1;
     private int STATE = FIRST;
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg != null) {
+                switch (msg.what) {
+                    case 1:
+                        ptrl.hideFootView();
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +87,10 @@ public class AccountDetailActivity extends AppCompatActivity implements View.OnC
     protected void onDestroy() {
         super.onDestroy();
         OkHttpUtils.getInstance().cancelTag(this);
+        if (handler != null) {
+            handler.removeMessages(1);
+            handler = null;
+        }
     }
 
     private void initView() {
@@ -159,13 +179,19 @@ public class AccountDetailActivity extends AppCompatActivity implements View.OnC
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Request request, Exception e) {
-                        cProgressDialog.dismiss();
+                        switch (STATE) {
+                            case FIRST:
+                                cProgressDialog.dismiss();
+                                break;
+                            case REFRESH:
+                                ptrl.hideHeadView();
+                                break;
+                        }
                         Utils.toast(AccountDetailActivity.this, VarConfig.noNetTip);
                     }
 
                     @Override
                     public void onResponse(String response) {
-                        cProgressDialog.dismiss();
                         if (!TextUtils.isEmpty(response)) {
                             DetailBean detailBean = SingleGson.getInstance().fromJson(response, DetailBean.class);
                             if (detailBean != null) {
@@ -256,11 +282,12 @@ public class AccountDetailActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideHeadView();
+        STATE = REFRESH;
+        loadData();
     }
 
     @Override
     public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
-        ptrl.hideFootView();
+        handler.sendEmptyMessageDelayed(1, 500);
     }
 }

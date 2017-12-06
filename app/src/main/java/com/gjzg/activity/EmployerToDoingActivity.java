@@ -47,12 +47,15 @@ import com.gjzg.utils.DataUtils;
 import com.gjzg.utils.UserUtils;
 import com.gjzg.utils.Utils;
 import com.gjzg.view.CProgressDialog;
+import com.gjzg.view.PullToRefreshLayout;
+import com.gjzg.view.PullableListView;
 
-public class EmployerToDoingActivity extends AppCompatActivity implements View.OnClickListener, TInfoClickHelp {
+public class EmployerToDoingActivity extends AppCompatActivity implements View.OnClickListener, TInfoClickHelp, PullToRefreshLayout.OnRefreshListener {
 
     private View rootView;
     private RelativeLayout returnRl;
-    private ListView listView;
+    private PullToRefreshLayout ptrl;
+    private PullableListView mLv;
     private CProgressDialog cProgressDialog;
     private TInfoTaskBean tInfoTaskBean;
     private int clickWorkerPos;
@@ -61,6 +64,10 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
     private PopupWindow sureDonePop;
 
     private String sureTip;
+    private String t_id;
+
+    private final int FIRST = 1, REFRESH = 2;
+    private int STATE;
 
     private Handler handler = new Handler() {
         @Override
@@ -79,10 +86,13 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                         if (sureTip.equals("successs")) {
                             startActivity(new Intent(EmployerToDoingActivity.this, EmployerManageActivity.class));
                         } else if (sureTip.equals("failure")) {
-                            Utils.toast(EmployerToDoingActivity.this, "失败");
+                            Utils.toast(EmployerToDoingActivity.this, "数据异常，请下拉刷新后重试");
                         } else {
                             Utils.toast(EmployerToDoingActivity.this, sureTip);
                         }
+                        break;
+                    case 4:
+                        ptrl.hideFootView();
                         break;
                 }
             }
@@ -95,6 +105,7 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
         rootView = LayoutInflater.from(EmployerToDoingActivity.this).inflate(R.layout.activity_employer_to_doing, null);
         setContentView(rootView);
         initView();
+        initData();
         setListener();
         loadData();
     }
@@ -111,7 +122,8 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
 
     private void initView() {
         returnRl = (RelativeLayout) rootView.findViewById(R.id.rl_employer_to_doing_return);
-        listView = (ListView) rootView.findViewById(R.id.lv_employer_to_doing);
+        ptrl = (PullToRefreshLayout) rootView.findViewById(R.id.ptrl);
+        mLv = (PullableListView) rootView.findViewById(R.id.plv);
         cProgressDialog = new CProgressDialog(EmployerToDoingActivity.this, R.style.dialog_cprogress);
         initPopView();
     }
@@ -172,13 +184,20 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
         });
     }
 
+    private void initData() {
+        t_id = getIntent().getStringExtra(IntentConfig.toEmployerToDoing);
+        STATE = FIRST;
+    }
+
     private void setListener() {
         returnRl.setOnClickListener(this);
+        ptrl.setOnRefreshListener(this);
     }
 
     private void loadData() {
-        cProgressDialog.show();
-        String t_id = getIntent().getStringExtra(IntentConfig.toEmployerToDoing);
+        if (STATE == FIRST) {
+            cProgressDialog.show();
+        }
         String url = NetConfig.taskBaseUrl + "?action=info&t_id=" + t_id;
         Request request = new Request
                 .Builder()
@@ -243,12 +262,16 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
     }
 
     private void notifyData() {
-        cProgressDialog.dismiss();
+        switch (STATE) {
+            case FIRST:
+                cProgressDialog.dismiss();
+                break;
+            case REFRESH:
+                ptrl.hideHeadView();
+                break;
+        }
         TInfoTaskAdapter tInfoTaskAdapter = new TInfoTaskAdapter(EmployerToDoingActivity.this, tInfoTaskBean, this);
-        listView.setAdapter(tInfoTaskAdapter);
-        View emptyView = LayoutInflater.from(EmployerToDoingActivity.this).inflate(R.layout.empty_data, null);
-        emptyView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        listView.setEmptyView(emptyView);
+        mLv.setAdapter(tInfoTaskAdapter);
         tInfoTaskAdapter.notifyDataSetChanged();
     }
 
@@ -301,9 +324,9 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
                             TInfoOrderBean tInfoOrderBean = tInfoTaskBean.gettInfoWorkerBeanList().get(out).gettInfoOrderBeanList().get(in);
                             String o_status = tInfoOrderBean.getO_status();
                             if (o_status.equals("-1")) {
-
+                                Utils.toast(EmployerToDoingActivity.this, "该工人已辞职");
                             } else if (o_status.equals("-2")) {
-
+                                Utils.toast(EmployerToDoingActivity.this, "该工人已解雇");
                             } else {
                                 ToJumpWorkerBean toJumpWorkerBean = new ToJumpWorkerBean();
                                 toJumpWorkerBean.setS_name(tInfoOrderBean.getSkill());
@@ -381,5 +404,16 @@ public class EmployerToDoingActivity extends AppCompatActivity implements View.O
         layoutParams.alpha = f;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(layoutParams);
+    }
+
+    @Override
+    public void onRefresh(PullToRefreshLayout pullToRefreshLayout) {
+        STATE = REFRESH;
+        loadData();
+    }
+
+    @Override
+    public void onLoadMore(PullToRefreshLayout pullToRefreshLayout) {
+        handler.sendEmptyMessageDelayed(4, 500);
     }
 }

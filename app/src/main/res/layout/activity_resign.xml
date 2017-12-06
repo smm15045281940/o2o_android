@@ -141,8 +141,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y5"
             android:ellipsize="end"
-            android:singleLine="true"
-            android:text="工资将在XX时间内发放至您的钢建众工账户"
+            android:gravity="center"
+            android:text="与任何或工人关系解除后，系统将按照已完成工时为工人计算工资，工资将在工期结束后支付到工人的钢建众工账户"
             android:textColor="@color/blue_2681fc"
             android:textSize="@dimen/y9" />
 
